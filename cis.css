@@ -1,0 +1,23 @@
+.draggable {
+  font: bold 20px sans-serif;
+  width: 200px;
+  height: 20px;
+  text-align: center;
+  background: white;
+  cursor: move;
+  margin-top: 20px;
+}
+
+.palettezone {
+  width: 25vw;
+  height: 100vh;
+  background: lightblue;
+  padding: 40px;
+  padding-top: 1px;
+  float: left;
+}
+
+.palette-area {
+  white-space: nowrap;
+  width: 100%;
+}

@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html ng-app="cis">
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Crops in Silico Prototype</title>
+    <meta name="description" content="Interactive model builder for Crops in Silico" />
+    <meta charset="UTF-8">
+    
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link rel="stylesheet" href="./cis.css">
+    
+    <!-- TODO: styles, fonts, etc -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gojs/1.7.17/go.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.2/angular.min.js"></script>
+    
+    <script src="./cis.controller.js"></script>
+    <script src="./godiagram.directive.js"></script>
+  </head>
+  
+  <body ng-controller="CisCtrl">
+    <div class="row">
+      <div id="palette-area" class="col-sm-3" style="white-space:nowrap;">
+        <!-- TODO: see https://github.com/NorthwoodsSoftware/GoJS/blob/master/samples/htmlDragDrop.html -->
+        <span style="display: inline-block; vertical-align: top">
+          <div class="palettezone">
+            <div class="draggable" draggable="true">Model</div>
+            <div class="draggable" draggable="true">Operation</div>
+            <div class="draggable" draggable="true">Loop</div>
+          </div>
+        </span>
+      </div>
+      <div id="canvas-area" class="col-sm-9">
+        <div id="diagram-area">
+          <go-diagram class="dropzone" go-model="model" style="border: solid 1px black; width:100%; height:400px"></go-diagram>
+        </div>
+        
+        <div id="model-area" class="row">
+          <div id="node-data-area" class="col-sm-6">
+            Node Data:
+            <pre>{{ model.nodeDataArray | json:4 }}</pre>
+          </div>
+          
+          <div id="link-data-area" class="col-sm-6">
+            Link Data:
+            <pre>{{ model.linkDataArray | json:4 }}</pre>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
