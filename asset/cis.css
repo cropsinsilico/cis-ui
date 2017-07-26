@@ -4,7 +4,8 @@
   height: 20px;
   text-align: center;
   background: white;
-  cursor: move;
+  /*cursor: move;*/
+  cursor: disabled;
   margin-top: 20px;
 }
 
