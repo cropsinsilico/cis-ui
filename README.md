@@ -1,4 +1,5 @@
 # Crops in Silico Prototype UI
+Prototype UI for Crops in Silico
 
 # Prerequisites
 * Git
