@@ -1,3 +1,5 @@
+/* global go:false angular:false */
+
 angular.module('cis')
 // Copyright 1998-2017 by Northwoods Software Corporation.
   .directive('goDiagram', function() {
@@ -27,8 +29,11 @@ angular.module('cis')
               linkTemplate: $(go.Link,
                               { relinkableFrom: true, relinkableTo: true },
                               $(go.Shape),
-                              $(go.Shape, { toArrow: "Standard", stroke: null, strokeWidth: 0 })
+                              $(go.Shape, { toArrow: "Standard", stroke: null, strokeWidth: 0 }),
+                               $(go.TextBlock,                        // this is a Link label
+                                  new go.Binding("text", "text"))
                             ),
+              layout: $(go.ForceDirectedLayout),
               initialContentAlignment: go.Spot.Center,
               "ModelChanged": updateAngular,
               "ChangedSelection": updateSelection,
@@ -56,6 +61,22 @@ angular.module('cis')
           }
           scope.$apply();
         }
+        
+        /*
+        (function layout() {
+          //diagram.startTransaction("change Layout");
+          let lay = diagram.layout;
+          lay.direction = 0;
+          lay.layerSpacing = 10;
+          lay.columnSpacing = 30;
+          go.LayeredDigraphLayout.CycleDepthFirst;// go.LayeredDigraphLayout.CycleGreedy;
+          lay.layeringOption = go.LayeredDigraphLayout.LayerOptimalLinkLength; //go.LayeredDigraphLayout.LayerLongestPathSource; //go.LayeredDigraphLayout.LayerLongestPathSink;
+          lay.initializeOption = go.LayeredDigraphLayout.InitDepthFirstOut; //go.LayeredDigraphLayout.InitDepthFirstIn; //go.LayeredDigraphLayout.InitNaive;
+          lay.aggressiveOption = go.LayeredDigraphLayout.AggressiveLess; //go.LayeredDigraphLayout.AggressiveNone; //go.LayeredDigraphLayout.AggressiveMore;
+          lay.setsPortSpots = false //document.getElementById("setsPortSpots").checked;
+          //diagram.commitTransaction("change Layout");
+        })();*/
+
 
         // notice when the value of "model" changes: update the Diagram.model
         scope.$watch("model", function(newmodel) {

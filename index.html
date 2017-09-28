@@ -1,49 +1,156 @@
 <!DOCTYPE html>
 <html ng-app="cis">
   <head>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel=icon href="./asset/favicon.ico">
     <title>Crops in Silico Prototype</title>
     <meta name="description" content="Interactive model builder for Crops in Silico" />
     <meta charset="UTF-8">
     
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
-    <link rel="stylesheet" href="./asset/cis.css">
+    <!-- Third-party CSS -->
+    <link rel="stylesheet" href="node_modules/bootstrap/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="node_modules/font-awesome/css/font-awesome.min.css" />
+    <link rel="stylesheet" type="text/css" href="node_modules/angular-slider/slider.css" />
     
-    <!-- TODO: styles, fonts, etc -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gojs/1.7.17/go.js"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.2/angular.min.js"></script>
+    <!-- Third-party JS -->
+    <script src="node_modules/jquery/dist/jquery.min.js"></script>
+    <script src="node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
+    <script src="node_modules/gojs/release/go.js"></script>
+    <script src="node_modules/angular/angular.js"></script>
+    <script src="node_modules/angular-drag-drop/dist/angular-drag-drop.min.js"></script>
+    <script src="node_modules/angular-slider/slider.js"></script>
     
-    <script src="./app/cis.controller.js"></script>
-    <script src="./app/godiagram.directive.js"></script>
+    <!-- Now load our source -->
+    <link rel="stylesheet" href="asset/cis.css">
+    <script src="app/cis.controller.js"></script>
+    <script src="app/godiagram.directive.js"></script>
   </head>
   
-  <body ng-controller="CisCtrl">
-    <div class="row">
-      <div id="palette-area" class="col-sm-3" style="white-space:nowrap;">
-        <!-- TODO: see https://github.com/NorthwoodsSoftware/GoJS/blob/master/samples/htmlDragDrop.html -->
-        <span style="display: inline-block; vertical-align: top">
-          <div class="palettezone">
-            <div class="draggable" draggable="true">Alpha</div>
-            <div class="draggable" draggable="true">Beta</div>
-            <div class="draggable" draggable="true">Gamma</div>
-            <div class="draggable" draggable="true">Delta</div>
-          </div>
-        </span>
-      </div>
-      <div id="canvas-area" class="col-sm-9">
-        <div id="diagram-area">
-          <go-diagram class="dropzone" go-model="model" style="border: solid 1px black; width:100%; height:400px"></go-diagram>
-        </div>
-        
-        <div id="model-area" class="row">
-          <div id="node-data-area" class="col-sm-6">
-            Node Data:
-            <pre>{{ model.nodeDataArray | json:4 }}</pre>
+  <body>
+    <nav class="navbar navbar-default">
+      <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          
+          <!-- Brand icon -->
+          <div class="navbar-brand">
+            <a href="#"><img alt="Crops in Silico" src="asset/cropsinsilico-logo-16x20.png"></a>
           </div>
           
-          <div id="link-data-area" class="col-sm-6">
-            Link Data:
-            <pre>{{ model.linkDataArray | json:4 }}</pre>
+          <!-- Brand Text -->
+          <a href="#" class="navbar-left">
+            <span class="navbar-text pull-right"> Crops in Silico</span>
+          </a>
+        </div>
+    
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+          <ul class="nav navbar-nav">
+            <!--<li class="active"><a href="#">Link <span class="sr-only">(current)</span></a></li>-->
+          </ul>
+          <ul class="nav navbar-nav navbar-right">
+            <li class="dropdown">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><i class="fa fa-fw fa-question-circle-o"></i> <span class="caret"></span></a>
+              <ul class="dropdown-menu">
+                <li><a target="_blank" href="https://cropsinsilico.github.io/cis_interface/">Documentation</a></li>
+                <li><a target="_blank" href="http://cropsinsilico.org/about-us/">About</a></li>
+              </ul>
+            </li>
+          </ul>
+        </div><!-- /.navbar-collapse -->
+      </div><!-- /.container-fluid -->
+    </nav>
+    
+    <div class="container">
+      <div class="row">
+        <div class="col-sm-12" id="main-area" ng-controller="CisCtrl">
+          <!-- Main diagram view -->
+          <div id="canvas-area">
+            <go-diagram ng-if="model" class="dropzone" go-model="model" style="height:70vh;"></go-diagram>
+          </div>
+          
+          <!-- Environmental Parameter Sliders -->
+          <form class="form-horizontal border-cis" style="z-index:2;">
+            <span class="form-group">
+              <legend class="legend-fix">
+                Environment 
+                <sup><i class="fa fa-fw fa-question-circle" tooltip-placement="bottom-right" data-toggle="tooltip" title="Set Environment parameters"></i></sup>
+              </legend>
+              
+              <div class="row">
+                
+                <!-- Environment Parameters -->
+                <div class="col-sm-10">
+                  
+                  <!-- Top Row -->
+                  <div class="row">
+                    
+                    <!-- Carbon Dioxide -->
+                    <div class="col-sm-3">
+                      <label for="carbonDioxide">CO<sub>2</sub>&nbsp;&nbsp;&nbsp;&nbsp;{{ environment.carbonDioxide }} ppm</label>
+                    </div>
+                    <div class="col-sm-3">
+                      <slider ng-model="environment.carbonDioxide" floor="0" ceiling="1000" step="5" precision="1"></slider>
+                    </div>
+                    
+                    <!-- Nitrogen -->
+                    <div class="col-sm-3">
+                      <label for="nitrogen">Nitrogen&nbsp;&nbsp;&nbsp;&nbsp;{{ environment.nitrogen }} mmol</label>
+                    </div>
+                    <div class="col-sm-3">
+                      <slider ng-model="environment.nitrogen" floor="0" ceiling="1000" step="5" precision="1"></slider>
+                    </div>
+                  </div>
+                  
+                  <!-- Bottom Row -->
+                  <div class="row">
+                    
+                    <!-- Light -->
+                    <div class="col-sm-3">
+                      <label for="light">Light&nbsp;&nbsp;&nbsp;&nbsp;{{ environment.light }}</label>
+                    </div>
+                    <div class="col-sm-3">
+                      <slider ng-model="environment.light" floor="0" ceiling="10000" step="100" precision="1"></slider>
+                    </div>
+                    
+                    <!-- Temperature -->
+                    <div class="col-sm-3">
+                      <label for="temperature">Temperature&nbsp;&nbsp;&nbsp;&nbsp;{{ environment.temperature }} ℃</label>
+                    </div>
+                    <div class="col-sm-3">
+                      <slider ng-model="environment.temperature" floor="0" ceiling="100" step="1" precision="1"></slider>
+                    </div>
+                  </div>
+                </div>
+                
+                <!-- "Run" Button -->
+                <div class="col-sm-2">
+                  <button type="submit" class="btn btn-success" ng-disabled="running" ng-click="runSimulation()">
+                    <i class="fa fa-fw" ng-class="{ 'fa-cogs': !running, 'fa-spinner fa-pulse': running }"></i> Simulate
+                  </button>
+                </div>
+              </div>
+              
+            </span>
+          </form>
+          
+          <!-- Show JSON, if requested -->
+          <div id="model-area" class="row" ng-if="showJson">
+            <div id="node-data-area" class="col-sm-6">
+              Node Data:
+              <pre>{{ model.nodeDataArray | json:4 }}</pre>
+            </div>
+            
+            <div id="link-data-area" class="col-sm-6">
+              Link Data:
+              <pre>{{ model.linkDataArray | json:4 }}</pre>
+            </div>
           </div>
         </div>
       </div>

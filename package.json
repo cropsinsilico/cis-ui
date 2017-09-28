@@ -1,0 +1,28 @@
+{
+  "name": "cis-ui",
+  "version": "0.0.1",
+  "description": "Crops in Silico User Interface",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/bodom0015/cis-ui"
+  },
+  "author": "Mike Lambert <lambert8@illinois.edu>",
+  "license": "TBD",
+  "bugs": {
+    "url": "https://github.com/bodom0015/cis-ui/issues"
+  },
+  "dependencies": {
+    "angular": "^1.5.11",
+    "angular-drag-drop": "^3.1.0",
+    "angular-local-storage": "^0.7.1",
+    "angular-slider": "^0.2.3",
+    "bootstrap": "^3.3.7",
+    "font-awesome": "^4.7.0",
+    "gojs": "^1.7.26",
+    "jquery": "^3.2.1"
+  }
+}

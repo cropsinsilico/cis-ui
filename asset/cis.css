@@ -1,3 +1,11 @@
+/*
+The fixed navbar will overlay your other content, 
+unless you add padding to the top of the <body>.  
+
+See https://getbootstrap.com/docs/3.3/components/#navbar-fixed-top
+*/
+/*body { padding-top: 70px; }*/
+
 .draggable {
   font: bold 20px sans-serif;
   width: 200px;
@@ -16,9 +24,54 @@
   padding: 40px;
   padding-top: 1px;
   float: left;
+  display: inline-block;
+  vertical-align: top;
 }
 
 .palette-area {
   white-space: nowrap;
   width: 100%;
+  display:block;
+}
+
+#showBtn {
+  position: absolute;
+  bottom:0;
+  left:0;
+  margin-left: 110px;
+  padding-left:20px;
+  padding-right:20px;
+  
+}
+
+#canvas-area {
+  border: solid 1px black;
+  width:100%;
+  vertical-align: top;
+}
+
+#model-area {
+  z-index:1001;
+}
+
+
+.legend-fix { 
+   border: none;
+   width:auto !important;
+}
+
+slider {
+    margin-top: 0;
+    margin-bottom: 0;
+}
+
+
+.border-cis {
+  border: 3px solid #ccc !important;
+  border-radius: 16px !important;
+  margin: 15px 0 15px 0;
+  padding:10px;
+  width:auto !important;
+  height:100% !important;
+  border-bottom:none;
 }
