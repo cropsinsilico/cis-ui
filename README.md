@@ -1,6 +1,9 @@
 # Crops in Silico Prototype UI
 Prototype UI for Crops in Silico
 
+# Design
+For design notes and mockups, see https://opensource.ncsa.illinois.edu/confluence/display/~lambert8/CiS+UI+Requirements
+
 # Prerequisites
 * Git
 * Docker
