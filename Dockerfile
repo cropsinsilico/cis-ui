@@ -1,5 +1,8 @@
-FROM nginx:latest
+FROM node:boron
 
-COPY . /usr/share/nginx/html
+# Copy in our source
+WORKDIR /app
+COPY . /app
 
-RUN npm install
+# Start it up
+CMD [ "npm", "start" ]
