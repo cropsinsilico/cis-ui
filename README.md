@@ -32,10 +32,7 @@ docker run -it -p 8080:80 --name=cis-ui -v $(pwd):/usr/nginx/share/html cis/ui
 ## Without Docker
 You will need to install NodeJS and run the following:
 ```bash
-cd public/
-npm install
-cd ../
-npm install
+npm start
 ```
 
 # Develop
