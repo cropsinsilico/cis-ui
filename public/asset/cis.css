@@ -31,7 +31,7 @@ See https://getbootstrap.com/docs/3.3/components/#navbar-fixed-top
 .palette-area {
   white-space: nowrap;
   width: 100%;
-  display:block;
+  display: block;
 }
 
 #showBtn {
@@ -39,8 +39,8 @@ See https://getbootstrap.com/docs/3.3/components/#navbar-fixed-top
   bottom:0;
   left:0;
   margin-left: 110px;
-  padding-left:20px;
-  padding-right:20px;
+  padding-left: 20px;
+  padding-right: 20px;
   
 }
 
@@ -51,7 +51,7 @@ See https://getbootstrap.com/docs/3.3/components/#navbar-fixed-top
 }
 
 #model-area {
-  z-index:1001;
+  z-index: 1001;
 }
 
 
@@ -65,12 +65,11 @@ slider {
     margin-bottom: 0;
 }
 
-
 .border-cis {
   border: 3px solid #ccc !important;
   border-radius: 16px !important;
   margin: 15px 0 15px 0;
-  padding:10px;
+  padding: 10px;
   width:auto !important;
   height:100% !important;
   border-bottom:none;
