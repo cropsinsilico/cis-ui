@@ -22,7 +22,8 @@
     "angular-slider": "^0.2.3",
     "bootstrap": "^3.3.7",
     "font-awesome": "^4.7.0",
-    "gojs": "^1.7.26",
-    "jquery": "^3.2.1"
+    "jquery": "^3.2.1",
+    "ngreact": "^0.5.1",
+    "the-graph": "^0.10.3"
   }
 }

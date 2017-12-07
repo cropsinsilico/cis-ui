@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html ng-app="cis">
   <head>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <link rel=icon href="./asset/favicon.ico">
     <title>Crops in Silico Prototype</title>
     <meta name="description" content="Interactive model builder for Crops in Silico" />
@@ -15,7 +15,6 @@
     <!-- Third-party JS -->
     <script src="node_modules/jquery/dist/jquery.min.js"></script>
     <script src="node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
-    <script src="node_modules/gojs/release/go.js"></script>
     <script src="node_modules/angular/angular.js"></script>
     <script src="node_modules/angular-drag-drop/dist/angular-drag-drop.min.js"></script>
     <script src="node_modules/angular-slider/slider.js"></script>
@@ -23,10 +22,28 @@
     <!-- Now load our source -->
     <link rel="stylesheet" href="asset/cis.css">
     <script src="app/cis.controller.js"></script>
-    <script src="app/godiagram.directive.js"></script>
+    <script src="app/editor.directive.js"></script>
+    
+        <!-- Libraries -->
+    <script src="node_modules/react/dist/react.js"></script>
+    <script src="node_modules/react-dom/dist/react-dom.js"></script>
+    <script src="node_modules/klayjs-noflo/klay-noflo.js"></script>
+    <script src="node_modules/hammerjs/hammer.min.js"></script>
+    <script src="node_modules/ngreact/ngReact.js"></script>
+
+    <!-- Browserify Libraries -->
+    <script src="node_modules/the-graph/dist/the-graph.js"></script>
+
+    <link rel="stylesheet" href="node_modules/the-graph/themes/the-graph-dark.css">
+    <link rel="stylesheet" href="node_modules/the-graph/themes/the-graph-light.css">
+
+    <!-- Fonts -->
+    <link href='//fonts.googleapis.com/css?family=Source+Code+Pro:400' rel='stylesheet' type='text/css'>
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no" />
   </head>
   
-  <body>
+  <body ng-controller="CisCtrl">
     <nav class="navbar navbar-default">
       <div class="container-fluid">
         <!-- Brand and toggle get grouped for better mobile display -->
@@ -67,13 +84,50 @@
       </div><!-- /.container-fluid -->
     </nav>
     
+    <!-- Control Panel / Palette -->
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-sm-12 no-whitespace">
+          <button class="btn btn-sm" ng-click="randomNode()">
+            <span class="fa-stack">
+              <i class="fa fa-square-o fa-stack-2x"></i>
+              <i class="fa fa-plus fa-stack-1x"></i>
+            </span>
+          </button>
+          
+          <button class="btn btn-sm" ng-click="randomEdge()">
+            <span class="fa-stack">
+              <i class="fa fa-square-o fa-stack-2x"></i>
+              <i class="fa fa-arrows-h fa-stack-1x"></i>
+            </span>
+          </button>
+          
+          <button class="btn btn-sm" ng-click="randomGraph()">
+            <span class="fa-stack">
+              <i class="fa fa-square-o fa-stack-2x"></i>
+              <i class="fa fa-random fa-stack-1x"></i>
+            </span>
+          </button>
+        </div>
+      </div>
+    </div>
+    
+    <div class="container-fluid" id="canvas-area">
+      <div class="row">
+        <div class="col-sm-12 no-whitespace">
+          <editor graph="graph" loading="loading" library="library" width="editorWidth" height="editorHeight" class="the-graph-light"></editor>
+           
+          <div ng-if="loading" id="loading" style="position:absolute; top:10px; left:10px; background-color:white; padding:10px; border-radius:5px;">
+            <i class="fa fa-fw fa-spinner fa-pulse"></i>
+            <div id="loading-message">loading custom elements...</div>
+          </div>
+        </div>
+      </div>
+    </div>
+      
     <div class="container">
       <div class="row">
-        <div class="col-sm-12" id="main-area" ng-controller="CisCtrl">
-          <!-- Main diagram view -->
-          <div id="canvas-area">
-            <go-diagram ng-if="model" class="dropzone" go-model="model" style="height:50vh;"></go-diagram>
-          </div>
+        <div class="col-sm-12" id="parameters-area">
           
           <!-- Environmental Parameter Sliders -->
           <form class="form-horizontal border-cis" style="z-index:2;">

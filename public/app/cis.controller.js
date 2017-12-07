@@ -1,9 +1,15 @@
-/* global angular:false go:false */
+/* global angular:false */
 
-angular.module('cis', [ 'ui.slider' ])
-.controller('CisCtrl', [ '$scope', '$timeout', '$q', 'Links', 'Nodes', 'Models', function($scope, $timeout, $q, Links, Nodes, Models) {
+// React + AngularJS: see https://blog.rapid7.com/2016/02/03/combining-angularjs-and-reactjs-for-better-applications/
+
+angular.module('cis', [ 'ui.slider', 'react' ])
+.factory('TheGraph', [ function() { return window.TheGraph; }])
+.factory('React', [ function() { return window.React; }])
+.factory('ReactDOM', [ function() { return window.ReactDOM; }])
+.controller('CisCtrl', [ '$scope', '$timeout', '$q', '$http', 'TheGraph', 'Links', 'Nodes', 'Models', function($scope, $timeout, $q, $http, TheGraph, Links, Nodes, Models) {
+  "use strict";
+  
   // TODO: Save to localStorage on changes
-  // TODO: "Palette" drag and drop functionality
   
   // TODO: Hook this up to a real API
   $scope.environment = {
@@ -13,9 +19,114 @@ angular.module('cis', [ 'ui.slider' ])
     temperature: "25.0"
   };
   
-  // TODO: Hook this up to a real API
-  //$scope.models = Models.get();
+  // Our component library
+  $scope.library = {
+    basic: {
+      name: 'basic',
+      description: 'basic demo component',
+      icon: 'eye',
+      inports: [
+        {'name': 'in0', 'type': 'all'},
+        {'name': 'in1', 'type': 'all'},
+        {'name': 'in2', 'type': 'all'}
+      ],
+      outports: [
+        {'name': 'out', 'type': 'all'}
+      ]
+    },
+    tall: {
+      name: 'tall',
+      description: 'tall demo component',
+      icon: 'eye',
+      inports: [
+        {'name': 'in0', 'type': 'all'},
+        {'name': 'in1', 'type': 'all'},
+        {'name': 'in2', 'type': 'all'},
+        {'name': 'in3', 'type': 'all'},
+        {'name': 'in4', 'type': 'all'},
+        {'name': 'in5', 'type': 'all'},
+        {'name': 'in6', 'type': 'all'},
+        {'name': 'in7', 'type': 'all'},
+        {'name': 'in8', 'type': 'all'},
+        {'name': 'in9', 'type': 'all'},
+        {'name': 'in10', 'type': 'all'},
+        {'name': 'in11', 'type': 'all'},
+        {'name': 'in12', 'type': 'all'}
+      ],
+      outports: [
+        {'name': 'out0', 'type': 'all'}
+      ]
+    }
+  };
   
+  $scope.editorHeight = window.innerHeight - 300;
+  $scope.editorWidth = window.innerWidth;
+  
+  // Load up an empty graph
+  let fbpGraph = TheGraph.fbpGraph;
+  $scope.graph = new fbpGraph.Graph();
+  
+  /** Clears out the current graph */
+  $scope.clearGraph = function() {
+    $scope.graph = new fbpGraph.Graph();
+  };
+  
+  /** Creates a random graph */
+  $scope.randomGraph = function() {
+    $scope.clearGraph();
+    $scope.graph.startTransaction('randomgraph');
+    for (let i=0; i<20; i++) {
+      let node = $scope.randomNode();
+      $scope.randomEdge(node.id);
+      $scope.randomEdge(node.id);
+    }
+    $scope.graph.endTransaction('randomgraph');
+  };
+  
+  /** Adds a random node */
+  $scope.randomNode = function (useTransaction) {
+    let id = Math.round(Math.random()*100000).toString(36);
+    let component = Math.random() > 0.5 ? 'basic' : 'tall';
+    let metadata = {
+      label: component,
+      x: Math.round(Math.random()*800),
+      y: Math.round(Math.random()*600)
+    };
+    let newNode = $scope.graph.addNode(id, component, metadata);
+    return newNode;
+  };
+  
+  /** Adds a random edge to our graph */
+  $scope.randomEdge = function(outNodeID) {
+    let nodes = $scope.graph.nodes;
+    let len = nodes.length;
+    if ( len<1 ) { return; }
+    let node1 = outNodeID || nodes[Math.floor(Math.random()*len)].id;
+    let node2 = nodes[Math.floor(Math.random()*len)].id;
+    let port1 = 'out' + Math.floor(Math.random()*3);
+    let port2 = 'in' + Math.floor(Math.random()*12);
+    let meta = { route: Math.floor(Math.random()*10) };
+    let newEdge = $scope.graph.addEdge(node1, port1, node2, port2, meta);
+    return newEdge;
+  };
+  
+  /** Exports the current graph to JSON */
+  $scope.exportGraph = function() {
+    let graphJSON = JSON.stringify($scope.graph.toJSON(), null, 2);
+    alert(graphJSON);
+  };
+  
+  /***********************/
+  
+  // The graph editor
+  //$scope.editor = document.getElementById('editor');
+  
+  // TODO: handle re-draw / re-size
+  //$scope.graph.on('endTransaction', renderEditor); // graph changed
+  //window.addEventListener("resize", renderEditor);
+
+
+  /***********************/
   
   // Populate by default with full plant model
   $scope.nodes = [];
@@ -32,23 +143,22 @@ angular.module('cis', [ 'ui.slider' ])
     console.error("Error pulling Links:", err);
   });
 
+  //$scope.models = Models.get();
   $scope.model = null;
-  $q.all([ nodePromise, linkPromise ]).then(function() {
+  /*$q.all([ nodePromise, linkPromise ]).then(function() {
     $scope.model = new go.GraphLinksModel($scope.nodes, $scope.links);
     $scope.model.selectedNodeData = null;
-  });
+  });*/
   
   $scope.running = false;
   $scope.runSimulation = function() {
     $scope.running = true;
+    let name = "example:hello_c";
+    let path = "hello/hello_c";
     
-    // TODO: Hook this up to a real API
-    alert("This button could POST to an API endpoint that would collect the current nodes, links, and parameters.");
-    let timeout = $timeout(function() {
-      $scope.running = false;
-      $timeout.cancel(timeout);
-      alert("Fake simulation complete!");
-    }, 5000);
+    $http.post('/api/v1/simulations', {models: [{ name, path }]}, {
+      headers: { 'Content-Type': 'application/json' }
+    })
   };
 }])
 .factory('Models', [ '$http', function($http) {

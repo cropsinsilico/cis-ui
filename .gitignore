@@ -1,2 +1,4 @@
 public/data/*
 node_modules/
+**/*-lock.json
+**/*.log
