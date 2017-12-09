@@ -6,10 +6,31 @@ angular.module('cis', [ 'ui.slider', 'react' ])
 .factory('TheGraph', [ function() { return window.TheGraph; }])
 .factory('React', [ function() { return window.React; }])
 .factory('ReactDOM', [ function() { return window.ReactDOM; }])
-.controller('CisCtrl', [ '$scope', '$timeout', '$q', '$http', 'TheGraph', 'Links', 'Nodes', 'Models', function($scope, $timeout, $q, $http, TheGraph, Links, Nodes, Models) {
+.controller('CisCtrl', [ '$scope', '$window', '$timeout', '$q', '$http', 'TheGraph', 'Links', 'Nodes', 'Models', function($scope, $window, $timeout, $q, $http, TheGraph, Links, Nodes, Models) {
   "use strict";
   
+  let nodeStorageKey = 'cis::nodes';
+  let edgeStorageKey = 'cis::edges';
+  
+  // Load up an empty graph
+  let fbpGraph = TheGraph.fbpGraph;
+  $scope.graph = new fbpGraph.Graph();
+  debugger;
+  // Load from localStorage on startup
+  let loadedNodes = angular.fromJson($window.localStorage.getItem(nodeStorageKey));
+  if (loadedNodes) {
+    let loadedEdges = angular.fromJson($window.localStorage.getItem(edgeStorageKey));
+    
+    // Import our previous state, if one was found
+    angular.forEach(loadedNodes, node => { $scope.graph.addNode(node.id, node.component, node.metadata); });
+    angular.forEach(loadedEdges, edge => { $scope.graph.addEdge(edge.from.node, edge.from.port, edge.to.node, edge.to.port, edge.metadata); });
+  }
+  
   // TODO: Save to localStorage on changes
+  $scope.$watch("graph", (newValue, oldValue) => {
+    $window.localStorage.setItem(nodeStorageKey, angular.toJson($scope.graph.nodes));
+    $window.localStorage.setItem(edgeStorageKey, angular.toJson($scope.graph.edges));
+  });
   
   // TODO: Hook this up to a real API
   $scope.environment = {
@@ -62,25 +83,23 @@ angular.module('cis', [ 'ui.slider', 'react' ])
   $scope.editorHeight = window.innerHeight - 300;
   $scope.editorWidth = window.innerWidth;
   
-  // Load up an empty graph
-  let fbpGraph = TheGraph.fbpGraph;
-  $scope.graph = new fbpGraph.Graph();
-  
-  /** Clears out the current graph */
+  /** Clears out the current graph, returns true if cleared */
   $scope.clearGraph = function() {
-    $scope.graph = new fbpGraph.Graph();
+    let result = confirm("Are you sure you want to clear the canvas?\nAll existing graph data will be lost.");
+    return result && ($scope.graph = new fbpGraph.Graph());
   };
   
   /** Creates a random graph */
   $scope.randomGraph = function() {
-    $scope.clearGraph();
-    $scope.graph.startTransaction('randomgraph');
-    for (let i=0; i<20; i++) {
-      let node = $scope.randomNode();
-      $scope.randomEdge(node.id);
-      $scope.randomEdge(node.id);
+    if ($scope.clearGraph()) {
+      $scope.graph.startTransaction('randomgraph');
+      for (let i=0; i<20; i++) {
+        let node = $scope.randomNode();
+        $scope.randomEdge(node.id);
+        $scope.randomEdge(node.id);
+      }
+      $scope.graph.endTransaction('randomgraph');
     }
-    $scope.graph.endTransaction('randomgraph');
   };
   
   /** Adds a random node */
@@ -153,6 +172,8 @@ angular.module('cis', [ 'ui.slider', 'react' ])
   $scope.running = false;
   $scope.runSimulation = function() {
     $scope.running = true;
+    
+    // Just run example C model for now
     let name = "example:hello_c";
     let path = "hello/hello_c";
     

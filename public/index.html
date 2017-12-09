@@ -87,26 +87,25 @@
     <!-- Control Panel / Palette -->
     <div class="container-fluid">
       <div class="row">
-        <div class="col-sm-12 no-whitespace">
+        <div class="col-sm-12">
+          <button class="btn btn-sm btn-primary" ng-click="randomGraph()">
+            <i class="fa fa-fw fa-random"></i>
+          </button>
+          
           <button class="btn btn-sm" ng-click="randomNode()">
-            <span class="fa-stack">
-              <i class="fa fa-square-o fa-stack-2x"></i>
-              <i class="fa fa-plus fa-stack-1x"></i>
-            </span>
+            <i class="fa fa-fw fa-plus"></i>
           </button>
           
           <button class="btn btn-sm" ng-click="randomEdge()">
-            <span class="fa-stack">
-              <i class="fa fa-square-o fa-stack-2x"></i>
-              <i class="fa fa-arrows-h fa-stack-1x"></i>
-            </span>
+            <i class="fa fa-fw fa-arrows-h"></i>
           </button>
           
-          <button class="btn btn-sm" ng-click="randomGraph()">
-            <span class="fa-stack">
-              <i class="fa fa-square-o fa-stack-2x"></i>
-              <i class="fa fa-random fa-stack-1x"></i>
-            </span>
+          <button class="btn btn-sm" ng-click="exportGraph()">
+            <i class="fa fa-fw fa-code"></i>
+          </button>
+          
+          <button class="btn btn-sm" ng-click="clearGraph()">
+            <i class="fa fa-fw fa-trash"></i>
           </button>
         </div>
       </div>

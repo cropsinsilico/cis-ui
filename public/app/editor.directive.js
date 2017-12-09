@@ -45,7 +45,7 @@ angular.module('cis')
             };
             
             // HACK: Re-render if inputs change
-            scope.$watch("graph || graph.nodes || graph.edges", function(newValue, oldValue) { 
+            scope.$watch("graph && graph.nodes.length && graph.edges.length", function(newValue, oldValue) { 
                 console.log("Graph changed... rendering", scope.graph);
                 render();
             });
