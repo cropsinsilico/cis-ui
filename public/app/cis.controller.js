@@ -2,11 +2,30 @@
 
 // React + AngularJS: see https://blog.rapid7.com/2016/02/03/combining-angularjs-and-reactjs-for-better-applications/
 
-angular.module('cis', [ 'ui.slider', 'react' ])
+angular.module('cis', [ 'cis-api', 'ui.slider', 'react' ])
+
+.constant('ApiUri', '/api/v1')
+.factory('CisApi', [ 'ApiUri', 'ApiServer', function(ApiUri, ApiServer) {
+  return new ApiServer(ApiUri);
+}])
+
+/** Configure routes / HTTP for our app */
+.config([ '$locationProvider', '$logProvider',
+    function($locationProvider, $logProvider) {
+  "use strict";
+  
+   // Squelch debug-level log messages
+  $logProvider.debugEnabled(true); 
+  
+  // Enable HTML 5 mode
+  // FIXME: Double navigation is weird/annoying
+  $locationProvider.html5Mode(true);
+}])
 .factory('TheGraph', [ function() { return window.TheGraph; }])
 .factory('React', [ function() { return window.React; }])
 .factory('ReactDOM', [ function() { return window.ReactDOM; }])
-.controller('CisCtrl', [ '$scope', '$window', '$timeout', '$q', '$http', 'TheGraph', 'Links', 'Nodes', 'Models', function($scope, $window, $timeout, $q, $http, TheGraph, Links, Nodes, Models) {
+.controller('CisCtrl', [ '$scope', '$window', '$timeout', '$q', '$http', 'TheGraph', 'Links', 'Nodes', 'Models', 'CisApi', 
+    function($scope, $window, $timeout, $q, $http, TheGraph, Links, Nodes, Models, CisApi) {
   "use strict";
   
   let nodeStorageKey = 'cis::nodes';
@@ -15,7 +34,7 @@ angular.module('cis', [ 'ui.slider', 'react' ])
   // Load up an empty graph
   let fbpGraph = TheGraph.fbpGraph;
   $scope.graph = new fbpGraph.Graph();
-  debugger;
+  
   // Load from localStorage on startup
   let loadedNodes = angular.fromJson($window.localStorage.getItem(nodeStorageKey));
   if (loadedNodes) {
@@ -177,9 +196,11 @@ angular.module('cis', [ 'ui.slider', 'react' ])
     let name = "example:hello_c";
     let path = "hello/hello_c";
     
-    $http.post('/api/v1/simulations', {models: [{ name, path }]}, {
-      headers: { 'Content-Type': 'application/json' }
-    })
+    let simulationData = {models: [{ name, path }]};
+    
+    CisApi.post_simulations({ body: simulationData }).finally(function() {
+      $scope.running = false;
+    });
   };
 }])
 .factory('Models', [ '$http', function($http) {
