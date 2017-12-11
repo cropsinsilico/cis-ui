@@ -16,9 +16,7 @@
     "url": "https://github.com/bodom0015/cis-ui/issues"
   },
   "dependencies": {
-    "angular": "^1.5.11",
-    "angular-drag-drop": "^3.1.0",
-    "angular-local-storage": "^0.7.1",
+    "angular": "~1.5.11",
     "angular-slider": "^0.2.3",
     "bootstrap": "^3.3.7",
     "font-awesome": "^4.7.0",
