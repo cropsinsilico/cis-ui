@@ -40,3 +40,16 @@ Start an IDE on port `8081`:
 ```bash
 docker run -it -p 8081:80 --name=cloud9-cis -v $(pwd):/workspace -w /workspace ndslabs/cloud9-nodejs
 ```
+
+## Regenerate API client
+If you modify the [swagger spec](app/swagger.yaml), you'll need to regenerate the API client.
+
+A `grunt` task has been provided to do this for you:
+```bash
+npm install -g grunt
+npm install
+grunt swagger
+```
+
+Ensure that the client and server always have matching API specs.
+

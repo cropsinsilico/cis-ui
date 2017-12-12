@@ -198,7 +198,11 @@ angular.module('cis', [ 'cis-api', 'ui.slider', 'react' ])
     
     let simulationData = {models: [{ name, path }]};
     
-    CisApi.post_simulations({ body: simulationData }).finally(function() {
+    CisApi.post_simulations({ body: simulationData })
+    .then(function(data) {
+      alert(data);
+    })
+    .finally(function() {
       $scope.running = false;
     });
   };

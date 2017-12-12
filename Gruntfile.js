@@ -11,7 +11,7 @@ module.exports = function(grunt) {
     jshint: {
       files: ['Gruntfile.js', 'app/**/*.js', 'tests/**/*.js'],
       options: {
-        ignores: ['app/cis-api.js', 'node_modules/**/*', 'bower_components/**/*', 'tests/reports/**/*'],
+        ignores: ['app/cis-api.js', 'node_modules/**/*', 'tests/reports/**/*'],
         reporterOutput: "",
         force: true,
         esversion: 6,
@@ -56,28 +56,7 @@ module.exports = function(grunt) {
         src: ['asset/css/*.css']
       }
     },
-    
-    // configure grunt to start the ExpressJS server
-    express: {
-      options: {
-        script: 'server.js',
-      },
-      prod: {
-        options: {
-          background: false,
-          node_env: 'production'
-        }
-      },
-      test: {
-        options: {
-          // Print a stack trace whenever a sync function is used
-          // NOTE: For debug use only, disable in production
-          opts: [ '--trace-sync-io' ],
-          background: true,
-       }
-     }
-    },
-    
+
     'swagger-js-codegen': {
         cis: {
             options: {
@@ -89,14 +68,14 @@ module.exports = function(grunt) {
                         angularjs: true
                     }
                 ],
-                dest: 'app/'
+                dest: 'public/app/'
             },
             dist: {
             }
         }
     },
     
-    // configure grunt to run karma unit tests + coverage
+    // TODO: configure grunt to run karma unit tests + coverage
     karma: {
       unit: {
         configFile: 'karma.conf.js',
@@ -106,7 +85,7 @@ module.exports = function(grunt) {
       }
     },
 	  
-    // configure grunt to run protractor e2e tests (TODO: coverage)
+    // TODO: configure grunt to run protractor e2e tests (TODO: coverage)
     protractor: {
       options: {
         configFile: "node_modules/protractor/example/conf.js", // Default config file 
@@ -127,7 +106,6 @@ module.exports = function(grunt) {
 
   grunt.loadNpmTasks('grunt-contrib-jshint');
   grunt.loadNpmTasks('grunt-contrib-csslint');
-  grunt.loadNpmTasks('grunt-express-server');
   grunt.loadNpmTasks('grunt-karma');
   grunt.loadNpmTasks('grunt-protractor-runner');
 

@@ -1,8 +1,7 @@
-FROM node:boron
+FROM nginx
 
-# Copy in our source
-WORKDIR /app
-COPY . /app
+ENV WORKDIR /usr/share/nginx/html
 
-# Start it up
-CMD [ "npm", "start" ]
+# Copy in source + dependencies
+WORKDIR $WORKDIR
+COPY . $WORKDIR
