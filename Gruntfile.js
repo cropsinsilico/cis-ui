@@ -68,7 +68,7 @@ module.exports = function(grunt) {
                         angularjs: true
                     }
                 ],
-                dest: 'public/app/'
+                dest: 'app/'
             },
             dist: {
             }
