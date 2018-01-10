@@ -1,7 +1,6 @@
 FROM nginx
 
-ENV WORKDIR /usr/share/nginx/html
+ENV SRCDIR /usr/share/nginx/html
 
 # Copy in source + dependencies
-WORKDIR $WORKDIR
-COPY . $WORKDIR
+COPY . $SRCDIR

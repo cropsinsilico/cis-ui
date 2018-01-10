@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html ng-app="cis">
   <head>
+    
+    <base href="/">
 
     <link rel=icon href="asset/favicon.ico">
     <title>Crops in Silico Prototype</title>
@@ -16,15 +18,10 @@
     <script src="../node_modules/jquery/dist/jquery.min.js"></script>
     <script src="../node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
     <script src="../node_modules/angular/angular.js"></script>
+    <script src="../node_modules/angular-route/angular-route.js"></script>
     <script src="../node_modules/angular-slider/slider.js"></script>
     
-    <!-- Now load our source -->
-    <link rel="stylesheet" href="asset/cis.css">
-    <script src="app/cis-api.js"></script>
-    <script src="app/cis.controller.js"></script>
-    <script src="app/editor.directive.js"></script>
-    
-        <!-- Libraries -->
+    <!-- Libraries -->
     <script src="../node_modules/react/dist/react.js"></script>
     <script src="../node_modules/react-dom/dist/react-dom.js"></script>
     <script src="../node_modules/klayjs-noflo/klay-noflo.js"></script>
@@ -41,9 +38,15 @@
     <link href='//fonts.googleapis.com/css?family=Source+Code+Pro:400' rel='stylesheet' type='text/css'>
     
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no" />
+    
+    <!-- Now load our source -->
+    <link rel="stylesheet" href="asset/cis.css">
+    <script src="app/cis-api.module.js"></script>
+    <script src="app/cis.module.js"></script>
+    <script src="app/main/main.controller.js"></script>
   </head>
   
-  <body ng-controller="CisCtrl">
+  <body>
     <nav class="navbar navbar-default">
       <div class="container-fluid">
         <!-- Brand and toggle get grouped for better mobile display -->
@@ -86,127 +89,7 @@
     
     <!-- Control Panel / Palette -->
     <div class="container-fluid">
-      <div class="row">
-        <div class="col-sm-12">
-          <button class="btn btn-sm btn-primary" ng-click="randomGraph()">
-            <i class="fa fa-fw fa-random"></i>
-          </button>
-          
-          <button class="btn btn-sm" ng-click="randomNode()">
-            <i class="fa fa-fw fa-plus"></i>
-          </button>
-          
-          <button class="btn btn-sm" ng-click="randomEdge()">
-            <i class="fa fa-fw fa-arrows-h"></i>
-          </button>
-          
-          <button class="btn btn-sm" ng-click="exportGraph()">
-            <i class="fa fa-fw fa-code"></i>
-          </button>
-          
-          <button class="btn btn-sm" ng-click="clearGraph()">
-            <i class="fa fa-fw fa-trash"></i>
-          </button>
-        </div>
-      </div>
-    </div>
-    
-    <div class="container-fluid" id="canvas-area">
-      <div class="row">
-        <div class="col-sm-12 no-whitespace">
-          <editor graph="graph" loading="loading" library="library" width="editorWidth" height="editorHeight" class="the-graph-light"></editor>
-           
-          <div ng-if="loading" id="loading" style="position:absolute; top:10px; left:10px; background-color:white; padding:10px; border-radius:5px;">
-            <i class="fa fa-fw fa-spinner fa-pulse"></i>
-            <div id="loading-message">loading custom elements...</div>
-          </div>
-        </div>
-      </div>
-    </div>
-      
-    <div class="container">
-      <div class="row">
-        <div class="col-sm-12" id="parameters-area">
-          
-          <!-- Environmental Parameter Sliders -->
-          <form class="form-horizontal border-cis" style="z-index:2;">
-            <span class="form-group">
-              <legend class="legend-fix">
-                Environment 
-                <sup><i class="fa fa-fw fa-question-circle" tooltip-placement="bottom-right" data-toggle="tooltip" title="Set Environment parameters"></i></sup>
-              </legend>
-              
-              <div class="row">
-                
-                <!-- Environment Parameters -->
-                <div class="col-sm-10">
-                  
-                  <!-- Top Row -->
-                  <div class="row">
-                    
-                    <!-- Carbon Dioxide -->
-                    <div class="col-sm-3">
-                      <label for="carbonDioxide">CO<sub>2</sub>&nbsp;&nbsp;&nbsp;&nbsp;{{ environment.carbonDioxide }} ppm</label>
-                    </div>
-                    <div class="col-sm-3">
-                      <slider ng-model="environment.carbonDioxide" floor="0" ceiling="1000" step="5" precision="1"></slider>
-                    </div>
-                    
-                    <!-- Nitrogen -->
-                    <div class="col-sm-3">
-                      <label for="nitrogen">Nitrogen&nbsp;&nbsp;&nbsp;&nbsp;{{ environment.nitrogen }} mmol</label>
-                    </div>
-                    <div class="col-sm-3">
-                      <slider ng-model="environment.nitrogen" floor="0" ceiling="1000" step="5" precision="1"></slider>
-                    </div>
-                  </div>
-                  
-                  <!-- Bottom Row -->
-                  <div class="row">
-                    
-                    <!-- Light -->
-                    <div class="col-sm-3">
-                      <label for="light">Light&nbsp;&nbsp;&nbsp;&nbsp;{{ environment.light }}</label>
-                    </div>
-                    <div class="col-sm-3">
-                      <slider ng-model="environment.light" floor="0" ceiling="10000" step="100" precision="1"></slider>
-                    </div>
-                    
-                    <!-- Temperature -->
-                    <div class="col-sm-3">
-                      <label for="temperature">Temperature&nbsp;&nbsp;&nbsp;&nbsp;{{ environment.temperature }} ℃</label>
-                    </div>
-                    <div class="col-sm-3">
-                      <slider ng-model="environment.temperature" floor="0" ceiling="100" step="1" precision="1"></slider>
-                    </div>
-                  </div>
-                </div>
-                
-                <!-- "Run" Button -->
-                <div class="col-sm-2">
-                  <button type="submit" class="btn btn-success" ng-disabled="running" ng-click="runSimulation()">
-                    <i class="fa fa-fw" ng-class="{ 'fa-cogs': !running, 'fa-spinner fa-pulse': running }"></i> Simulate
-                  </button>
-                </div>
-              </div>
-              
-            </span>
-          </form>
-          
-          <!-- Show JSON, if requested -->
-          <div id="model-area" class="row" ng-if="showJson">
-            <div id="node-data-area" class="col-sm-6">
-              Node Data:
-              <pre>{{ model.nodeDataArray | json:4 }}</pre>
-            </div>
-            
-            <div id="link-data-area" class="col-sm-6">
-              Link Data:
-              <pre>{{ model.linkDataArray | json:4 }}</pre>
-            </div>
-          </div>
-        </div>
-      </div>
+      <div ng-view></div>
     </div>
   </body>
 </html>

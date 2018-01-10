@@ -1,0 +1,137 @@
+<section>
+  <div class="row">
+    <!-- Component Palette -->
+    <div class="col-sm-2">
+      Click a model to add an instance:
+      <ul class="nav nav-pills">
+        <li title="{{ model.description }}" ng-repeat="model in library" role="presentation">
+          <a href="#" ng-click="addNodeInstance(model.name)">
+            <i class="fa fa-fw fa-plus"></i> {{ model.name }}
+          </a>
+        </li>
+      </ul>
+    </div>
+    
+    <!-- Graph Canvas -->
+    <div class="col-sm-10">
+      <div class="row">
+        <div class="col-sm-offset-2 col-sm-10">
+          <button class="btn btn-primary" ng-click="randomGraph()">
+            <i class="fa fa-fw fa-random"></i>
+          </button>
+          
+          <button class="btn btn-sm" ng-click="randomNode()">
+            <i class="fa fa-fw fa-plus"></i>
+          </button>
+          
+          <button class="btn btn-sm" ng-click="randomEdge()">
+            <i class="fa fa-fw fa-arrows-h"></i>
+          </button>
+          
+          <button class="btn btn-sm" ng-click="exportGraph()">
+            <i class="fa fa-fw fa-code"></i>
+          </button>
+          
+          <button class="btn btn-sm" ng-click="clearGraph()">
+            <i class="fa fa-fw fa-trash"></i>
+          </button>
+        </div>
+      </div>
+      
+      <div class="row border-cis" id="canvas-area">
+        <editor ng-disabled="!saveChanges" graph="graph" loading="loading" library="library" width="editorWidth" height="editorHeight" class="the-graph-light"></editor>
+         
+        <div ng-if="loading" id="loading" style="position:absolute; top:10px; left:10px; background-color:white; padding:10px; border-radius:5px;">
+          <i class="fa fa-fw fa-spinner fa-pulse"></i>
+          <div id="loading-message">loading custom elements...</div>
+        </div>
+      </div>
+      
+      <div class="row border-cis">
+        <!-- Environmental Parameter Sliders -->
+        <form id="parameters-area" class="form-horizontal" style="z-index:2;">
+          <span class="form-group">
+            <legend class="legend-fix">
+              Environment 
+              <sup><i class="fa fa-fw fa-question-circle" tooltip-placement="bottom-right" data-toggle="tooltip" title="Set Environment parameters"></i></sup>
+            </legend>
+            
+            <div class="row">
+              
+              <!-- Environment Parameters -->
+              <div class="col-sm-10">
+                
+                <!-- Top Row -->
+                <div class="row">
+                  
+                  <!-- Carbon Dioxide -->
+                  <div class="col-sm-3">
+                    <label for="carbonDioxide">CO<sub>2</sub>&nbsp;&nbsp;&nbsp;&nbsp;{{ environment.carbonDioxide }} ppm</label>
+                  </div>
+                  <div class="col-sm-3">
+                    <slider ng-model="environment.carbonDioxide" floor="0" ceiling="1000" step="5" precision="1"></slider>
+                  </div>
+                  
+                  <!-- Nitrogen -->
+                  <div class="col-sm-3">
+                    <label for="nitrogen">Nitrogen&nbsp;&nbsp;&nbsp;&nbsp;{{ environment.nitrogen }} mmol</label>
+                  </div>
+                  <div class="col-sm-3">
+                    <slider ng-model="environment.nitrogen" floor="0" ceiling="1000" step="5" precision="1"></slider>
+                  </div>
+                </div>
+                
+                <!-- Bottom Row -->
+                <div class="row">
+                  
+                  <!-- Light -->
+                  <div class="col-sm-3">
+                    <label for="light">Light&nbsp;&nbsp;&nbsp;&nbsp;{{ environment.light }}</label>
+                  </div>
+                  <div class="col-sm-3">
+                    <slider ng-model="environment.light" floor="0" ceiling="10000" step="100" precision="1"></slider>
+                  </div>
+                  
+                  <!-- Temperature -->
+                  <div class="col-sm-3">
+                    <label for="temperature">Temperature&nbsp;&nbsp;&nbsp;&nbsp;{{ environment.temperature }} ℃</label>
+                  </div>
+                  <div class="col-sm-3">
+                    <slider ng-model="environment.temperature" floor="0" ceiling="100" step="1" precision="1"></slider>
+                  </div>
+                </div>
+              </div>
+              
+              <!-- "Run" Button -->
+              <div class="col-sm-2">
+                <button type="submit" class="btn btn-success" ng-disabled="running" ng-click="runSimulation()">
+                  <i class="fa fa-fw" ng-class="{ 'fa-cogs': !running, 'fa-spinner fa-pulse': running }"></i> Simulate
+                </button>
+              </div>
+            </div>
+            
+          </span>
+        </form>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Model Details Modal -->
+  <div class="modal fade" tabindex="-1" role="dialog" ng-if="showModelDetails">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close" ng-click="showModelDetails = false"><span aria-hidden="true">&times;</span></button>
+          <h4 class="modal-title">Model Details</h4>
+        </div>
+        <div class="modal-body">
+          <pre>{{ selectedModel | json }}</pre>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="showModelDetails = false">Close</button>
+          <button type="button" class="btn btn-primary">Save changes</button>
+        </div>
+      </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+  </div><!-- /.modal -->
+</section>
