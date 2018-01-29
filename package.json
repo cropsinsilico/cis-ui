@@ -23,6 +23,8 @@
     "font-awesome": "4.7.0",
     "jquery": "3.2.1",
     "ngreact": "0.5.1",
+    "react": "^0.14.2",
+    "react-dom": "^0.14.2",
     "the-graph": "0.10.3"
   },
   "devDependencies": {

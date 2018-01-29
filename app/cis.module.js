@@ -5,6 +5,9 @@
 
 angular.module('cis', [ 'ngRoute', 'cis-api', 'ui.slider' ])
 
+/** Enable DEBUG mode? */
+.constant('DEBUG', false)
+
 /** Set up our connection to the API server */
 .constant('ApiUri', '/api/v1')
 .factory('CisApi', [ 'ApiUri', 'ApiServer', function(ApiUri, ApiServer) {
@@ -32,17 +35,16 @@ angular.module('cis', [ 'ngRoute', 'cis-api', 'ui.slider' ])
 }])
 
 /** Configure routes for our module */
-.config([ '$locationProvider', '$logProvider', '$routeProvider',
-    function($locationProvider, $logProvider, $routeProvider) {
+.config([ '$locationProvider', '$logProvider', '$routeProvider', 'DEBUG',
+    function($locationProvider, $logProvider, $routeProvider, DEBUG) {
   "use strict";
   
   // TODO: Google Analytics?
   
   // Squelch debug-level log messages
-  $logProvider.debugEnabled(true); 
+  $logProvider.debugEnabled(DEBUG); 
   
   // Enable HTML 5 mode
-  // FIXME: Double navigation is weird/annoying
   $locationProvider.html5Mode(true);
   
   // Set up the route(s) for our module
