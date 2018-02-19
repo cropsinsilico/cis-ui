@@ -19,19 +19,21 @@ angular
   $scope.isJson = isJson;
   $scope.results = angular.copy(results);
   
+  
+  $scope.formatted = "";
+  if (isJson) {
+      $scope.formatted = JSON.stringify($scope.results, null, 2);
+  } else {
+      $scope.formatted = jsyaml.safeDump($scope.results);
+  }
+    
+  
   $scope.copy = function() {
     if (!clipboard.supported) {
       alert('Sorry, copy to clipboard is not supported');
       return;
     }
-    let formatted = "";
-    if (isJson) {
-        formatted = JSON.stringify($scope.results, null, 2)
-    } else {
-        formatted = jsyaml.safeDump($scope.results);
-    }
-    
-    clipboard.copyText(formatted);
+    clipboard.copyText($scope.formatted);
   };
 
   $scope.close = function() {

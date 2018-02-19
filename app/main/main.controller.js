@@ -162,10 +162,7 @@ angular.module('cis')
   
   /** Exports the current graph to JSON */
   $scope.exportGraph = function() {
-    let graphJSON = JSON.stringify($scope.state.graph.toJSON(), null, 2);
-    //alert(graphJSON);
-    
-    $scope.showResults({ results: graphJSON, title: "View Raw Graph", isJson: true });
+    $scope.showResults({ results: $scope.state.graph.toJSON(), title: "View Raw Graph", isJson: true });
     
     // FIXME: Make this a modal or something prettier.
     // See https://github.com/nds-org/ndslabs/blob/master/gui/dashboard/catalog/modals/export/exportSpec.html
