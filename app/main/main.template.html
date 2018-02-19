@@ -1,11 +1,11 @@
 <section>
   <div class="row">
     <!-- Component Palette -->
-    <div class="col-sm-2">
-      Click a model to add an instance:
-      <ul class="nav nav-pills">
-        <li title="{{ model.description }}" ng-repeat="model in library" role="presentation">
-          <a href="#" ng-click="addNodeInstance(model.name)">
+    <div class="col-sm-1">
+      <h4>Models</h4>
+      <ul class="nav nav-pills nav-stacked">
+        <li title="{{ model.description }}" ng-repeat="model in getModelOptions(state.library)" role="presentation">
+          <a class="btn btn-link" href="#" ng-click="addNodeInstance(model)">
             <i class="fa fa-fw fa-plus"></i> {{ model.label }}
           </a>
         </li>
@@ -13,127 +13,103 @@
     </div>
     
     <!-- Graph Canvas -->
-    <div class="col-sm-10">
+    <div ng-class="{ 'col-sm-11': !selectedItem, 'col-sm-9': selectedItem }">
       <div class="row">
         <div class="pull-right">
-          <span ng-if="DEBUG">
-            <button class="btn btn-primary" ng-click="randomGraph()">
-              <i class="fa fa-fw fa-random"></i>
-            </button>
-            
-            <button class="btn btn-sm" ng-click="randomNode()">
-              <i class="fa fa-fw fa-plus"></i>
-            </button>
-            
-            <button class="btn btn-sm" ng-click="randomEdge()">
-              <i class="fa fa-fw fa-arrows-h"></i>
-            </button>
-          </span>
           
-          <button class="btn btn-sm" ng-click="exportGraph()">
+          <button class="btn btn-xs btn-default" ng-click="saveGraph()" tooltip-placement="left" uib-tooltip="Save existing graph">
+            <i class="fa fa-fw fa-save" ng-class="{ 'faa-horizontal animated': graphIsChanged() }"></i>
+          </button>
+          
+          <button class="btn btn-xs btn-default" ng-click="exportGraph()" tooltip-placement="left" uib-tooltip="View Raw JSON">
             <i class="fa fa-fw fa-code"></i>
           </button>
           
-          <button class="btn btn-sm btn-danger" ng-click="clearGraph()">
+          <button class="btn btn-xs btn-default" style="color:orange" ng-click="addInport()" tooltip-placement="left" uib-tooltip="Add Graph Inport">
+            <i class="fa fa-fw fa-sign-in"></i> Add Inport
+          </button>
+          
+          <button class="btn btn-xs btn-default" style="color:green" ng-click="addOutport()" tooltip-placement="left" uib-tooltip="Add Graph Outport">
+            <i class="fa fa-fw fa-sign-out"></i> Add Outport
+          </button>
+          
+          <button type="submit" class="btn btn-xs btn-success" ng-disabled="running" ng-click="runSimulation()" tooltip-placement="left" uib-tooltip="Submit this graph to the Crops and Silico API">
+            <i class="fa fa-fw" ng-class="{ 'fa-cogs': !running, 'fa-spinner fa-pulse': running }"></i> Submit
+          </button>
+          
+          <button class="btn btn-xs btn-danger" ng-click="clearGraph()" tooltip-placement="left" uib-tooltip="Clear existing graph">
             <i class="fa fa-fw fa-trash"></i>
           </button>
         </div>
       </div>
       
       <div class="row border-cis" id="canvas-area">
-        <editor ng-disabled="!saveChanges" graph="graph" loading="loading" library="library" width="editorWidth" height="editorHeight" class="the-graph-light"></editor>
+        <the-graph-editor class="the-graph-light" graph="state.graph" library="state.library" loading="state.loading" width="state.width" height="state.height"></the-graph-editor>
          
         <div ng-if="loading" id="loading" style="position:absolute; top:10px; left:10px; background-color:white; padding:10px; border-radius:5px;">
           <i class="fa fa-fw fa-spinner fa-pulse"></i>
           <div id="loading-message">loading custom elements...</div>
         </div>
       </div>
+    </div>
+    
+    <div class="col-sm-2" ng-if="selectedItem">
+      <h4>{{ selectedItem.metadata.label || selectedItem.id }} Properties</h4>
+      <form name="editForm" ng-submit="saveEdit()">
+        
+        <!-- ID Field -->
+        <div class="form-group" >
+            <label for="idField">ID <sup><i class="fa fa-fw fa-question-circle" tooltip-placement="left" uib-tooltip="The unique random id of this node"></i></sup></label>
+            <input type="text" class="form-control" id="idField" name="idField" ng-model="selectedItem.id" ng-disabled="'true'" required />
+        </div>
+        
+        
+        <!-- Component Field -->
+        <div class="form-group" >
+          <label for="componentField">Component <sup><i class="fa fa-fw fa-question-circle" tooltip-placement="left" uib-tooltip="The unique random id of this node"></i></sup></label>
+          
+          <!-- FIXME: this should probably use <select> instead of <input> -->
+          <input type="text" class="form-control" id="componentField" name="componentField" ng-model="selectedItem.component" ng-disabled="'true'" required />
+          <ng-messages class="text-danger" for="modifySpec.componentField.$error" role="alert">
+            <ng-message when="required">Component field is required</ng-message>
+         </ng-messages>
+        </div>
+        
+        <!-- Metadata Fields -->
+        <div ng-if="selectedItem.metadata">
+          
+          <!-- Label Field -->
+          <div class="form-group" >
+            <label for="labelField">Label <sup><i class="fa fa-fw fa-question-circle" tooltip-placement="left" uib-tooltip="A friendly label for this instance"></i></sup></label>
+            <input type="text" class="form-control" id="labelField" name="labelField" ng-model="selectedItem.metadata.label" />
+          </div>
+          
+          <!-- Metadata Field: X -->
+          <div class="form-group">
+            <label for="xField">X Position <sup><i class="fa fa-fw fa-question-circle" tooltip-placement="left" uib-tooltip="The horizontal position of this node on the canvas"></i></sup></label>
+            <input type="number" class="form-control" id="xField" name="xField" ng-model="selectedItem.metadata.x" required />
+            <ng-messages class="text-danger" for="editForm.xField.$error" role="alert">
+              <ng-message when="required">X field is required</ng-message>
+            </ng-messages>
+          </div>
+          
+          <!-- Metadata Field: Y -->
+          <div class="form-group" >
+            <label for="yField">Y Position <sup><i class="fa fa-fw fa-question-circle" tooltip-placement="left" uib-tooltip="The vertical position of this node on the canvas"></i></sup></label>
+            <input type="number" class="form-control" id="yField" name="yField" ng-model="selectedItem.metadata.y" required />
+            <ng-messages class="text-danger" for="editForm.yField.$error" role="alert">
+              <ng-message when="required">Y field is required</ng-message>
+            </ng-messages>
+          </div>
+        </div>
+        
+        <!-- Save / Cancel -->
+        <div class="pull-right">
+          <button id="saveBtn" class="btn btn-success" type="submit" ng-disabled="editForm.$invalid"><i class="fa fa-fw fa-save"></i> Save</button>
+          <button id="cancelBtn" class="btn btn-danger" type="button" ng-click="cancelEdit()"><i class="fa fa-fw fa-ban"></i> Cancel</button>
+        </div>
+      </form>
       
-      <div class="row border-cis">
-        <!-- Environmental Parameter Sliders -->
-        <form id="parameters-area" class="form-horizontal" style="z-index:2;">
-          <span class="form-group">
-            <legend class="legend-fix">
-              Environment 
-              <sup><i class="fa fa-fw fa-question-circle" tooltip-placement="bottom-right" data-toggle="tooltip" title="Set Environment parameters"></i></sup>
-            </legend>
-            
-            <div class="row">
-              
-              <!-- Environment Parameters -->
-              <div class="col-sm-10">
-                
-                <!-- Top Row -->
-                <div class="row">
-                  
-                  <!-- Carbon Dioxide -->
-                  <div class="col-sm-3">
-                    <label for="carbonDioxide">CO<sub>2</sub>&nbsp;&nbsp;&nbsp;&nbsp;{{ environment.carbonDioxide }} ppm</label>
-                  </div>
-                  <div class="col-sm-3">
-                    <slider ng-model="environment.carbonDioxide" floor="0" ceiling="1000" step="5" precision="1"></slider>
-                  </div>
-                  
-                  <!-- Nitrogen -->
-                  <div class="col-sm-3">
-                    <label for="nitrogen">Nitrogen&nbsp;&nbsp;&nbsp;&nbsp;{{ environment.nitrogen }} mmol</label>
-                  </div>
-                  <div class="col-sm-3">
-                    <slider ng-model="environment.nitrogen" floor="0" ceiling="1000" step="5" precision="1"></slider>
-                  </div>
-                </div>
-                
-                <!-- Bottom Row -->
-                <div class="row">
-                  
-                  <!-- Light -->
-                  <div class="col-sm-3">
-                    <label for="light">Light&nbsp;&nbsp;&nbsp;&nbsp;{{ environment.light }}</label>
-                  </div>
-                  <div class="col-sm-3">
-                    <slider ng-model="environment.light" floor="0" ceiling="10000" step="100" precision="1"></slider>
-                  </div>
-                  
-                  <!-- Temperature -->
-                  <div class="col-sm-3">
-                    <label for="temperature">Temperature&nbsp;&nbsp;&nbsp;&nbsp;{{ environment.temperature }} ℃</label>
-                  </div>
-                  <div class="col-sm-3">
-                    <slider ng-model="environment.temperature" floor="0" ceiling="100" step="1" precision="1"></slider>
-                  </div>
-                </div>
-              </div>
-              
-              <!-- "Run" Button -->
-              <div class="col-sm-2">
-                <button type="submit" class="btn btn-success" ng-disabled="running" ng-click="runSimulation()">
-                  <i class="fa fa-fw" ng-class="{ 'fa-cogs': !running, 'fa-spinner fa-pulse': running }"></i> Simulate
-                </button>
-              </div>
-            </div>
-            
-          </span>
-        </form>
-      </div>
     </div>
   </div>
-  
-  <!-- Model Details Modal -->
-  <div class="modal fade" tabindex="-1" role="dialog" ng-if="showModelDetails">
-    <div class="modal-dialog" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close" ng-click="showModelDetails = false"><span aria-hidden="true">&times;</span></button>
-          <h4 class="modal-title">Model Details</h4>
-        </div>
-        <div class="modal-body">
-          <pre>{{ selectedModel | json }}</pre>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="showModelDetails = false">Close</button>
-          <button type="button" class="btn btn-primary">Save changes</button>
-        </div>
-      </div><!-- /.modal-content -->
-    </div><!-- /.modal-dialog -->
-  </div><!-- /.modal -->
 </section>

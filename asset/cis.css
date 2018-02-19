@@ -12,7 +12,7 @@ html, body {
   height: 100%;
 }
 body {
-  overflow: hidden;
+  /*overflow: hidden;*/
 }
 #editor {
   background-color: hsl(189, 47%, 6%);
@@ -38,8 +38,11 @@ body {
   margin-top: 20px;
 }
 
+.fa-question-circle {
+  cursor: help;
+}
+
 .palettezone {
-  width: 25vw;
   height: 100vh;
   background: lightblue;
   padding: 40px;

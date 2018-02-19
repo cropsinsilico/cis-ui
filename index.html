@@ -12,26 +12,32 @@
     <!-- Third-party CSS -->
     <link rel="stylesheet" href="../node_modules/bootstrap/dist/css/bootstrap.min.css">
     <link rel="stylesheet" type="text/css" href="../node_modules/font-awesome/css/font-awesome.min.css" />
+    <link rel="stylesheet" type="text/css" href="../node_modules/font-awesome-animation/dist/font-awesome-animation.min.css">
     <link rel="stylesheet" type="text/css" href="../node_modules/angular-slider/slider.css" />
     
-    <!-- Third-party JS -->
+    <!-- AngularJS + Bootstrap -->
     <script src="../node_modules/jquery/dist/jquery.min.js"></script>
     <script src="../node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
     <script src="../node_modules/angular/angular.js"></script>
     <script src="../node_modules/angular-route/angular-route.js"></script>
+    <script src="../node_modules/angular-messages/angular-messages.js"></script>
+
+    <!-- Bridge AngularJS with any external JS / CSS -->
+    <script src="../node_modules/angular-ui-bootstrap/dist/ui-bootstrap-tpls.js"></script>
     <script src="../node_modules/angular-slider/slider.js"></script>
+    <script src="../node_modules/angular-clipboard/angular-clipboard.js"></script>
     
-    <!-- Libraries -->
+    <!-- Other Libraries -->
+    <script src="../node_modules/js-yaml/dist/js-yaml.min.js"></script>
+    <script src="../node_modules/lodash/lodash.min.js"></script>
     <script src="../node_modules/react/dist/react.js"></script>
     <script src="../node_modules/react-dom/dist/react-dom.js"></script>
     <script src="../node_modules/klayjs-noflo/klay-noflo.js"></script>
     <script src="../node_modules/hammerjs/hammer.min.js"></script>
     <script src="../node_modules/ngreact/ngReact.js"></script>
-
-    <!-- Browserify Libraries -->
     <script src="../node_modules/the-graph/dist/the-graph.js"></script>
 
-    <link rel="stylesheet" href="../node_modules/the-graph/themes/the-graph-dark.css">
+    <!--<link rel="stylesheet" href="../node_modules/the-graph/themes/the-graph-dark.css">-->
     <link rel="stylesheet" href="../node_modules/the-graph/themes/the-graph-light.css">
 
     <!-- Fonts -->
@@ -44,6 +50,9 @@
     <script src="app/cis-api.module.js"></script>
     <script src="app/cis.module.js"></script>
     <script src="app/main/main.controller.js"></script>
+    <script src="app/main/editor.directive.js"></script>
+    <script src="app/main/yaml.filter.js"></script>
+    <script src="app/main/modals/export.controller.js"></script>
   </head>
   
   <body>
