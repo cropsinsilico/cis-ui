@@ -29,30 +29,35 @@
     <!-- Graph Canvas -->
     <div ng-class="{ 'col-sm-10': !selectedItem, 'col-sm-8': selectedItem }">
       <div class="row">
+        <div class="pull-left">
+          <button class="btn btn-xs btn-success" ng-click="saveGraph()" tooltip-placement="right" uib-tooltip="Save current graph into your browser's local storage">
+            <i class="fa fa-fw fa-save" ng-class="{ 'faa-horizontal animated': graphIsChanged() }"></i> Save
+          </button>
+          
+          <button class="btn btn-xs btn-danger" ng-click="clearGraph()" tooltip-placement="right" uib-tooltip="Clear current graph from the canvas">
+            <i class="fa fa-fw fa-trash"></i> Clear
+          </button>
+          
+          <button class="btn btn-xs btn-default" style="color:orange" ng-click="addInport()" tooltip-placement="right" uib-tooltip="Add an InPort to current graph">
+            <i class="fa fa-fw fa-sign-in"></i> Add InPort
+          </button>
+          
+          <button class="btn btn-xs btn-default" style="color:green" ng-click="addOutport()" tooltip-placement="right" uib-tooltip="Add an OutPort to current graph">
+            <i class="fa fa-fw fa-sign-out"></i> Add OutPort
+          </button>
+        </div>
+        
         <div class="pull-right">
-          
-          <button class="btn btn-xs btn-default" ng-click="saveGraph()" tooltip-placement="left" uib-tooltip="Save existing graph">
-            <i class="fa fa-fw fa-save" ng-class="{ 'faa-horizontal animated': graphIsChanged() }"></i>
+          <button class="btn btn-xs btn-default" ng-click="exportGraph()" tooltip-placement="left" uib-tooltip="View Raw JSON of the current graph">
+            <i class="fa fa-fw fa-code"></i> View Raw JSON
           </button>
           
-          <button class="btn btn-xs btn-default" ng-click="exportGraph()" tooltip-placement="left" uib-tooltip="View Raw JSON">
-            <i class="fa fa-fw fa-code"></i>
+          <button type="submit" class="btn btn-xs btn-info" ng-disabled="formatting" ng-click="formatYaml()" tooltip-placement="left" uib-tooltip="Output a YAML file for submitting a graph to cis_interface">
+            <i class="fa fa-fw" ng-class="{ 'fa-file-text-o': !formatting, 'fa-spinner fa-pulse': formatting }"></i> Produce YAML
           </button>
           
-          <button class="btn btn-xs btn-default" style="color:orange" ng-click="addInport()" tooltip-placement="left" uib-tooltip="Add Graph Inport">
-            <i class="fa fa-fw fa-sign-in"></i> Add Inport
-          </button>
-          
-          <button class="btn btn-xs btn-default" style="color:green" ng-click="addOutport()" tooltip-placement="left" uib-tooltip="Add Graph Outport">
-            <i class="fa fa-fw fa-sign-out"></i> Add Outport
-          </button>
-          
-          <button type="submit" class="btn btn-xs btn-success" ng-disabled="running" ng-click="runSimulation()" tooltip-placement="left" uib-tooltip="Submit this graph to the Crops and Silico API">
-            <i class="fa fa-fw" ng-class="{ 'fa-cogs': !running, 'fa-spinner fa-pulse': running }"></i> Submit
-          </button>
-          
-          <button class="btn btn-xs btn-danger" ng-click="clearGraph()" tooltip-placement="left" uib-tooltip="Clear existing graph">
-            <i class="fa fa-fw fa-trash"></i>
+          <button type="button" class="btn btn-xs btn-primary" ng-disabled="running" ng-click="runGraph()" tooltip-placement="left" uib-tooltip="Submit this graph as a YAML to cis_interface and display the output">
+            <i class="fa fa-fw" ng-class="{ 'fa-play': !running, 'fa-spinner fa-pulse': running }"></i> Run Graph
           </button>
         </div>
       </div>
@@ -60,14 +65,14 @@
       <div class="row border-cis" id="canvas-area">
         <the-graph-editor class="the-graph-light" graph="state.graph" library="state.library" loading="state.loading" width="state.width" height="state.height"></the-graph-editor>
          
-        <div ng-if="loading" id="loading" style="position:absolute; top:10px; left:10px; background-color:white; padding:10px; border-radius:5px;">
+        <div ng-if="loading" id="loading" style="">
           <i class="fa fa-fw fa-spinner fa-pulse"></i>
           <div id="loading-message">loading custom elements...</div>
         </div>
       </div>
     </div>
     
-    <div class="col-sm-2" ng-if="selectedItem">
+    <div id="editSidebar" class="col-sm-2" ng-if="selectedItem">
       <h4>{{ selectedItem.metadata.label || selectedItem.id }} Properties</h4>
       <form name="editForm" ng-submit="saveEdit()">
         
@@ -84,7 +89,7 @@
           
           <!-- FIXME: this should probably use <select> instead of <input> -->
           <input type="text" class="form-control" id="componentField" name="componentField" ng-model="selectedItem.component" ng-disabled="'true'" required />
-          <ng-messages class="text-danger" for="modifySpec.componentField.$error" role="alert">
+          <ng-messages class="text-danger" for="editForm.componentField.$error" role="alert">
             <ng-message when="required">Component field is required</ng-message>
          </ng-messages>
         </div>
@@ -119,8 +124,8 @@
         
         <!-- Save / Cancel -->
         <div class="pull-right">
-          <button id="saveBtn" class="btn btn-success" type="submit" ng-disabled="editForm.$invalid"><i class="fa fa-fw fa-save"></i> Save</button>
-          <button id="cancelBtn" class="btn btn-danger" type="button" ng-click="cancelEdit()"><i class="fa fa-fw fa-ban"></i> Cancel</button>
+          <button id="saveBtn" class="btn btn-lg btn-primary" type="submit" ng-disabled="editForm.$invalid"><i class="fa fa-fw fa-save"></i> Save</button>
+          <button id="cancelBtn" class="btn btn-lg btn-danger" type="button" ng-click="cancelEdit()"><i class="fa fa-fw fa-ban"></i> Cancel</button>
         </div>
       </form>
       

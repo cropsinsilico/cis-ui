@@ -14,6 +14,12 @@ html, body {
 body {
   /*overflow: hidden;*/
 }
+.navbar {
+  margin-bottom: 0;
+}
+.brand-link, .navbar-text, .dropdown-toggle {
+  cursor: pointer;
+}
 #editor {
   background-color: hsl(189, 47%, 6%);
   position: absolute;
@@ -115,4 +121,18 @@ slider {
 
 button {
   margin: 10px;
+}
+
+#loading {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  background-color: white;
+  padding: 10px;
+  border-radius: 5px;
+}
+
+#editSidebar {
+  background-color: #f8f8f8;
+  height: 94vh;
 }

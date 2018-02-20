@@ -18,15 +18,12 @@ angular.module('cis')
     graph: new fbpGraph.Graph(),
     loading: true,
     height: $window.innerHeight - 200,
-    width: window.innerWidth - 260,
+    width: window.innerWidth - 400,
     library: []
   };
   
   // Enable DEBUG features?
   $scope.DEBUG = DEBUG;
-  
-  $scope.editorWidth = $window.innerWidth - 260;
-  $scope.editorHeight = $window.innerHeight - 200;
   
   $scope.lastSavedNodes = [];
   $scope.lastSavedEdges = [];
@@ -52,6 +49,11 @@ angular.module('cis')
   $scope.$watch(function() { return TheGraphSelection.selection; }, function(newValue, oldValue) {
     $scope.selectedItem = newValue;
     if (!oldValue && newValue) {
+      // Clear out existing transaction if it was not saved
+      if (editValue !== null) {
+        $scope.cancelEdit();
+      }
+      // Start a new transaction
       $scope.state.graph.startTransaction("edit");
       editValue = angular.copy(newValue);
     }
@@ -75,6 +77,7 @@ angular.module('cis')
       let edges = angular.fromJson($window.localStorage.getItem(LocalStorageKeys.edges));
       edges && angular.forEach(edges, edge => { $scope.state.graph.addEdge(edge.from.node, edge.from.port, edge.to.node, edge.to.port, edge.metadata); });
       
+      // Store our previously saved state
       $scope.lastSavedNodes = angular.copy($scope.state.graph.nodes);
       $scope.lastSavedEdges = angular.copy($scope.state.graph.edges);
     }
@@ -86,6 +89,7 @@ angular.module('cis')
     console.log("Saving over previous value:", editValue);
     console.log("Saved!");
     editValue.metadata = $scope.selectedItem.metadata;
+    editValue = null;
     TheGraphSelection.selection = null;
     $scope.state.graph.endTransaction("edit");
   };
@@ -93,6 +97,7 @@ angular.module('cis')
   $scope.cancelEdit = function() {
     console.log("Canceled!");
     $scope.selectedItem.metadata = editValue.metadata;
+    editValue = null;
     TheGraphSelection.selection = null;
     $scope.state.graph.endTransaction("edit");
   };
@@ -168,9 +173,9 @@ angular.module('cis')
     // See https://github.com/nds-org/ndslabs/blob/master/gui/dashboard/catalog/modals/export/exportSpec.html
   };
   
-  $scope.running = false;
-  $scope.runSimulation = function() {
-    $scope.running = true;
+  $scope.formatting = false;
+  $scope.formatYaml = function() {
+    $scope.formatting = true;
     
     let modelCounter = 1;
     let getModelFromNode = (node) => {
@@ -263,8 +268,15 @@ angular.module('cis')
     }).then(function(data) {
       $scope.showResults({ results: data, title: "View Graph YAML", isJson: false });
     }).finally(function() {
-      $scope.running = false;
+      $scope.formatting = false;
     });
+  };
+  
+  $scope.running = false;
+  $scope.runGraph = function() {
+    $scope.running = true;
+    alert("Coming Soon!");
+    $scope.running = false;
   };
   
   
@@ -285,7 +297,7 @@ angular.module('cis')
       resolve: {
         results: () => params.results,
         title: () => params.title || "View Details",
-        isJson: () => params.isJson || false
+        isJson: () => params.isJson || null
       }
     });
   };

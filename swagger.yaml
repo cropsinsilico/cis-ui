@@ -1,81 +1,78 @@
-swagger: '2.0'
+---
+swagger: "2.0"
 info:
-  description: >-
-    This is the API specification for the [Crops in
-    Silico](http://cropsinsilico.org/) project.  This documentation was
-    generated using [Swagger](http://swagger.io).
-  version: 0.1.3
-  title: Crops in Silico API
-  termsOfService: 'https://www.wikihow.com/Write-Terms-and-Conditions'
+  description: "This is the API specification for the [Crops in Silico](http://cropsinsilico.org/) project. This documentation was generated using [Swagger](http://swagger.io)."
+  version: "0.1.3"
+  title: "Crops in Silico API"
+  termsOfService: "https://www.wikihow.com/Write-Terms-and-Conditions"
   contact:
-    email: lambert8@illinois.edu
+    email: "lambert8@illinois.edu"
   license:
-    name: BSD-3
-    url: 'https://opensource.org/licenses/BSD-3-Clause'
-host: proto.cis.ndslabs.org
-basePath: /api/v1
+    name: "BSD-3"
+    url: "https://opensource.org/licenses/BSD-3-Clause"
+host: "proto.cis.ndslabs.org"
+basePath: "/api/v1"
 tags:
-  - name: models
-    description: Retrieve server data (static)
-    externalDocs:
-      description: Find out more
-      url: 'https://cropsinsilico.github.io/cis_interface/'
-  - name: graphs
-    description: Submit client data (dynamic)
+- name: "models"
+  description: "Retrieve server data (static)"
+  externalDocs:
+    description: "Find out more"
+    url: "https://cropsinsilico.github.io/cis_interface/"
+- name: "graphs"
+  description: "Submit client data (dynamic)"
 schemes:
-  - http
-  - https
+- "https"
 paths:
   /models:
     get:
       tags:
-        - models
-      summary: Retrieve a list of all available models in the system
-      description: ''
-      operationId: get_models
+      - "models"
+      summary: "Retrieve a list of all available models in the system"
+      description: ""
+      operationId: "get_models"
       produces:
-        - application/json
+      - "application/json"
+      parameters: []
       responses:
-        '200':
-          description: OK
-          schema: 
-            type: array
+        200:
+          description: "OK"
+          schema:
+            type: "array"
             items:
-              $ref: '#/definitions/Model'
+              $ref: "#/definitions/Model"
+      x-swagger-router-controller: "swagger_server.controllers.models_controller"
   /graphs:
     post:
       tags:
-        - graphs
-      summary: Formats and returns a YAML file for running the Graph in cisrun
-      description: ''
-      operationId: post_graphs
+      - "graphs"
+      summary: "Formats and returns a YAML file for running the Graph in cisrun"
+      description: ""
+      operationId: "post_graphs"
       consumes:
-        - application/json
+      - "application/json"
       produces:
-        - application/json
+      - "application/json"
       parameters:
-        - in: body
-          name: body
-          description: A new graph of models to run
-          required: true
-          schema:
-            $ref: '#/definitions/Graph'
+      - in: "body"
+        name: "body"
+        description: "A new graph of models to run"
+        required: true
+        schema:
+          $ref: "#/definitions/Graph"
       responses:
-        '200':
-          description: OK
-        '400':
-          description: Invalid input
-        '500':
-          description: Server error
-
-  # DEPRECATED: use POST /graphs instead
+        200:
+          description: "OK"
+        400:
+          description: "Invalid input"
+        500:
+          description: "Server error"
+      x-swagger-router-controller: "swagger_server.controllers.graphs_controller"
   /simulations:
     post:
       tags:
       - "simulations"
       summary: "Create a new simulation"
       description: ""
-      deprecated: true
       operationId: "post_simulations"
       consumes:
       - "application/json"
@@ -95,155 +92,309 @@ paths:
           description: "Invalid input"
         500:
           description: "Server error"
+      deprecated: true
       x-swagger-router-controller: "swagger_server.controllers.simulations_controller"
 definitions:
   Model:
-    description: Represents a unit that can be run by the system
-    type: object
+    type: "object"
     required:
-      - id
-      - name
-      - driver
-      - args
-      - inputs
-      - outputs
+    - "args"
+    - "driver"
+    - "id"
+    - "inputs"
+    - "name"
+    - "outputs"
     properties:
       id:
-        description: The primary key for this model
-        type: integer
+        type: "integer"
+        description: "The primary key for this model"
       name:
-        description: The short name / identifier of this model
-        type: string
+        type: "string"
+        description: "The short name / identifier of this model"
       description:
-        description: Long name / description of this model
-        type: string
+        type: "string"
+        description: "Long name / description of this model"
       driver:
-        $ref: '#/definitions/ModelDriver'
+        $ref: "#/definitions/ModelDriver"
       args:
-        description: Path to the model source code on disk
-        type: string
+        type: "string"
+        description: "Path to the model source code on disk"
       client_of:
-        description: Denotes that the model is the client in some context
-        type: string
+        type: "string"
+        description: "Denotes that the model is the client in some context"
       is_server:
-        description: Denotes that the model is the server in some context
-        type: string
+        type: "string"
+        description: "Denotes that the model is the server in some context"
       inputs:
-        description: Input Coms associated with this Model
-        type: array
+        type: "array"
+        description: "Input Coms associated with this Model"
         items:
-          $ref: '#/definitions/Com'
+          $ref: "#/definitions/Com"
       outputs:
-        description: Output Coms associated with this Model
-        type: array
+        type: "array"
+        description: "Output Coms associated with this Model"
         items:
-          $ref: '#/definitions/Com'
+          $ref: "#/definitions/Com"
+    description: "Represents a unit that can be run by the system"
+    example:
+      args: "args"
+      outputs:
+      - name: "name"
+        model_id: "model_id"
+      - name: "name"
+        model_id: "model_id"
+      is_server: "is_server"
+      driver: {}
+      inputs:
+      - name: "name"
+        model_id: "model_id"
+      - name: "name"
+        model_id: "model_id"
+      name: "name"
+      description: "description"
+      client_of: "client_of"
+      id: 0
   Com:
-    description: Represents one input or output of a Model
-    type: object
+    type: "object"
     required:
-      - name
-      - model_id
+    - "model_id"
+    - "name"
     properties:
       name:
-        description: The (unique) name of the Com
-        type: string
+        type: "string"
+        description: "The (unique) name of the Com"
       model_id:
-        description: The id of the model that the Com is part of
-        type: string
-        
+        type: "string"
+        description: "The id of the model that the Com is part of"
+      node_id:
+        type: "string"
+        description: "The id of the node instance that the Com is part of"
+    description: "Represents one input or output of a Model"
+    example:
+      name: "name"
+      model_id: "model_id"
   Graph:
-    type: object
-    description: Represents the current state of a user's canvas
+    type: "object"
     required:
-      - nodes
-      - edges
+    - "edges"
+    - "nodes"
     properties:
       nodes:
-        type: array
+        type: "array"
         items:
-          $ref: '#/definitions/Node'
+          $ref: "#/definitions/Node"
       edges:
-        type: array
+        type: "array"
         items:
-          $ref: '#/definitions/Edge'
+          $ref: "#/definitions/Edge"
+    description: "Represents the current state of a user's canvas"
+    example:
+      nodes:
+      - outputs:
+        - name: "name"
+          model_id: "model_id"
+        - name: "name"
+          model_id: "model_id"
+        inputs:
+        - name: "name"
+          model_id: "model_id"
+        - name: "name"
+          model_id: "model_id"
+        name: "name"
+        description: "description"
+        model:
+          args: "args"
+          outputs:
+          - name: "name"
+            model_id: "model_id"
+          - name: "name"
+            model_id: "model_id"
+          is_server: "is_server"
+          driver: {}
+          inputs:
+          - name: "name"
+            model_id: "model_id"
+          - name: "name"
+            model_id: "model_id"
+          name: "name"
+          description: "description"
+          client_of: "client_of"
+          id: 0
+        id: 0
+      - outputs:
+        - name: "name"
+          model_id: "model_id"
+        - name: "name"
+          model_id: "model_id"
+        inputs:
+        - name: "name"
+          model_id: "model_id"
+        - name: "name"
+          model_id: "model_id"
+        name: "name"
+        description: "description"
+        model:
+          args: "args"
+          outputs:
+          - name: "name"
+            model_id: "model_id"
+          - name: "name"
+            model_id: "model_id"
+          is_server: "is_server"
+          driver: {}
+          inputs:
+          - name: "name"
+            model_id: "model_id"
+          - name: "name"
+            model_id: "model_id"
+          name: "name"
+          description: "description"
+          client_of: "client_of"
+          id: 0
+        id: 0
+      edges:
+      - args: "args"
+        name: "name"
+        from:
+          name: "name"
+          model_id: "model_id"
+        id: 6
+        to:
+          name: "name"
+          model_id: "model_id"
+        type: {}
+        operation: "operation"
+      - args: "args"
+        name: "name"
+        from:
+          name: "name"
+          model_id: "model_id"
+        id: 6
+        to:
+          name: "name"
+          model_id: "model_id"
+        type: {}
+        operation: "operation"
   Node:
-    type: object
-    description: Represents a node on the user's canvas
+    type: "object"
     required:
-      - name
-      - model
-      - inputs
-      - outputs
+    - "inputs"
+    - "model"
+    - "name"
+    - "outputs"
     properties:
       id:
-        description: The primary key for this node
-        type: integer
+        type: "integer"
+        description: "The primary key for this node"
       model:
-        $ref: '#/definitions/Model'
+        $ref: "#/definitions/Model"
       name:
-        description: A label for this node
-        type: string
+        type: "string"
+        description: "A label for this node"
       description:
-        description: A longer description for this node
-        type: string
+        type: "string"
+        description: "A longer description for this node"
       inputs:
-        description: Input Coms associated with this Node
-        type: array
+        type: "array"
+        description: "Input Coms associated with this Node"
         items:
-          $ref: '#/definitions/Com'
+          $ref: "#/definitions/Com"
       outputs:
-        description: Output Coms associated with this Node
-        type: array
+        type: "array"
+        description: "Output Coms associated with this Node"
         items:
-          $ref: '#/definitions/Com'
+          $ref: "#/definitions/Com"
+    description: "Represents a node on the user's canvas"
+    example:
+      outputs:
+      - name: "name"
+        model_id: "model_id"
+      - name: "name"
+        model_id: "model_id"
+      inputs:
+      - name: "name"
+        model_id: "model_id"
+      - name: "name"
+        model_id: "model_id"
+      name: "name"
+      description: "description"
+      model:
+        args: "args"
+        outputs:
+        - name: "name"
+          model_id: "model_id"
+        - name: "name"
+          model_id: "model_id"
+        is_server: "is_server"
+        driver: {}
+        inputs:
+        - name: "name"
+          model_id: "model_id"
+        - name: "name"
+          model_id: "model_id"
+        name: "name"
+        description: "description"
+        client_of: "client_of"
+        id: 0
+      id: 0
   Edge:
-    type: object
-    description: Represents a connection from an input Com of a Node \
-      to an output Com
+    type: "object"
     required:
-      - name
-      - type
-      - args
+    - "args"
+    - "destination"
+    - "name"
+    - "source"
+    - "type"
     properties:
       id:
-        description: The primary key for this edge
-        type: integer
+        type: "integer"
+        description: "The primary key for this edge"
       name:
-        description: A label for this edge
-        type: string
+        type: "string"
+        description: "A label for this edge"
       args:
-        description: The queue name or file name to use (depends on 'type')
-        type: string
+        type: "string"
+        description: "The queue name or file name to use (depends on 'type')"
       type:
-        $ref: '#/definitions/EdgeType'
-      from:
-        $ref: '#/definitions/Com'
-      to:
-        $ref: '#/definitions/Com'
+        $ref: "#/definitions/EdgeType"
+      destination:
+        $ref: "#/definitions/Com"
+      source:
+        $ref: "#/definitions/Com"
       operation:
-        type: string
+        type: "string"
+    description: "Represents a connection from an input Com of a Node to an output Com"
+    example:
+      args: "args"
+      name: "name"
+      from:
+        name: "name"
+        model_id: "model_id"
+      id: 6
+      to:
+        name: "name"
+        model_id: "model_id"
+      type: {}
+      operation: "operation"
   ModelDriver:
-    description: The driver to use for running a particular model
-    type: string
+    type: "string"
+    description: "The driver to use for running a particular model"
     enum:
-      - GCCModelDriver
-      - PythonModelDriver
-      - MatlabModelDriver
+    - "GCCModelDriver"
+    - "PythonModelDriver"
+    - "MatlabModelDriver"
   EdgeType:
-    description: The driver to use for this input / output Com
-    type: string
+    type: "string"
+    description: "The driver to use for this input / output Com"
     enum:
-      - File
-      - AsciiFile
-      - AsciiTable
-      - AsciiTableArray
-      - PickleFile
-      - MatFile
-      - RMQ
-      - ZMQ
-
-  # DEPRECATED: use Graph instead
+    - "File"
+    - "AsciiFile"
+    - "AsciiTable"
+    - "AsciiTableArray"
+    - "PickleFile"
+    - "MatFile"
+    - "RMQ"
+    - "ZMQ"
   Simulation:
     type: "object"
     properties:
@@ -260,8 +411,6 @@ definitions:
       - name: "name"
         path: "path"
       namespace: "namespace"
-
-  # DEPRECATED: use Model instead
   LegacyModel:
     type: "object"
     properties:
@@ -275,6 +424,5 @@ definitions:
       name: "name"
       path: "path"
 externalDocs:
-  description: Find out more about Crops in Silico
-  url: 'http://cropsinsilico.org/about-us/'
-
+  description: "Find out more about Crops in Silico"
+  url: "http://cropsinsilico.org/about-us/"

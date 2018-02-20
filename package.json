@@ -21,6 +21,7 @@
     "angular-messages": "1.5.11",
     "angular-route": "1.5.11",
     "angular-slider": "0.2.3",
+    "angular-swagger-ui": "^0.5.4",
     "angular-ui-bootstrap": "~1.2.4",
     "bootstrap": "3.3.7",
     "font-awesome": "4.7.0",

@@ -3,7 +3,8 @@
 // React + AngularJS: see https://blog.rapid7.com/2016/02/03/combining-angularjs-and-reactjs-for-better-applications/
 
 
-angular.module('cis', [ 'ngMessages', 'ngRoute', 'cis-api', 'angular-clipboard', 'ui.bootstrap', 'ui.slider' ])
+angular.module('cis', [ 'ngMessages', 'ngRoute', 'cis-api', 
+  'angular-clipboard', 'ui.bootstrap', 'ui.slider', 'swaggerUi' ])
 
 /** Enable DEBUG mode? */
 .constant('DEBUG', true)
@@ -116,14 +117,22 @@ angular.module('cis', [ 'ngMessages', 'ngRoute', 'cis-api', 'angular-clipboard',
   // Squelch debug-level log messages
   $logProvider.debugEnabled(DEBUG); 
   
-  // Enable HTML 5 mode
-  $locationProvider.html5Mode(true);
+  // FIXME: Enable HTML 5 mode
+  $locationProvider.html5Mode(false);
   
   // Set up the route(s) for our module
-  $routeProvider.when('/', {
+  $routeProvider
+    .when('/', {
       title: 'Crops in Silico',
       controller: 'MainCtrl',
       templateUrl: 'app/main/main.template.html',
       pageTrack: '/'
-    }).otherwise('/');
+    })
+    .when('/swagger', {
+      title: 'Crops in Silico API',
+      controller: 'SwaggerCtrl',
+      templateUrl: 'app/swagger/swagger.template.html',
+      pageTrack: '/swagger'
+    })
+    .otherwise('/');
 }]);
