@@ -14,11 +14,14 @@ angular.module('cis')
   // Load up an empty graph
   let fbpGraph = TheGraph.fbpGraph;
   
+  let height = $window.innerHeight
+  let width = $window.innerWidth;
+  
   $scope.state = {
     graph: new fbpGraph.Graph(),
     loading: true,
-    height: $window.innerHeight - 200,
-    width: window.innerWidth - 400,
+    height: height - (0.25 * height),
+    width: width - (0.220 * width),
     library: []
   };
   
@@ -188,7 +191,7 @@ angular.module('cis')
       model.inputs = model.inports;
       model.outputs = model.outports;
       model.driver = 'GCCModelDriver';
-      model.args = 'hello';
+      model.args = './path/to/model/source.c';
       
       
       return model;
@@ -207,8 +210,8 @@ angular.module('cis')
       let model = getModelFromNode(node);
       
       // TODO: Read ModelDriver / args from model object
-      let args = 'hello';
-      let driver = 'GCCModelDriver';
+      let args = model.args || 'placeholder';
+      let driver = model.driver || 'PlaceholderModelDriver';
       
       nodes.push({
         id: nodeCount++, //node.id, 
@@ -242,7 +245,7 @@ angular.module('cis')
       dest_port.node_id = dest_node.id;
       
       // TODO: ModelDriver / EdgeType
-      let args = 'asdf';
+      let args = edge.metadata.filename || './path/to/input/or/output/file.txt';
       let type = 'File';
       let id = src_node.id + ":" + src_port.name + "_" + dest_node.id + ":" + dest_port.name;
       
