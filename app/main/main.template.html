@@ -94,32 +94,53 @@
          </ng-messages>
         </div>
         
-        <!-- Metadata Fields -->
-        <div ng-if="selectedItem.metadata">
-          
-          <!-- Label Field -->
-          <div class="form-group" >
-            <label for="labelField">Label <sup><i class="fa fa-fw fa-question-circle" tooltip-placement="left" uib-tooltip="A friendly label for this instance"></i></sup></label>
-            <input type="text" class="form-control" id="labelField" name="labelField" ng-model="selectedItem.metadata.label" />
-          </div>
-          
-          <!-- Metadata Field: X -->
+        <!-- Label Field -->
+        <div class="form-group">
+          <label for="labelField">Label <sup><i class="fa fa-fw fa-question-circle" tooltip-placement="left" uib-tooltip="A friendly label for this item"></i></sup></label>
+          <input type="text" class="form-control" id="labelField" name="labelField" ng-model="selectedItem.metadata.label" />
+        </div>
+        
+        <!-- Type Field -->
+        <div ng-if="selectedItem.component === 'inport' || selectedItem.component === 'outport'">
           <div class="form-group">
-            <label for="xField">X Position <sup><i class="fa fa-fw fa-question-circle" tooltip-placement="left" uib-tooltip="The horizontal position of this node on the canvas"></i></sup></label>
-            <input type="number" class="form-control" id="xField" name="xField" ng-model="selectedItem.metadata.x" required />
-            <ng-messages class="text-danger" for="editForm.xField.$error" role="alert">
-              <ng-message when="required">X field is required</ng-message>
+            <label for="typeField">Type <sup><i class="fa fa-fw fa-question-circle" tooltip-placement="left" uib-tooltip="The source/destination type for this value"></i></sup></label>
+            <select type="text" class="form-control" id="typeField" name="typeField" ng-model="selectedItem.metadata.type" required>
+                <option>File</option>
+                <option>Queue</option>
+            </select>
+            
+            <ng-messages class="text-danger" for="editForm.typeField.$error" role="alert">
+              <ng-message when="required">Edge type is required</ng-message>
             </ng-messages>
           </div>
           
-          <!-- Metadata Field: Y -->
-          <div class="form-group" >
-            <label for="yField">Y Position <sup><i class="fa fa-fw fa-question-circle" tooltip-placement="left" uib-tooltip="The vertical position of this node on the canvas"></i></sup></label>
-            <input type="number" class="form-control" id="yField" name="yField" ng-model="selectedItem.metadata.y" required />
-            <ng-messages class="text-danger" for="editForm.yField.$error" role="alert">
-              <ng-message when="required">Y field is required</ng-message>
+          <!-- Value Field -->
+          <div class="form-group" ng-if="selectedItem.component === 'inport' || selectedItem.component === 'outport'">
+            <label for="nameField">Value <sup><i class="fa fa-fw fa-question-circle" tooltip-placement="left" uib-tooltip="The source/destination name of this input/output"></i></sup></label>
+            <input type="text" class="form-control" id="nameField" name="nameField" ng-model="selectedItem.metadata.name" required />
+            
+            <ng-messages class="text-danger" for="editForm.nameField.$error" role="alert">
+              <ng-message when="required">Source/destination name is required</ng-message>
             </ng-messages>
           </div>
+        </div>
+        
+        <!-- Metadata Field: X -->
+        <div class="form-group">
+          <label for="xField">X Position <sup><i class="fa fa-fw fa-question-circle" tooltip-placement="left" uib-tooltip="The horizontal position of this node on the canvas"></i></sup></label>
+          <input type="number" class="form-control" id="xField" name="xField" ng-model="selectedItem.metadata.x" required />
+          <ng-messages class="text-danger" for="editForm.xField.$error" role="alert">
+            <ng-message when="required">X field is required</ng-message>
+          </ng-messages>
+        </div>
+        
+        <!-- Metadata Field: Y -->
+        <div class="form-group" >
+          <label for="yField">Y Position <sup><i class="fa fa-fw fa-question-circle" tooltip-placement="left" uib-tooltip="The vertical position of this node on the canvas"></i></sup></label>
+          <input type="number" class="form-control" id="yField" name="yField" ng-model="selectedItem.metadata.y" required />
+          <ng-messages class="text-danger" for="editForm.yField.$error" role="alert">
+            <ng-message when="required">Y field is required</ng-message>
+          </ng-messages>
         </div>
         
         <!-- Save / Cancel -->

@@ -190,17 +190,14 @@ angular.module('cis')
         
       model.inputs = model.inports;
       model.outputs = model.outports;
-      model.driver = 'GCCModelDriver';
-      model.args = './path/to/model/source.c';
-      
       
       return model;
     };
+    
     let getSrcNodeFromEdge = (edge) => _.find($scope.state.graph.nodes, ['id', edge.from.node]);
     let getDestNodeFromEdge = (edge) => _.find($scope.state.graph.nodes, ['id', edge.to.node]);
     let getOutportFromModel = (portName, model) => _.find(model.outports, ['name', portName]);
     let getInportFromModel = (portName, model) => _.find(model.inports, ['name', portName]);
-    
     
     // Format nodes as the API expects
     let nodes = [];
@@ -244,9 +241,17 @@ angular.module('cis')
       src_port.node_id = src_node.id;
       dest_port.node_id = dest_node.id;
       
-      // TODO: ModelDriver / EdgeType
-      let args = edge.metadata.filename || './path/to/input/or/output/file.txt';
-      let type = 'File';
+      // TODO: edge name / type
+      let args = edge.metadata.name || 'unused';
+      let type = edge.metadata.type || 'File';
+      if (src_model.name == 'inport') {
+        args = src_node.metadata.name;
+        type = src_node.metadata.type;
+      } else if (dest_model.name == 'outport') {
+        args = dest_node.metadata.name;
+        type = dest_node.metadata.type;
+      }
+      
       let id = src_node.id + ":" + src_port.name + "_" + dest_node.id + ":" + dest_port.name;
       
       edges.push({ 
