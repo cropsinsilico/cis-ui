@@ -1,0 +1,30 @@
+<div class="swagger-ui" aria-live="polite" aria-relevant="additions removals">
+	<div class="api-name">
+		<h3 ng-bind="ui.infos.title"></h3>
+	</div>
+	<div ng-if="download!=null" class="download">
+		<a ng-href="{{url}}" target="_blank" swagger-translate="{{download.length==0?url:download}}"></a>
+	</div>
+	<div class="api-description" ng-bind-html="ui.infos.description"></div>
+	<div class="external-docs" ng-if="ui.infos.externalDocs">
+		<span ng-bind-html="ui.infos.externalDocs.description"></span>
+		<a target="_blank" ng-href="{{ui.infos.externalDocs.url}}">{{ui.infos.externalDocs.url}}</span></a>
+	</div>
+	<div class="api-infos">
+		<div class="api-infos-contact" ng-if="ui.infos.contact">
+			<div ng-if="ui.infos.contact.name" class="api-infos-contact-name"><span swagger-translate="infoContactCreatedBy" swagger-translate-value="ui.infos.contact"></span></div>
+			<div ng-if="ui.infos.contact.url" class="api-infos-contact-url"><span swagger-translate="infoContactUrl"></span> <a ng-href="{{ui.infos.contact.url}}" ng-bind="ui.infos.contact.url"></a></div>
+			<a ng-if="ui.infos.contact.email" class="api-infos-contact-url" ng-href="mailto:{{ui.infos.contact.email}}?subject={{ui.infos.title}}" swagger-translate="infoContactEmail"></a>
+		</div>
+		<div class="api-infos-license" ng-if="ui.infos.license">
+			<span swagger-translate="infoLicense"></span><a ng-href="{{ui.infos.license.url}}" ng-bind="ui.infos.license.name"></a>
+		</div>
+	</div>
+	<ul class="list-unstyled endpoints">
+	    <li ng-repeat="api in ui.resources track by $index" class="endpoint" ng-class="{active:api.open}" ng-include="'templates/endpoint.html'"></li>
+	</ul>
+	<div class="api-version clearfix" ng-if="ui.infos">
+		[<span swagger-translate="infoBaseUrl"></span>: <span class="h4" ng-bind="ui.infos.basePath"></span>, <span swagger-translate="infoApiVersion"></span>: <span class="h4" ng-bind="ui.infos.version"></span>, <span swagger-translate="infoHost"></span>: <span class="h4" ng-bind="ui.infos.scheme"></span>://<span class="h4" ng-bind="ui.infos.host"></span>]
+		<a ng-if="validatorUrl!='false'" target="_blank" ng-href="{{validatorUrl}}/debug?url={{url}}"><img class="pull-right swagger-validator" ng-src="{{validatorUrl}}?url={{url}}"/></a>
+	</div>
+</div>
