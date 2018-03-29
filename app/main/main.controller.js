@@ -64,6 +64,7 @@ angular.module('cis')
   
   // Fetch our model library
   $scope.state.library = {};
+  $log.debug('Fetching models...');
   CisApi.get_models().then(function(data) {
     $log.debug("Fetched models:", data);
     $scope.state.library = data;
@@ -86,6 +87,13 @@ angular.module('cis')
     }
     
     $scope.state.loading = false;
+  }, function() {
+    $log.debug('Failed to fetch models... Falling back to static data.');
+    
+    // In case of error, fall back to reading from static file
+    $http.get('/data/models.json').then(function(response) {
+      $scope.state.library = response.data;
+    })
   });
   
   $scope.saveEdit = function() {
