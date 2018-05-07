@@ -11,7 +11,7 @@ info:
     name: "BSD-3"
     url: "https://opensource.org/licenses/BSD-3-Clause"
 host: "proto.cis.ndslabs.org"
-basePath: "/api/v1"
+basePath: "/oauth2/api/v1"
 tags:
 - name: "models"
   description: "Retrieve server data (static)"
@@ -40,6 +40,31 @@ paths:
             type: "array"
             items:
               $ref: "#/definitions/Model"
+      x-swagger-router-controller: "swagger_server.controllers.models_controller"
+    post:
+      tags:
+      - "models"
+      summary: "Creates a new model in the system catalog"
+      description: ""
+      operationId: "post_models"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "A new model to add to the system"
+        required: true
+        schema:
+          $ref: "#/definitions/Model"
+      responses:
+        200:
+          description: "OK"
+        400:
+          description: "Invalid input"
+        500:
+          description: "Server error"
       x-swagger-router-controller: "swagger_server.controllers.models_controller"
   /graphs:
     post:
@@ -378,11 +403,14 @@ definitions:
       operation: "operation"
   ModelDriver:
     type: "string"
-    description: "The driver to use for running a particular model"
+    description: "The driver to use to run this model"
     enum:
     - "GCCModelDriver"
     - "PythonModelDriver"
     - "MatlabModelDriver"
+    - "MakeModelDriver"
+    - "CMakeModelDriver"
+    - "ModelDriver"
   EdgeType:
     type: "string"
     description: "The driver to use for this input / output Com"

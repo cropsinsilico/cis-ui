@@ -16,7 +16,7 @@ angular.module('cis-api', [])
         var ApiServer = (function() {
             function ApiServer(options, cache) {
                 var domain = (typeof options === 'object') ? options.domain : options;
-                this.domain = typeof(domain) === 'string' ? domain : 'http://proto.cis.ndslabs.org/api/v1';
+                this.domain = typeof(domain) === 'string' ? domain : 'https://proto.cis.ndslabs.org/oauth2/api/v1';
                 if (this.domain.length === 0) {
                     throw new Error('Domain parameter must be specified as a string.');
                 }
@@ -91,6 +91,76 @@ angular.module('cis-api', [])
                 var options = {
                     timeout: parameters.$timeout,
                     method: 'GET',
+                    url: url,
+                    params: queryParameters,
+                    data: body,
+                    headers: headers
+                };
+                if (Object.keys(form).length > 0) {
+                    options.data = form;
+                    options.headers['Content-Type'] = 'application/x-www-form-urlencoded';
+                    options.transformRequest = ApiServer.transformRequest;
+                }
+                $http(options)
+                    .success(function(data, status, headers, config) {
+                        deferred.resolve(data);
+                        if (parameters.$cache !== undefined) {
+                            parameters.$cache.put(url, data, parameters.$cacheItemOpts ? parameters.$cacheItemOpts : {});
+                        }
+                    })
+                    .error(function(data, status, headers, config) {
+                        deferred.reject({
+                            status: status,
+                            headers: headers,
+                            config: config,
+                            body: data
+                        });
+                    });
+
+                return deferred.promise;
+            };
+            /**
+             * 
+             * @method
+             * @name ApiServer#post_models
+             * @param {} body - A new model to add to the system
+             * 
+             */
+            ApiServer.prototype.post_models = function(parameters) {
+                if (parameters === undefined) {
+                    parameters = {};
+                }
+                var deferred = $q.defer();
+
+                var domain = this.domain;
+                var path = '/models';
+
+                var body;
+                var queryParameters = {};
+                var headers = {};
+                var form = {};
+
+                if (parameters['body'] !== undefined) {
+                    body = parameters['body'];
+                }
+
+                if (parameters['body'] === undefined) {
+                    deferred.reject(new Error('Missing required  parameter: body'));
+                    return deferred.promise;
+                }
+
+                if (parameters.$queryParameters) {
+                    Object.keys(parameters.$queryParameters)
+                        .forEach(function(parameterName) {
+                            var parameter = parameters.$queryParameters[parameterName];
+                            queryParameters[parameterName] = parameter;
+                        });
+                }
+
+                var url = domain + path;
+                var options = {
+                    timeout: parameters.$timeout,
+                    method: 'POST',
                     url: url,
                     params: queryParameters,
                     data: body,
