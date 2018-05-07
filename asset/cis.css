@@ -162,3 +162,7 @@ slider {
 button {
   margin: 10px;
 }
+
+.validation-text {
+  text-align: center;
+}

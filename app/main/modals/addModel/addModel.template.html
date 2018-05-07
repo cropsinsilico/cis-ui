@@ -15,27 +15,27 @@
           
           <!-- Full Name Field (aka Description) -->
           <div class="form-group">
-            <label for="descriptionField">Full Name <sup><i class="fa fa-fw fa-question-circle" tooltip-placement="left" tooltip-append-to-body="true" uib-tooltip="The full name of this model."></i></sup></label>
+            <label for="descriptionField">Full Name<span class="text-danger">*</span> <sup><i class="fa fa-fw fa-question-circle" tooltip-placement="left" tooltip-append-to-body="true" uib-tooltip="The full name of this model."></i></sup></label>
             <input type="text" class="form-control" id="descriptionField" name="descriptionField" ng-model="newModel.description" required />
             
-            <ng-messages class="text-danger" for="addModelForm.descriptionField.$error" role="alert">
+            <ng-messages class="text-danger validation-text" ng-if="!addModelForm.descriptionField.$pristine" for="addModelForm.descriptionField.$error" role="alert">
               <ng-message when="required">Full name is required</ng-message>
             </ng-messages>
           </div>
           
           <!-- Short Name Field (aka Label) -->
           <div class="form-group">
-            <label for="labelField">Short Name <sup><i class="fa fa-fw fa-question-circle" tooltip-placement="left" tooltip-append-to-body="true" uib-tooltip="The short name of this model."></i></sup></label>
+            <label for="labelField">Short Name<span class="text-danger">*</span> <sup><i class="fa fa-fw fa-question-circle" tooltip-placement="left" tooltip-append-to-body="true" uib-tooltip="The short name of this model."></i></sup></label>
             <input type="text" class="form-control" id="labelField" name="labelField" ng-model="newModel.label" required />
             
-            <ng-messages class="text-danger" for="addModelForm.labelField.$error" role="alert">
+            <ng-messages class="text-danger validation-text" ng-if="!addModelForm.labelField.$pristine" for="addModelForm.labelField.$error" role="alert">
               <ng-message when="required">Short name is required</ng-message>
             </ng-messages>
           </div>
           
           <!-- Icon Field -->
           <div class="form-group">
-            <label for="iconField">Icon <sup><i class="fa fa-fw fa-question-circle" tooltip-placement="left" tooltip-append-to-body="true" uib-tooltip="The icon to show in the UI for this model."></i></sup></label>
+            <label for="iconField">Icon<span class="text-danger">*</span> <sup><i class="fa fa-fw fa-question-circle" tooltip-placement="left" tooltip-append-to-body="true" uib-tooltip="The icon to show in the UI for this model."></i></sup></label>
             <!--<input type="text" class="form-control" id="iconField" name="iconField" ng-model="newModel.icon" required />-->
             <select size="5" class="form-control" id="iconField" name="iconField" ng-model="newModel.icon" required>
               <option value="500px">&#xf26e; 500px</option>
@@ -826,14 +826,14 @@
           		<option value="youtube-square">&#xf166; youtube-square</option>
             </select>
             
-            <ng-messages class="text-danger" for="addModelForm.iconField.$error" role="alert">
+            <ng-messages class="text-danger validation-text" ng-if="!addModelForm.iconField.$pristine" for="addModelForm.iconField.$error" role="alert">
               <ng-message when="required">Icon is required</ng-message>
             </ng-messages>
           </div>
           
           <!-- Model Type Field (aka Driver) -->
           <div class="form-group">
-            <label for="driverField">Driver <sup><i class="fa fa-fw fa-question-circle" tooltip-placement="left" tooltip-append-to-body="true" uib-tooltip="The type of driver that should be user to execute this model."></i></sup></label>
+            <label for="driverField">Driver<span class="text-danger">*</span> <sup><i class="fa fa-fw fa-question-circle" tooltip-placement="left" tooltip-append-to-body="true" uib-tooltip="The type of driver that should be user to execute this model."></i></sup></label>
               <select type="text" class="form-control" id="driverField" name="driverField" ng-model="newModel.driver" required>
                 <option>PythonModelDriver</option>
                 <option>GCCModelDriver</option>
@@ -843,11 +843,11 @@
                 <option>ModelDriver</option>
               </select>
               
-              <ng-messages class="text-danger" for="addModelForm.driverField.$error" role="alert">
+              <ng-messages class="text-danger validation-text" ng-if="!addModelForm.driverField.$pristine" for="addModelForm.driverField.$error" role="alert">
                 <ng-message when="required">Model Driver is required</ng-message>
               </ng-messages>
               
-              <div class="text-info" ng-switch="newModel.driver">
+              <div class="text-info validation-text" ng-switch="newModel.driver">
                 <div ng-switch-when="PythonModelDriver">The PythonModelDriver can be used to run a model written in Python.</div>
                 <div ng-switch-when="GCCModelDriver">The GCCModelDriver can be used to run a model that requires compilation in gcc or g++.</div>
                 <div ng-switch-when="MatlabModelDriver">The MatlabModelDriver can be used to run a model that requires Matlab.</div>
@@ -859,10 +859,10 @@
           
           <!-- Command Field (aka Args) -->
           <div class="form-group">
-            <label for="argsField">Args <sup><i class="fa fa-fw fa-question-circle" tooltip-placement="left" tooltip-append-to-body="true" uib-tooltip="The arguments to pass to the selected model driver - usually this is the command necessary to execute the model."></i></sup></label>
+            <label for="argsField">Args<span class="text-danger">*</span> <sup><i class="fa fa-fw fa-question-circle" tooltip-placement="left" tooltip-append-to-body="true" uib-tooltip="The arguments to pass to the selected model driver - usually this is the command necessary to execute the model."></i></sup></label>
             <input type="text" class="form-control" id="argsField" name="argsField" ng-model="modelArgsString" required />
             
-            <ng-messages class="text-danger" for="addModelForm.argsField.$error" role="alert">
+            <ng-messages class="text-danger validation-text" ng-if="!addModelForm.argsField.$pristine" for="addModelForm.argsField.$error" role="alert">
               <ng-message when="required">Model arguments are required</ng-message>
             </ng-messages>
           </div>
@@ -893,7 +893,7 @@
           
           <!-- Model Inputs -->
           <div class="form-group">
-              <label for="newInputField">Model Inputs <sup><i class="fa fa-fw fa-question-circle" tooltip-placement="left" uib-tooltip="The exact names of any CisInputs ingested by your model."></i></sup></label>
+              <label for="newInputField">Model Inputs<span class="text-danger">*</span> <sup><i class="fa fa-fw fa-question-circle" tooltip-placement="left" uib-tooltip="The exact names of any CisInputs ingested by your model."></i></sup></label>
               <ul class="fa-ul">
                   <li ng-repeat="input in newModel.inputs" class="item">
                       <i class="fa-li fa fa-sign-in"></i>
@@ -923,7 +923,7 @@
           
           <!-- Outputs -->
           <div class="form-group">
-              <label for="newOutputField">Model Outputs <sup><i class="fa fa-fw fa-question-circle" tooltip-placement="left" uib-tooltip="The exact names of any CisOutputs produced by your model."></i></sup></label>
+              <label for="newOutputField">Model Outputs<span class="text-danger">*</span> <sup><i class="fa fa-fw fa-question-circle" tooltip-placement="left" uib-tooltip="The exact names of any CisOutputs produced by your model."></i></sup></label>
               <ul class="fa-ul">
                   <li ng-repeat="output in newModel.outputs" class="item">
                       <i class="fa-li fa fa-sign-out"></i>
@@ -950,8 +950,8 @@
                   </div>
               </div>
           </div>
-          <div class="text-info" ng-if="newModel.inputs.length === 0 && newModel.outputs.length === 0">
-            You should provide at least one input or output of this model.
+          <div class="text-danger" ng-if="newModel.inputs.length === 0 && newModel.outputs.length === 0">
+            You must provide at least one input name or output name of this model.
           </div>
         </form>
       </div>
@@ -960,8 +960,9 @@
   
   <div class="modal-footer">
     <div class="row">
-      <button id="submitBtn" type="submit" class="btn btn-primary" ng-disabled="addModelForm.$invalid || (newModel.inputs.length === 0 && newModel.outputs.length === 0)" data-dismiss="modal" ng-click="submit()"><i class="fa fa-fw fa-send"></i> Submit</button>
+      <small><span class="text-danger">*</span> denotes a required field</small>
       <button id="cancelBtn" type="button" class="btn btn-default" data-dismiss="modal" ng-click="close()"><i class="fa fa-fw fa-times"></i> Close</button>
+      <button id="submitBtn" type="submit" class="btn btn-primary" ng-disabled="addModelForm.$invalid || (newModel.inputs.length === 0 && newModel.outputs.length === 0)" data-dismiss="modal" ng-click="submit()"><i class="fa fa-fw fa-send"></i> Submit</button>
     </div>
   </div>
 </section>
