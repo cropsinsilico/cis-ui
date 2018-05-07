@@ -135,6 +135,13 @@ angular.module('cis')
     modalInstance.result.then(function (newModel) {
       // TODO: POST result to /models
       console.log("Submitting new model:", newModel);
+      
+      CisApi.post_models({ body: newModel })
+        .then(function(data) {
+          console.log("Successfully POSTed new model:", data);
+        }, function(response) {
+          console.error("Error POSTing new model:", response.status);
+        });
     }, function () {
       $log.info('Modal dismissed at: ' + new Date());
     });
@@ -430,6 +437,25 @@ angular.module('cis')
     $scope.running = true;
     alert("Coming Soon!");
     $scope.running = false;
+  };
+  
+  /** DEPRECATED */
+  $scope.runSimulation = function() {
+    $scope.running = true;
+    
+    // Just run example C model for now
+    let name = "example:hello_c";
+    let path = "hello/hello_c";
+    
+    let simulationData = {models: [{ name, path }]};
+    
+    CisApi.post_simulations({ body: simulationData })
+    .then(function(data) {
+      alert(data);
+    })
+    .finally(function() {
+      $scope.running = false;
+    });
   };
   
   
