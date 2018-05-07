@@ -4,7 +4,8 @@
   "description": "Crops in Silico User Interface",
   "main": "app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "postinstall": "cd node_modules/the-graph && npm install && grunt build && cd ../.."
   },
   "repository": {
     "type": "git",
@@ -30,9 +31,9 @@
     "js-yaml": "^3.10.0",
     "lodash": "^4.17.5",
     "ngreact": "0.5.1",
-    "react": "^0.14.2",
-    "react-dom": "^0.14.2",
-    "the-graph": "0.10.3"
+    "react": "^15.6.2",
+    "react-dom": "^15.6.2",
+    "the-graph": "git+https://github.com/bodom0015/the-graph#master"
   },
   "devDependencies": {
     "grunt": "1.0.1",

@@ -3,31 +3,21 @@
 angular
 .module('cis')
 
-.factory('jsyaml', [() => window.jsyaml])
-
 /**
- * The Controller for our "Export Spec" Modal Window
+ * The Controller for our "Export JSON" Modal Window
  * 
  * @author lambert8
  * @see https://opensource.ncsa.illinois.edu/confluence/display/~lambert8/3.%29+Controllers%2C+Scopes%2C+and+Partial+Views
  */
-.controller('ExportCtrl', [ '$scope', '$log', '$uibModalInstance', '_', 'clipboard', 'jsyaml', 'results', 'title', 'isJson',
-    function($scope, $log, $uibModalInstance, _, clipboard, jsyaml, results, title, isJson) {
+.controller('ExportJsonCtrl', [ '$scope', '$log', '$uibModalInstance', '_', 'clipboard', 'results', 'title',
+    function($scope, $log, $uibModalInstance, _, clipboard, results, title) {
   "use strict";
   
   $scope.title = title;
-  $scope.isJson = isJson;
   $scope.results = angular.copy(results);
   
-  
-  $scope.formatted = "";
-  if (isJson) {
-      $scope.formatted = JSON.stringify($scope.results, null, 2);
-  } else {
-      $scope.formatted = jsyaml.safeDump($scope.results);
-  }
-    
-  
+  $scope.formatted = JSON.stringify($scope.results, null, 2);
+
   $scope.copy = function() {
     if (!clipboard.supported) {
       alert('Sorry, copy to clipboard is not supported');

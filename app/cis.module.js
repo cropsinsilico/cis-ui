@@ -7,7 +7,7 @@ angular.module('cis', [ 'ngMessages', 'ngRoute', 'cis-api',
   'angular-clipboard', 'ui.bootstrap', 'ui.slider', 'swaggerUi' ])
 
 /** Enable DEBUG mode? */
-.constant('DEBUG', true)
+.constant('DEBUG', false)
 
 /** Set up our connection to the API server */
 .constant('ApiUri', '/api/v1')
@@ -128,11 +128,11 @@ angular.module('cis', [ 'ngMessages', 'ngRoute', 'cis-api',
       templateUrl: 'app/main/main.template.html',
       pageTrack: '/'
     })
-    .when('/swagger', {
+    /*.when('/swagger', {
       title: 'Crops in Silico API',
       controller: 'SwaggerCtrl',
       templateUrl: 'app/swagger/swagger.template.html',
       pageTrack: '/swagger'
-    })
+    })*/
     .otherwise('/');
 }]);

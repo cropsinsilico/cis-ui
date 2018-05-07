@@ -1,0 +1,46 @@
+<!-- The "Export" Modal -->
+<section id="exportJsonModal">
+  <div class="modal-header">
+    <button id="closeBtn" type="button" class="btn btn-xs btn-default pull-right" 
+        data-dismiss="modal" aria-label="Close" ng-click="close()">
+      <i class="fa fa-fw fa-times"></i>
+    </button>
+    <h4 class="modal-title pull-left">{{ title }}</h4>
+  </div>
+  
+  <div class="modal-body">
+    <div class="row">
+      <div class="col-sm-12">
+        <form name="addModelForm">
+          
+          <!-- Full Name Field (aka Description) -->
+          <div class="form-group">
+            <label for="descriptionField">Full Name <sup><i class="fa fa-fw fa-question-circle" tooltip-placement="left" tooltip-append-to-body="true" uib-tooltip="The short name for this model"></i></sup></label>
+            <input type="text" class="form-control" id="descriptionField" name="descriptionField" ng-model="newModel.description" required />
+            
+            <ng-messages class="text-danger" for="editForm.descriptionField.$error" role="alert">
+              <ng-message when="required">Full name is required</ng-message>
+            </ng-messages>
+          </div>
+          
+          <!-- Short Name Field (aka Label) -->
+          <div class="form-group">
+            <label for="labelField">Short Name <sup><i class="fa fa-fw fa-question-circle" tooltip-placement="left" tooltip-append-to-body="true" uib-tooltip="The short name for this model"></i></sup></label>
+            <input type="text" class="form-control" id="labelField" name="labelField" ng-model="newModel.label" required />
+            
+            <ng-messages class="text-danger" for="editForm.labelField.$error" role="alert">
+              <ng-message when="required">Short name is required</ng-message>
+            </ng-messages>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  
+  <div class="modal-footer">
+    <div class="row">
+      <button id="cancelBtn" type="button" class="btn btn-default" data-dismiss="modal" ng-click="close()"><i class="fa fa-fw fa-times"></i> Close</button>
+      <button id="copyToClipboardModalBtn" type="button" class="btn btn-primary" data-dismiss="modal" ng-click="copy()"><i class="fa fa-fw fa-clipboard"></i> Copy to Clipboard</button>
+    </div>
+  </div>
+</section>

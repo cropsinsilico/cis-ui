@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html ng-app="cis">
   <head>
-    <title>Crops in Silico Prototype</title>
+    <title>Crops in Silico UI</title>
     <base href="/">
     <link rel=icon href="asset/favicon.ico">
     
@@ -18,8 +18,8 @@
     <link rel="stylesheet" type="text/css" href="node_modules/font-awesome-animation/dist/font-awesome-animation.min.css">
     <link rel="stylesheet" type="text/css" href="node_modules/angular-swagger-ui/dist/css/swagger-ui.min.css"> 
     <link rel="stylesheet" type="text/css" href="node_modules/angular-slider/slider.css" />
-    <!--<link rel="stylesheet" type="text/css" href="../node_modules/the-graph/themes/the-graph-dark.css">-->
-    <link rel="stylesheet" type="text/css" href="node_modules/the-graph/themes/the-graph-light.css">
+    <link rel="stylesheet" type="text/css" href="../node_modules/the-graph/themes/the-graph-dark.css">
+    <!--<link rel="stylesheet" type="text/css" href="node_modules/the-graph/themes/the-graph-light.css">-->
   </head>
   
   <body>
@@ -36,26 +36,28 @@
           
           <!-- Brand icon -->
           <div class="navbar-brand">
-            <a  href="#/" class="brand-link"><img alt="Crops in Silico" src="asset/cropsinsilico-logo-16x20.png"></a>
+            <a href="#/" class="brand-link"><img alt="Crops in Silico" src="asset/cropsinsilico-logo-16x20.png"></a>
           </div>
           
           <!-- Brand Text -->
           <a href="#/" class="navbar-left">
-            <span class="navbar-text pull-right"> Crops in Silico</span>
+            <span class="navbar-text pull-right"> <strong>Crops in Silico</strong></span>
           </a>
         </div>
     
         <!-- Collect the nav links, forms, and other content for toggling -->
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
           <ul class="nav navbar-nav">
-            <!--<li class="active"><a href="#">Link <span class="sr-only">(current)</span></a></li>-->
+            <li><a href="https://goo.gl/forms/AcEhlzvNFsaVAg3H3" target="_blank">Submit a New Model</a></li>
           </ul>
           <ul class="nav navbar-nav navbar-right">
             <li class="dropdown">
-              <a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><i class="fa fa-fw fa-question-circle-o"></i> <span class="caret"></span></a>
+              <a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><i class="fa fa-fw fa-question-circle-o"></i> Help</a>
               <ul class="dropdown-menu">
-                <li><a href="#/swagger">API Reference</a></li>
-                <li><a target="_blank" href="https://cropsinsilico.github.io/cis_interface/">Documentation</a></li>
+                <!--<li><a href="#/swagger">API Reference</a></li>-->
+                <li><a target="_blank" href="https://github.com/cropsinsilico/cropsinsilico.github.io/blob/master/USER-GUIDE.md">User's Guide</a></li>
+                <li><a target="_blank" href="https://github.com/cropsinsilico/cropsinsilico.github.io/blob/master/DEVELOPER-GUIDE.md">Developer's Guide</a></li>
+                <li><a target="_blank" href="https://cropsinsilico.github.io/cis_interface/">CLI Documentation</a></li>
                 <li><a target="_blank" href="http://cropsinsilico.org/about-us/">About</a></li>
               </ul>
             </li>
@@ -65,15 +67,27 @@
     </nav>
     
     <!-- Control Panel / Palette -->
-    <div class="container-fluid">
+    <div class="container-fluid" id="editorContainer">
       <div ng-view></div>
     </div>
+    
+    <!-- Notify users of unsupported/insecure browser versions -->
+    <script> 
+      var $buoop = {notify:{e:-6,f:-4,o:-4,s:-2,c:-4},insecure:true,unsupported:true,api:5}; 
+      function $buo_f(){ 
+       var e = document.createElement("script"); 
+       e.src = "//browser-update.org/update.min.js"; 
+       document.body.appendChild(e);
+      };
+      try {document.addEventListener("DOMContentLoaded", $buo_f,false)}
+      catch(e){window.attachEvent("onload", $buo_f)}
+    </script>
     
     <!-- AngularJS + Bootstrap -->
     <script src="node_modules/lodash/lodash.min.js"></script>
     <script src="node_modules/jquery/dist/jquery.min.js"></script>
     <script src="node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
-    <script src="node_modules/angular/angular.min.js"></script>
+    <script src="node_modules/angular/angular.js"></script>
     <script src="node_modules/angular-route/angular-route.min.js"></script>
     <script src="node_modules/angular-messages/angular-messages.min.js"></script>
     <script src="node_modules/angular-ui-bootstrap/dist/ui-bootstrap-tpls.js"></script>
@@ -95,6 +109,7 @@
     <script src="node_modules/klayjs-noflo/klay-noflo.js"></script>
     <script src="node_modules/hammerjs/hammer.min.js"></script>
     <script src="node_modules/ngreact/ngReact.js"></script>
+    <script src="node_modules/the-graph/dist/vendor.js"></script>
     <script src="node_modules/the-graph/dist/the-graph.js"></script>
 
     <!-- Now load our app source -->
@@ -103,7 +118,9 @@
     <script src="app/cis.module.js"></script>
     <script src="app/editor.directive.js"></script>
     <script src="app/main/main.controller.js"></script>
-    <script src="app/main/modals/export.controller.js"></script>
+    <script src="app/main/modals/exportJson.controller.js"></script>
+    <script src="app/main/modals/generateYaml.controller.js"></script>
+    <script src="app/main/modals/editSelection.controller.js"></script>
     <script src="app/swagger/swagger.controller.js"></script>
   </body>
 </html>

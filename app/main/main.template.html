@@ -1,155 +1,227 @@
 <section>
-  <div class="row">
-    <!-- Component Palette -->
-    <div class="col-sm-2">
-      <h4>Library</h4>
-      
-      <table class="table table-condensed table-hover">
-        <tr>
-          <th>Model</th>
-          <th width="15%" style="text-align:center;">Info</th>
-          <th width="15%" style="text-align:center;">Add</th>
-        </tr>
-        <tr ng-repeat="model in getModelOptions(state.library)" tooltip-placement="right" uib-tooltip="{{ model.description }}">
-          <td>{{ model.description }} ({{ model.label || model.name }})</td>
-          <td style="text-align:center;">
-            <button class="btn btn-xs btn-info" style="margin:0;" ng-click="showResults({ results: model, title: 'View Raw Model', isJson: true })">
-              <i class="fa fa-fw fa-code"></i> 
-            </button>
-          </td>
-          <td style="text-align:center;">
-            <button class="btn btn-xs btn-primary" style="margin:0;" ng-click="addNodeInstance(model)">
-              <i class="fa fa-fw fa-plus"></i> 
-            </button>
-          </td>
-        </tr>
-      </table>
+  <the-graph-editor id="editor" class="the-graph-dark" graph="state.graph" library="state.library" 
+      loading="state.loading" width="state.width" height="state.height"></the-graph-editor>
+       
+  <!-- Model Palette -->
+  <div id="modelPalette">
+    <div class="paletteHeader">
+      <h4 class="pull-left libraryHeader">Model Library</h4>
+      <button class="btn btn-xs btn-default pull-right" ng-click="showPalette = !showPalette">
+        <i class="fa fa-fw fa-toggle-up" ng-if="showPalette"></i>
+        <i class="fa fa-fw fa-toggle-down" ng-if="!showPalette"></i>
+      </button>
     </div>
     
-    <!-- Graph Canvas -->
-    <div ng-class="{ 'col-sm-10': !selectedItem, 'col-sm-8': selectedItem }">
-      <div class="row">
-        <div class="pull-left">
-          <button class="btn btn-xs btn-success" ng-click="saveGraph()" tooltip-placement="right" uib-tooltip="Save current graph into your browser's local storage">
-            <i class="fa fa-fw fa-save" ng-class="{ 'faa-horizontal animated': graphIsChanged() }"></i> Save
+    <table class="table table-condensed" ng-if="showPalette">
+      <tr>
+        <th width="10%" style="text-align:center;" >Icon</th>
+        <th>Model</th>
+        <th width="10%" style="text-align:center;" ng-if="DEBUG">Info</th>
+        <th width="10%" style="text-align:center;">Add</th>
+      </tr>
+      <tr ng-repeat="model in getModelOptions(state.library) track by model.name">
+        <th style="text-align:center;" ><i class="fa fa-fw fa-{{ model.icon }}"></i></th>
+        <td>{{ model.description }} ({{ model.label || model.name }})</td>
+        <td style="text-align:center;" ng-if="DEBUG">
+          <button class="btn btn-xs btn-default" style="margin:0;" ng-click="showResults({ results: model, title: 'View Raw Model', isJson: true })">
+            <i class="fa fa-fw fa-code"></i> 
           </button>
-          
-          <button class="btn btn-xs btn-danger" ng-click="clearGraph()" tooltip-placement="right" uib-tooltip="Clear current graph from the canvas">
-            <i class="fa fa-fw fa-trash"></i> Clear
+        </td>
+        <td style="text-align:center;">
+          <button class="btn btn-xs btn-primary" style="margin:0;" ng-disabled="selectedItem || graphHasModel(model.name)" tooltip-placement="left" ng-click="addNodeInstance(model)"
+              tooltip-append-to-body="true" uib-tooltip="{{ graphHasModel(model.name) ? model.label + ' has been added' : 'Add a ' + model.description + ' to the canvas' }}">
+            <i class="fa fa-fw fa-plus"></i> 
           </button>
-          
-          <button class="btn btn-xs btn-default" style="color:orange" ng-click="addInport()" tooltip-placement="right" uib-tooltip="Add an InPort to current graph">
-            <i class="fa fa-fw fa-sign-in"></i> Add InPort
-          </button>
-          
-          <button class="btn btn-xs btn-default" style="color:green" ng-click="addOutport()" tooltip-placement="right" uib-tooltip="Add an OutPort to current graph">
-            <i class="fa fa-fw fa-sign-out"></i> Add OutPort
-          </button>
-        </div>
-        
-        <div class="pull-right">
-          <button class="btn btn-xs btn-default" ng-click="exportGraph()" tooltip-placement="left" uib-tooltip="View Raw JSON of the current graph">
-            <i class="fa fa-fw fa-code"></i> View Raw JSON
-          </button>
-          
-          <button type="submit" class="btn btn-xs btn-info" ng-disabled="formatting" ng-click="formatYaml()" tooltip-placement="left" uib-tooltip="Output a YAML file for submitting a graph to cis_interface">
-            <i class="fa fa-fw" ng-class="{ 'fa-file-text-o': !formatting, 'fa-spinner fa-pulse': formatting }"></i> Produce YAML
-          </button>
-          
-          <button type="button" class="btn btn-xs btn-primary" ng-disabled="running" ng-click="runGraph()" tooltip-placement="left" uib-tooltip="Submit this graph as a YAML to cis_interface and display the output">
-            <i class="fa fa-fw" ng-class="{ 'fa-play': !running, 'fa-spinner fa-pulse': running }"></i> Run Graph
-          </button>
-        </div>
-      </div>
-      
-      <div class="row border-cis" id="canvas-area">
-        <the-graph-editor class="the-graph-light" graph="state.graph" library="state.library" loading="state.loading" width="state.width" height="state.height"></the-graph-editor>
-         
-        <div ng-if="loading" id="loading" style="">
-          <i class="fa fa-fw fa-spinner fa-pulse"></i>
-          <div id="loading-message">loading custom elements...</div>
-        </div>
-      </div>
+        </td>
+      </tr>
+    </table>
+    
+    <div class="paletteHeader" ng-if="showPalette">
+      <h4 class="pull-left libraryHeader">Graph Ports</h4>
     </div>
     
-    <div id="editSidebar" class="col-sm-2" ng-if="selectedItem">
-      <h4>{{ selectedItem.metadata.label || selectedItem.id }} Properties</h4>
-      <form name="editForm" ng-submit="saveEdit()">
-        
-        <!-- ID Field -->
-        <div class="form-group" >
-            <label for="idField">ID <sup><i class="fa fa-fw fa-question-circle" tooltip-placement="left" uib-tooltip="The unique random id of this node"></i></sup></label>
+    <table class="table table-condensed" ng-if="showPalette">
+      <tr>
+        <th width="10%" style="text-align:center;" >Icon</th>
+        <th>Model</th>
+        <th width="10%" style="text-align:center;" ng-if="DEBUG">Info</th>
+        <th width="10%" style="text-align:center;">Add</th>
+      </tr>
+      <tr ng-repeat="model in getDataOptions(state.library) track by model.name">
+        <th style="text-align:center;" ><i class="fa fa-fw fa-{{ model.icon }}"></i></th>
+        <td>{{ model.description }} ({{ model.label || model.name }})</td>
+        <td style="text-align:center;" ng-if="DEBUG">
+          <button class="btn btn-xs btn-default" style="margin:0;" ng-click="showResults({ results: model, title: 'View Raw Model', isJson: true })">
+            <i class="fa fa-fw fa-code"></i> 
+          </button>
+        </td>
+        <td style="text-align:center;">
+          <button class="btn btn-xs btn-primary" style="margin:0;" ng-disabled="selectedItem" tooltip-placement="left" ng-click=" model.name === 'inport' ? addInport() : addOutport()"
+              tooltip-append-to-body="true" uib-tooltip="Add a {{ model.description }} to the canvas">
+            <i class="fa fa-fw fa-plus"></i> 
+          </button>
+        </td>
+      </tr>
+    </table>
+  </div>
+  
+  <!-- Graph Button Bar -->
+  <div id="buttonBar">
+    <!-- Graph Operations -->
+    <div class="pull-left">
+      <button class="btn btn-xs btn-success" ng-click="saveGraph()" tooltip-placement="right" ng-disabled="selectedItem" tooltip-append-to-body="true" uib-tooltip="Save current graph into your browser's local storage">
+        <i class="fa fa-fw fa-save" ng-class="{ 'faa-horizontal animated': graphIsChanged() }"></i> Save Graph
+      </button>
+      
+      <button class="btn btn-xs btn-danger" ng-click="clearGraph()" tooltip-placement="right" ng-disabled="selectedItem" tooltip-append-to-body="true" uib-tooltip="Clear current graph from the canvas">
+        <i class="fa fa-fw fa-trash"></i> Clear Graph
+      </button>
+      
+      <!--<button class="btn btn-xs btn-default" style="color:orange" ng-click="addInport()" ng-disabled="selectedItem" tooltip-placement="right" tooltip-append-to-body="true" uib-tooltip="Add an InPort to current graph">
+        <i class="fa fa-fw fa-sign-in"></i> Add InPort
+      </button>
+      
+      <button class="btn btn-xs btn-default" style="color:green" ng-click="addOutport()" ng-disabled="selectedItem" tooltip-placement="right" tooltip-append-to-body="true" uib-tooltip="Add an OutPort to current graph">
+        <i class="fa fa-fw fa-sign-out"></i> Add OutPort
+      </button>-->
+    </div>
+    
+    <!-- Outputs -->
+    <div class="pull-right">
+      <button type="button" ng-if="false" class="btn btn-xs btn-default" ng-click="exportGraph()" tooltip-placement="left" uib-tooltip="View Raw JSON of the current graph">
+        <i class="fa fa-fw fa-code"></i> View Raw
+      </button>
+      
+      <button type="submit" class="btn btn-xs btn-info" ng-disabled="formatting || selectedItem" ng-click="formatYaml()" tooltip-placement="left" tooltip-append-to-body="true" uib-tooltip="Output a manifest file for submitting a graph to cis_interface">
+        <i class="fa fa-fw" ng-class="{ 'fa-file-text-o': !formatting, 'fa-spinner fa-pulse': formatting }"></i> Generate Manifest
+      </button>
+      
+      <button type="button" ng-if="false" class="btn btn-xs btn-primary" ng-disabled="running" ng-click="runGraph()" tooltip-placement="left" tooltip-append-to-body="true" uib-tooltip="Submit this graph to cis_interface and display the output">
+        <i class="fa fa-fw" ng-class="{ 'fa-play': !running, 'fa-spinner fa-pulse': running }"></i> Run Graph
+      </button>
+    </div>
+  </div>
+  
+  <div id="editSidebar" ng-if="selectedItem">
+    <h4>{{ selectedItem.metadata.label || selectedItem.id }} Properties</h4>
+    <form role="form" name="editForm" ng-submit="saveEdit()">
+      <div id="editSidebarContents">
+        <!-- ID Field (Nodes only) -->
+        <div class="form-group" ng-if="DEBUG && selectedItem.component">
+            <label for="idField">ID <sup><i class="fa fa-fw fa-question-circle" tooltip-placement="left" tooltip-append-to-body="true" uib-tooltip="The unique random id of this node"></i></sup></label>
             <input type="text" class="form-control" id="idField" name="idField" ng-model="selectedItem.id" ng-disabled="'true'" required />
         </div>
         
         
-        <!-- Component Field -->
-        <div class="form-group" >
-          <label for="componentField">Component <sup><i class="fa fa-fw fa-question-circle" tooltip-placement="left" uib-tooltip="The unique random id of this node"></i></sup></label>
-          
-          <!-- FIXME: this should probably use <select> instead of <input> -->
+        <!-- Component Field (Nodes only) -->
+        <!-- FIXME: this should probably use <select> instead of <input>, 
+          although it is currently disabled -->
+        <div class="form-group" ng-if="DEBUG && selectedItem.component">
+          <label for="componentField">Model <sup><i class="fa fa-fw fa-question-circle" tooltip-placement="left" tooltip-append-to-body="true" uib-tooltip="The underlying model that this node represents"></i></sup></label>
           <input type="text" class="form-control" id="componentField" name="componentField" ng-model="selectedItem.component" ng-disabled="'true'" required />
+          
           <ng-messages class="text-danger" for="editForm.componentField.$error" role="alert">
-            <ng-message when="required">Component field is required</ng-message>
-         </ng-messages>
+            <ng-message when="required">Model field is required</ng-message>
+          </ng-messages>
         </div>
         
-        <!-- Label Field -->
+        <!-- Label Field (Always shown) -->
         <div class="form-group">
-          <label for="labelField">Label <sup><i class="fa fa-fw fa-question-circle" tooltip-placement="left" uib-tooltip="A friendly label for this item"></i></sup></label>
+          <label for="labelField">Label <sup><i class="fa fa-fw fa-question-circle" tooltip-placement="left" tooltip-append-to-body="true" uib-tooltip="A friendly label for this item"></i></sup></label>
           <input type="text" class="form-control" id="labelField" name="labelField" ng-model="selectedItem.metadata.label" />
         </div>
-        
-        <!-- Type Field -->
-        <div ng-if="selectedItem.component === 'inport' || selectedItem.component === 'outport'">
+          
+        <!-- Show additional fields for Edges only -->
+        <div ng-if="!selectedItem.component">
+          
+          <!-- 'Field Names' Field -->
           <div class="form-group">
-            <label for="typeField">Type <sup><i class="fa fa-fw fa-question-circle" tooltip-placement="left" uib-tooltip="The source/destination type for this value"></i></sup></label>
+            <label for="fieldNamesField">Field Names (optional) <sup><i class="fa fa-fw fa-question-circle" tooltip-placement="left" tooltip-append-to-body="true" uib-tooltip="If multiple fields are included, what are their names?"></i></sup></label>
+            <input type="text" class="form-control" id="fieldNamesField" name="fieldNamesField" ng-model="selectedItem.metadata.field_names" />
+          </div>
+          
+          <!-- 'Field Units' Field -->
+          <div class="form-group">
+            <label for="fieldUnitsField">Field Units (optional) <sup><i class="fa fa-fw fa-question-circle" tooltip-placement="left" tooltip-append-to-body="true" uib-tooltip="If multiple fields are included, what are their units?"></i></sup></label>
+            <input type="text" class="form-control" id="fieldUnitsField" name="fieldUnitsField" ng-model="selectedItem.metadata.field_units" />
+          </div>
+        </div>
+        
+        <!-- Show additional fields for InPorts / OutPorts only -->
+        <div ng-if="selectedItem.component === 'inport' || selectedItem.component === 'outport'">
+          <!-- Type Field -->
+          <div class="form-group">
+            <label for="typeField">Type <sup><i class="fa fa-fw fa-question-circle" tooltip-placement="left" tooltip-append-to-body="true" uib-tooltip="The source/destination type for this value"></i></sup></label>
             <select type="text" class="form-control" id="typeField" name="typeField" ng-model="selectedItem.metadata.type" required>
                 <option>File</option>
                 <option>Queue</option>
             </select>
             
             <ng-messages class="text-danger" for="editForm.typeField.$error" role="alert">
-              <ng-message when="required">Edge type is required</ng-message>
+              <ng-message when="required">{{ selectedItem.component === 'outport' ? 'Output' : 'Input' }} Type is required</ng-message>
             </ng-messages>
           </div>
           
           <!-- Value Field -->
-          <div class="form-group" ng-if="selectedItem.component === 'inport' || selectedItem.component === 'outport'">
-            <label for="nameField">Value <sup><i class="fa fa-fw fa-question-circle" tooltip-placement="left" uib-tooltip="The source/destination name of this input/output"></i></sup></label>
+          <div class="form-group">
+            <label for="nameField">Value <sup><i class="fa fa-fw fa-question-circle" tooltip-placement="left" tooltip-append-to-body="true" uib-tooltip="The source/destination name of this input/output"></i></sup></label>
             <input type="text" class="form-control" id="nameField" name="nameField" ng-model="selectedItem.metadata.name" required />
             
             <ng-messages class="text-danger" for="editForm.nameField.$error" role="alert">
-              <ng-message when="required">Source/destination name is required</ng-message>
+              <ng-message when="required">{{ selectedItem.component === 'inport' ?  'Input' : 'Output' }} {{ selectedItem.metadata.type === 'File' ? 'path' : 'name' }} is required</ng-message>
             </ng-messages>
+          </div>
+          
+          <!-- Read Method Field -->
+          <div class="form-group" ng-if="selectedItem.component === 'inport'">
+            <label for="readMethField">Read Method (optional) <sup><i class="fa fa-fw fa-question-circle" tooltip-placement="left" tooltip-append-to-body="true" uib-tooltip="How should this input be parsed?"></i></sup></label>
+            <select type="text" class="form-control" id="readMethField" name="readMethField" ng-model="selectedItem.metadata.read_meth">
+                <option>table</option>
+                <option>table_array</option>
+                <option>pandas</option>
+                <option>line</option>
+            </select>
+          </div>
+          
+          <!-- Write Method Field -->
+          <div class="form-group" ng-if="selectedItem.component === 'outport'">
+            <label for="writeMethField">Write Method (optional) <sup><i class="fa fa-fw fa-question-circle" tooltip-placement="left" tooltip-append-to-body="true" uib-tooltip="How should we format this output value?"></i></sup></label>
+            <select type="text" class="form-control" id="writeMethField" name="writeMethField" ng-model="selectedItem.metadata.write_meth">
+                <option>table</option>
+                <option>table_array</option>
+                <option>pandas</option>
+                <option>line</option>
+            </select>
           </div>
         </div>
         
-        <!-- Metadata Field: X -->
-        <div class="form-group">
-          <label for="xField">X Position <sup><i class="fa fa-fw fa-question-circle" tooltip-placement="left" uib-tooltip="The horizontal position of this node on the canvas"></i></sup></label>
-          <input type="number" class="form-control" id="xField" name="xField" ng-model="selectedItem.metadata.x" required />
-          <ng-messages class="text-danger" for="editForm.xField.$error" role="alert">
-            <ng-message when="required">X field is required</ng-message>
-          </ng-messages>
+        <!-- Metadata Field: X (Nodes only) -->
+        <div ng-if="selectedItem.component">
+          <div class="form-group" ng-if="DEBUG">
+            <label for="xField">X Position <sup><i class="fa fa-fw fa-question-circle" tooltip-placement="left" uib-tooltip="The horizontal position of this node on the canvas"></i></sup></label>
+            <input type="number" class="form-control" id="xField" name="xField" ng-model="selectedItem.metadata.x" required />
+            <ng-messages class="text-danger" for="editForm.xField.$error" role="alert">
+              <ng-message when="required">X field is required</ng-message>
+            </ng-messages>
+          </div>
+          
+          <!-- Metadata Field: Y (Nodes only) -->
+          <div class="form-group" ng-if="DEBUG">
+            <label for="yField">Y Position <sup><i class="fa fa-fw fa-question-circle" tooltip-placement="left" uib-tooltip="The vertical position of this node on the canvas"></i></sup></label>
+            <input type="number" class="form-control" id="yField" name="yField" ng-model="selectedItem.metadata.y" required />
+            <ng-messages class="text-danger" for="editForm.yField.$error" role="alert">
+              <ng-message when="required">Y field is required</ng-message>
+            </ng-messages>
+          </div>
         </div>
-        
-        <!-- Metadata Field: Y -->
-        <div class="form-group" >
-          <label for="yField">Y Position <sup><i class="fa fa-fw fa-question-circle" tooltip-placement="left" uib-tooltip="The vertical position of this node on the canvas"></i></sup></label>
-          <input type="number" class="form-control" id="yField" name="yField" ng-model="selectedItem.metadata.y" required />
-          <ng-messages class="text-danger" for="editForm.yField.$error" role="alert">
-            <ng-message when="required">Y field is required</ng-message>
-          </ng-messages>
-        </div>
-        
-        <!-- Save / Cancel -->
-        <div class="pull-right">
-          <button id="saveBtn" class="btn btn-lg btn-primary" type="submit" ng-disabled="editForm.$invalid"><i class="fa fa-fw fa-save"></i> Save</button>
-          <button id="cancelBtn" class="btn btn-lg btn-danger" type="button" ng-click="cancelEdit()"><i class="fa fa-fw fa-ban"></i> Cancel</button>
-        </div>
-      </form>
+      </div>
       
-    </div>
+      <!-- Save / Cancel -->
+      <div id="editSidebarButtons" class="pull-right">
+        <button id="saveBtn" class="btn btn-lg btn-primary" type="submit" ng-disabled="editForm.$invalid"><i class="fa fa-fw fa-save"></i> Save</button>
+        <button id="cancelBtn" class="btn btn-lg btn-danger" type="button" ng-click="cancelEdit()"><i class="fa fa-fw fa-ban"></i> Cancel</button>
+      </div>
+    </form>
+    
   </div>
 </section>

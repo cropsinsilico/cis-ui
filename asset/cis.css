@@ -12,25 +12,74 @@ html, body {
   height: 100%;
 }
 body {
-  /*overflow: hidden;*/
+  /*background-color: hsl(189, 47%, 6%);*/
+  font-family: "SourceCodePro",Helvetica,Arial,sans-serif;
+  overflow: hidden;
 }
 .navbar {
+  /*background-color: #e8e8e8;*/
   margin-bottom: 0;
+  border-radius: 0;
+  z-index:1001;
 }
 .brand-link, .navbar-text, .dropdown-toggle {
   cursor: pointer;
 }
-#editor {
-  background-color: hsl(189, 47%, 6%);
-  position: absolute;
+.libraryHeader {
+  margin-left: 5px;
+}
+#editorContainer {
+  padding: 0;
+}
+#modelPalette {
+  position: fixed; 
+  left: 15px; 
+  top: 50px;
+  background-color: #f8f8f8;
+  border: dashed black 1px;
+  border-radius: 0 0 10px 10px;
+  padding: 4px;
+}
+#buttonBar {
+  background-color: #f8f8f8;
+  border: dashed black 1px;
+  border-radius: 0 0 10px 10px;
+  padding: 10px;
+  position: fixed; 
+  right: 15vw; 
+  top: 50px;
+}
+#editSidebarContents {
+  overflow-y: auto;
+}
+#editSidebar {
+  background-color: #f8f8f8;
+  border-radius: 10px 0 0 10px;
+  border: dashed black 1px;
+  padding: 5px;
+  max-height: 70vh;
+  position: fixed;
+  right: 0;
+  top: 20%;
+}
+.app-svg {
+  position: fixed !important;
+  background-color: transparent;
   font-family: "SourceCodePro",Helvetica,Arial,sans-serif;
+}
+#testing {
+  position: fixed;
   top: 0;
   left: 0;
 }
-#testing {
-  position: absolute;
-  top: 0;
-  left: 0;
+
+#loading {
+  position: fixed;
+  top: 70px;
+  left: 20px;
+  background-color: white;
+  padding: 10px;
+  border-radius: 5px;
 }
 
 .draggable {
@@ -64,23 +113,6 @@ body {
   display: block;
 }
 
-#showBtn {
-  position: absolute;
-  bottom:0;
-  left:0;
-  margin-left: 110px;
-  padding-left: 20px;
-  padding-right: 20px;
-  
-}
-
-#canvas-area {
-  vertical-align: top;
-}
-
-#model-area {
-  z-index: 1001;
-}
 
 .no-whitespace {
   margin: 0;
@@ -121,18 +153,4 @@ slider {
 
 button {
   margin: 10px;
-}
-
-#loading {
-  position: absolute;
-  top: 10px;
-  left: 10px;
-  background-color: white;
-  padding: 10px;
-  border-radius: 5px;
-}
-
-#editSidebar {
-  background-color: #f8f8f8;
-  height: 94vh;
 }

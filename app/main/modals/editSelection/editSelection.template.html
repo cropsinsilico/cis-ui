@@ -1,0 +1,139 @@
+<!-- The "Edit Selection" Modal -->
+<section id="editModal">
+  <div class="modal-header">
+    <button id="closeBtn" type="button" class="btn btn-xs btn-default pull-right" 
+        data-dismiss="modal" aria-label="Close" ng-click="close()">
+      <i class="fa fa-fw fa-times"></i>
+    </button>
+    <h4 class="modal-title pull-left">Edit {{ selectedItem.metadata.label || selectedItem.id }}</h4>
+  </div>
+  
+  <div class="modal-body">
+    <div class="row">
+      <div class="col-sm-12">
+        <form role="form" name="editForm" ng-submit="saveEdit()">
+          
+          <!-- ID Field (Nodes only) -->
+          <div class="form-group" ng-if="DEBUG && selectedItem.component">
+              <label for="idField">ID <sup><i class="fa fa-fw fa-question-circle" tooltip-placement="left" tooltip-append-to-body="true" uib-tooltip="The unique random id of this node"></i></sup></label>
+              <input type="text" class="form-control" id="idField" name="idField" ng-model="selectedItem.id" ng-disabled="'true'" required />
+          </div>
+          
+          
+          <!-- Component Field (Nodes only) -->
+          <!-- FIXME: this should probably use <select> instead of <input>, 
+            although it is currently disabled -->
+          <div class="form-group" ng-if="DEBUG && selectedItem.component">
+            <label for="componentField">Model <sup><i class="fa fa-fw fa-question-circle" tooltip-placement="left" tooltip-append-to-body="true" uib-tooltip="The underlying model that this node represents"></i></sup></label>
+            <input type="text" class="form-control" id="componentField" name="componentField" ng-model="selectedItem.component" ng-disabled="'true'" required />
+            
+            <ng-messages class="text-danger" for="editForm.componentField.$error" role="alert">
+              <ng-message when="required">Model field is required</ng-message>
+            </ng-messages>
+          </div>
+          
+          <!-- Label Field (Always shown) -->
+          <div class="form-group">
+            <label for="labelField">Label <sup><i class="fa fa-fw fa-question-circle" tooltip-placement="left" tooltip-append-to-body="true" uib-tooltip="A friendly label for this item"></i></sup></label>
+            <input type="text" class="form-control" id="labelField" name="labelField" ng-model="selectedItem.metadata.label" />
+          </div>
+            
+          <!-- Show additional fields for Edges only -->
+          <div ng-if="!selectedItem.component">
+            
+            <!-- 'Field Names' Field -->
+            <div class="form-group">
+              <label for="fieldNamesField">Field Names (optional) <sup><i class="fa fa-fw fa-question-circle" tooltip-placement="left" tooltip-append-to-body="true" uib-tooltip="If multiple fields are included, what are their names?"></i></sup></label>
+              <input type="text" class="form-control" id="fieldNamesField" name="fieldNamesField" ng-model="selectedItem.metadata.field_names" />
+            </div>
+            
+            <!-- 'Field Units' Field -->
+            <div class="form-group">
+              <label for="fieldUnitsField">Field Units (optional) <sup><i class="fa fa-fw fa-question-circle" tooltip-placement="left" tooltip-append-to-body="true" uib-tooltip="If multiple fields are included, what are their units?"></i></sup></label>
+              <input type="text" class="form-control" id="fieldUnitsField" name="fieldUnitsField" ng-model="selectedItem.metadata.field_units" />
+            </div>
+          </div>
+          
+          <!-- Show additional fields for InPorts / OutPorts only -->
+          <div ng-if="selectedItem.component === 'inport' || selectedItem.component === 'outport'">
+            <!-- Type Field -->
+            <div class="form-group">
+              <label for="typeField">Type <sup><i class="fa fa-fw fa-question-circle" tooltip-placement="left" tooltip-append-to-body="true" uib-tooltip="The source/destination type for this value"></i></sup></label>
+              <select type="text" class="form-control" id="typeField" name="typeField" ng-model="selectedItem.metadata.type" required>
+                  <option>File</option>
+                  <option>Queue</option>
+              </select>
+              
+              <ng-messages class="text-danger" for="editForm.typeField.$error" role="alert">
+                <ng-message when="required">{{ selectedItem.component === 'outport' ? 'Output' : 'Input' }} Type is required</ng-message>
+              </ng-messages>
+            </div>
+            
+            <!-- Value Field -->
+            <div class="form-group">
+              <label for="nameField">Value <sup><i class="fa fa-fw fa-question-circle" tooltip-placement="left" tooltip-append-to-body="true" uib-tooltip="The source/destination name of this input/output"></i></sup></label>
+              <input type="text" class="form-control" id="nameField" name="nameField" ng-model="selectedItem.metadata.name" required />
+              
+              <ng-messages class="text-danger" for="editForm.nameField.$error" role="alert">
+                <ng-message when="required">Source/destination name is required</ng-message>
+              </ng-messages>
+            </div>
+            
+            <!-- Read Method Field -->
+            <div class="form-group" ng-if="selectedItem.component === 'inport'">
+              <label for="readMethField">Read Method (optional) <sup><i class="fa fa-fw fa-question-circle" tooltip-placement="left" tooltip-append-to-body="true" uib-tooltip="How should we parse this input value?"></i></sup></label>
+              <select type="text" class="form-control" id="readMethField" name="readMethField" ng-model="selectedItem.metadata.read_meth">
+                  <option>table</option>
+                  <option>table_array</option>
+                  <option>pandas</option>
+                  <option>line</option>
+              </select>
+            </div>
+            
+            <!-- Write Method Field -->
+            <div class="form-group" ng-if="selectedItem.component === 'outport'">
+              <label for="writeMethField">Write Method (optional) <sup><i class="fa fa-fw fa-question-circle" tooltip-placement="left" tooltip-append-to-body="true" uib-tooltip="How should we format this output value?"></i></sup></label>
+              <select type="text" class="form-control" id="writeMethField" name="writeMethField" ng-model="selectedItem.metadata.write_meth">
+                  <option>table</option>
+                  <option>table_array</option>
+                  <option>pandas</option>
+                  <option>line</option>
+              </select>
+            </div>
+          </div>
+          
+          <!-- Metadata Field: X (Nodes only) -->
+          <div ng-if="selectedItem.component">
+            <div class="form-group" ng-if="DEBUG">
+              <label for="xField">X Position <sup><i class="fa fa-fw fa-question-circle" tooltip-placement="left" uib-tooltip="The horizontal position of this node on the canvas"></i></sup></label>
+              <input type="number" class="form-control" id="xField" name="xField" ng-model="selectedItem.metadata.x" required />
+              <ng-messages class="text-danger" for="editForm.xField.$error" role="alert">
+                <ng-message when="required">X field is required</ng-message>
+              </ng-messages>
+            </div>
+            
+            <!-- Metadata Field: Y (Nodes only) -->
+            <div class="form-group" ng-if="DEBUG">
+              <label for="yField">Y Position <sup><i class="fa fa-fw fa-question-circle" tooltip-placement="left" uib-tooltip="The vertical position of this node on the canvas"></i></sup></label>
+              <input type="number" class="form-control" id="yField" name="yField" ng-model="selectedItem.metadata.y" required />
+              <ng-messages class="text-danger" for="editForm.yField.$error" role="alert">
+                <ng-message when="required">Y field is required</ng-message>
+              </ng-messages>
+            </div>
+          </div>
+          
+          <!-- Save / Cancel -->
+          <div class="pull-right">
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  
+  <div class="modal-footer">
+    <div class="row">
+      <button id="saveBtn" class="btn btn-primary" type="submit" ng-click="save()" ng-disabled="editForm.$invalid"><i class="fa fa-fw fa-save"></i> Save</button>
+      <button id="cancelBtn" class="btn btn-danger" type="button" ng-click="close()"><i class="fa fa-fw fa-ban"></i> Cancel</button>
+    </div>
+  </div>
+</section>
