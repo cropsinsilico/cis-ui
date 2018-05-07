@@ -48,7 +48,8 @@
         <!-- Collect the nav links, forms, and other content for toggling -->
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
           <ul class="nav navbar-nav">
-            <li><a href="https://goo.gl/forms/AcEhlzvNFsaVAg3H3" target="_blank">Submit a New Model</a></li>
+            <!--<li><a href="https://goo.gl/forms/AcEhlzvNFsaVAg3H3" target="_blank">Submit a New Model</a></li>-->
+            <li><a href="#/" ng-controller="MainCtrl" ng-click="submitNewModel()">Submit a New Model</a></li>
           </ul>
           <ul class="nav navbar-nav navbar-right">
             <li class="dropdown">
@@ -118,9 +119,10 @@
     <script src="app/cis.module.js"></script>
     <script src="app/editor.directive.js"></script>
     <script src="app/main/main.controller.js"></script>
-    <script src="app/main/modals/exportJson.controller.js"></script>
-    <script src="app/main/modals/generateYaml.controller.js"></script>
-    <script src="app/main/modals/editSelection.controller.js"></script>
+    <script src="app/main/modals/addModel/addModel.controller.js"></script>
+    <script src="app/main/modals/exportJson/exportJson.controller.js"></script>
+    <script src="app/main/modals/generateYaml/generateYaml.controller.js"></script>
+    <script src="app/main/modals/editSelection/editSelection.controller.js"></script>
     <script src="app/swagger/swagger.controller.js"></script>
   </body>
 </html>

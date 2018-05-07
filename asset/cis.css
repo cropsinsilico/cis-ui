@@ -82,6 +82,14 @@ body {
   border-radius: 5px;
 }
 
+#iconField {
+  font-family: 'FontAwesome', 'Roboto';
+}
+
+#iconField > option {
+  font-family: 'FontAwesome', 'Roboto';
+}
+
 .draggable {
   font: bold 20px sans-serif;
   width: 200px;
