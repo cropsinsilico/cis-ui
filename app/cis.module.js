@@ -128,11 +128,11 @@ angular.module('cis', [ 'ngMessages', 'ngRoute', 'cis-api',
       templateUrl: 'app/main/main.template.html',
       pageTrack: '/'
     })
-    /*.when('/swagger', {
+    .when('/swagger', {
       title: 'Crops in Silico API',
       controller: 'SwaggerCtrl',
       templateUrl: 'app/swagger/swagger.template.html',
       pageTrack: '/swagger'
-    })*/
+    })
     .otherwise('/');
 }]);
