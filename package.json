@@ -19,7 +19,9 @@
   "dependencies": {
     "angular": "1.5.11",
     "angular-clipboard": "^1.4.2",
+    "angular-cookies": "^1.5.11",
     "angular-messages": "1.5.11",
+    "angular-resource": "^1.5.11",
     "angular-route": "1.5.11",
     "angular-slider": "0.2.3",
     "angular-swagger-ui": "^0.5.4",

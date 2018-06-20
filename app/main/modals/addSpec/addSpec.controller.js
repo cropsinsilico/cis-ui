@@ -4,18 +4,20 @@ angular
 .module('cis')
 
 /**
- * The Controller for our "Export JSON" Modal Window
+ * The Controller for our "Add Spec" Modal Window
  * 
  * @author lambert8
  * @see https://opensource.ncsa.illinois.edu/confluence/display/~lambert8/3.%29+Controllers%2C+Scopes%2C+and+Partial+Views
  */
-.controller('AddModelCtrl', [ '$scope', '$log', '$uibModalInstance', '_',
-    function($scope, $log, $uibModalInstance, _) {
+.controller('AddSpecCtrl', [ '$scope', '$log', '$uibModalInstance', '_', 'specs',
+    function($scope, $log, $uibModalInstance, _, specs) {
   "use strict";
   
   $scope.newInput = '';
   $scope.newOutput = '';
   $scope.modelArgsString = ''; // TODO: Parse this into an array on submit
+  
+  $scope.specs = specs;
   
   $scope.newModel = {
     // model metadata
@@ -36,6 +38,11 @@ angular
     inputs: [],
     outputs: [],
   };
+  
+  /** Returns true if a spec with this name already exists */
+  $scope.nameIsNotUnique = function(name) {
+    return _.find($scope.specs, [ 'name', name.toLowerCase() ]);
+  };
 
   $scope.submit = function() {
     $log.debug("Closing modal with success!");
@@ -47,6 +54,8 @@ angular
     } else {
       model.args = _.split($scope.modelArgsString.args, ' ');
     }
+    
+    $scope.newModel.name = $scope.newModel.label.toLowerCase();
     
     $uibModalInstance.close(model);
   };

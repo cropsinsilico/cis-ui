@@ -145,6 +145,7 @@ angular.module('cis')
                     menus: contextMenus,
                     library: scope.library,
                 };
+                
                 $log.info('rendering', props);
                 
                 // Save internal state

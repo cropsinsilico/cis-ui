@@ -11,14 +11,13 @@
   <div class="modal-body">
     <div class="row">
       <div class="col-sm-12">
-        <form role="form" name="addModelForm" >
-          
+        <form role="form" name="addSpecForm">
           <!-- Full Name Field (aka Description) -->
           <div class="form-group">
             <label for="descriptionField">Full Name<span class="text-danger">*</span> <sup><i class="fa fa-fw fa-question-circle" tooltip-placement="left" tooltip-append-to-body="true" uib-tooltip="The full name of this model."></i></sup></label>
             <input type="text" class="form-control" id="descriptionField" name="descriptionField" ng-model="newModel.description" required />
             
-            <ng-messages class="text-danger validation-text" ng-if="!addModelForm.descriptionField.$pristine" for="addModelForm.descriptionField.$error" role="alert">
+            <ng-messages class="text-danger validation-text" ng-if="!addSpecForm.descriptionField.$pristine" for="addSpecForm.descriptionField.$error" role="alert">
               <ng-message when="required">Full name is required</ng-message>
             </ng-messages>
           </div>
@@ -28,9 +27,12 @@
             <label for="labelField">Short Name<span class="text-danger">*</span> <sup><i class="fa fa-fw fa-question-circle" tooltip-placement="left" tooltip-append-to-body="true" uib-tooltip="The short name of this model."></i></sup></label>
             <input type="text" class="form-control" id="labelField" name="labelField" ng-model="newModel.label" required />
             
-            <ng-messages class="text-danger validation-text" ng-if="!addModelForm.labelField.$pristine" for="addModelForm.labelField.$error" role="alert">
+            <ng-messages class="text-danger validation-text" ng-if="!addSpecForm.labelField.$pristine" for="addSpecForm.labelField.$error" role="alert">
               <ng-message when="required">Short name is required</ng-message>
             </ng-messages>
+          </div>
+          <div class="text-danger" style="text-align:center;" ng-if="nameIsNotUnique(newModel.label)">
+            Label must be unique - the chosen label conflicts with an existing spec ({{ nameIsNotUnique(newModel.label).content.label}})
           </div>
           
           <!-- Icon Field -->
@@ -826,7 +828,7 @@
           		<option value="youtube-square">&#xf166; youtube-square</option>
             </select>
             
-            <ng-messages class="text-danger validation-text" ng-if="!addModelForm.iconField.$pristine" for="addModelForm.iconField.$error" role="alert">
+            <ng-messages class="text-danger validation-text" ng-if="!addSpecForm.iconField.$pristine" for="addSpecForm.iconField.$error" role="alert">
               <ng-message when="required">Icon is required</ng-message>
             </ng-messages>
           </div>
@@ -843,7 +845,7 @@
                 <option>ModelDriver</option>
               </select>
               
-              <ng-messages class="text-danger validation-text" ng-if="!addModelForm.driverField.$pristine" for="addModelForm.driverField.$error" role="alert">
+              <ng-messages class="text-danger validation-text" ng-if="!addSpecForm.driverField.$pristine" for="addSpecForm.driverField.$error" role="alert">
                 <ng-message when="required">Model Driver is required</ng-message>
               </ng-messages>
               
@@ -862,7 +864,7 @@
             <label for="argsField">Args<span class="text-danger">*</span> <sup><i class="fa fa-fw fa-question-circle" tooltip-placement="left" tooltip-append-to-body="true" uib-tooltip="The arguments to pass to the selected model driver - usually this is the command necessary to execute the model."></i></sup></label>
             <input type="text" class="form-control" id="argsField" name="argsField" ng-model="modelArgsString" required />
             
-            <ng-messages class="text-danger validation-text" ng-if="!addModelForm.argsField.$pristine" for="addModelForm.argsField.$error" role="alert">
+            <ng-messages class="text-danger validation-text" ng-if="!addSpecForm.argsField.$pristine" for="addSpecForm.argsField.$error" role="alert">
               <ng-message when="required">Model arguments are required</ng-message>
             </ng-messages>
           </div>
@@ -950,7 +952,7 @@
                   </div>
               </div>
           </div>
-          <div class="text-danger" ng-if="newModel.inputs.length === 0 && newModel.outputs.length === 0">
+          <div class="text-danger" style="text-align:center;" ng-if="newModel.inputs.length === 0 && newModel.outputs.length === 0">
             You must provide at least one input name or output name of this model.
           </div>
         </form>
@@ -962,7 +964,7 @@
     <div class="row">
       <small><span class="text-danger">*</span> denotes a required field</small>
       <button id="cancelBtn" type="button" class="btn btn-default" data-dismiss="modal" ng-click="close()"><i class="fa fa-fw fa-times"></i> Close</button>
-      <button id="submitBtn" type="submit" class="btn btn-primary" ng-disabled="addModelForm.$invalid || (newModel.inputs.length === 0 && newModel.outputs.length === 0)" data-dismiss="modal" ng-click="submit()"><i class="fa fa-fw fa-send"></i> Submit</button>
+      <button id="submitBtn" type="submit" class="btn btn-primary" ng-disabled="nameIsNotUnique(newModel.label) || addSpecForm.$invalid || (newModel.inputs.length === 0 && newModel.outputs.length === 0)" data-dismiss="modal" ng-click="submit()"><i class="fa fa-fw fa-send"></i> Submit</button>
     </div>
   </div>
 </section>

@@ -52,6 +52,8 @@
             <li><a href="#/" ng-controller="MainCtrl" ng-click="submitNewModel()">Submit a New Model</a></li>
           </ul>
           <ul class="nav navbar-nav navbar-right">
+            <li ng-controller="LoginCtrl" ng-if="!isLoggedIn()"><a href="#/login">Log In</a></li>
+            <!--<li ng-controller="LoginCtrl" ng-if="isLoggedIn()"><button href="#/login" ng-click="logout()">Log Out</button></li>-->
             <li class="dropdown">
               <a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><i class="fa fa-fw fa-question-circle-o"></i> Help</a>
               <ul class="dropdown-menu">
@@ -90,6 +92,8 @@
     <script src="node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
     <script src="node_modules/angular/angular.js"></script>
     <script src="node_modules/angular-route/angular-route.min.js"></script>
+    <script src="node_modules/angular-cookies/angular-cookies.min.js"></script>
+    <script src="node_modules/angular-resource/angular-resource.min.js"></script>
     <script src="node_modules/angular-messages/angular-messages.min.js"></script>
     <script src="node_modules/angular-ui-bootstrap/dist/ui-bootstrap-tpls.js"></script>
     
@@ -117,9 +121,10 @@
     <link rel="stylesheet" href="asset/cis.css">
     <script src="app/cis-api.js"></script>
     <script src="app/cis.module.js"></script>
+    <script src="app/login/login.controller.js"></script>
     <script src="app/editor.directive.js"></script>
     <script src="app/main/main.controller.js"></script>
-    <script src="app/main/modals/addModel/addModel.controller.js"></script>
+    <script src="app/main/modals/addSpec/addSpec.controller.js"></script>
     <script src="app/main/modals/exportJson/exportJson.controller.js"></script>
     <script src="app/main/modals/generateYaml/generateYaml.controller.js"></script>
     <script src="app/main/modals/editSelection/editSelection.controller.js"></script>

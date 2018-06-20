@@ -3,13 +3,13 @@
 // React + AngularJS: see https://blog.rapid7.com/2016/02/03/combining-angularjs-and-reactjs-for-better-applications/
 
 
-angular.module('cis', [ 'ngMessages', 'ngRoute', 'cis-api', 
+angular.module('cis', [ 'ngMessages', 'ngResource', 'ngRoute', 'ngCookies', 'cis-api', 
   'angular-clipboard', 'ui.bootstrap', 'ui.slider', 'swaggerUi' ])
 
 /** Enable DEBUG mode? */
-.constant('DEBUG', false)
+.constant('DEBUG', true)
 
-/** Set up our connection to the API server */
+/** Set up our connection to REST API */
 .constant('ApiUri', '/api/v1')
 .factory('CisApi', [ 'ApiUri', 'ApiServer', (ApiUri, ApiServer) => {
   return new ApiServer(ApiUri);
@@ -17,19 +17,16 @@ angular.module('cis', [ 'ngMessages', 'ngRoute', 'cis-api',
 
 .factory('_', [ function() { return window._; } ])
 
-/** some helpers/wrappers to cache data we receive from the server */
-.factory('Models', [ '$http', function($http) {
-  return { get: function() { return $http.get('./data/models.json'); } };
+.factory('OAuthProviderService', [ '$resource', 'ApiUri', function ($resource, ApiUri) {
+    return $resource(ApiUri + '/oauth/provider?redirect=https://www.cis.ndslabs.org', {});
 }])
 
-// FIXME: Do we still need this?
-.factory('Nodes', [ '$http', function($http) {
-  return { get: function() { return $http.get('./data/nodes.json'); } };
+.factory('SpecService', [ '$resource', 'ApiUri', function ($resource, ApiUri) {
+    return $resource(ApiUri + '/spec/:id', {id: "@_id"});
 }])
 
-// FIXME: Do we still need this?
-.factory('Links', [ '$http', function($http) {
-  return { get: function() { return $http.get('./data/links.json'); } };
+.factory('GraphService', [ '$resource', 'ApiUri', function ($resource, ApiUri) {
+    return $resource(ApiUri + '/graph', {});
 }])
 
 .factory('Clipboard', function() {
@@ -108,8 +105,8 @@ angular.module('cis', [ 'ngMessages', 'ngRoute', 'cis-api',
 })
 
 /** Configure routes for our module */
-.config([ '$locationProvider', '$logProvider', '$routeProvider', 'DEBUG',
-    function($locationProvider, $logProvider, $routeProvider, DEBUG) {
+.config([ '$locationProvider', '$logProvider', '$routeProvider', '$provide', '$httpProvider', 'DEBUG',
+    function($locationProvider, $logProvider, $routeProvider, $provide, $httpProvider, DEBUG) {
   "use strict";
   
   // TODO: Google Analytics?
@@ -120,6 +117,66 @@ angular.module('cis', [ 'ngMessages', 'ngRoute', 'cis-api',
   // FIXME: Enable HTML 5 mode
   $locationProvider.html5Mode(false);
   
+  // Register an HTTP interceptor to handle passing and checking our auth token
+  $provide.factory('authHttpInterceptor', [ '$q', '$log', '$location', '$cookies', '_', 'ApiUri', 
+      function($q, $log, $location, $cookies, _, ApiUri) {
+    return {
+            // Attach our auth token to each outgoing request (to the api server)
+      'request': function(config) {
+        // If this is a request for our API server
+        if (config && _.includes(config.url, ApiUri)) {
+          // If this was *not* an attempt to authenticate
+          if (!_.includes(config.url, '/user/authentication')) {
+            // We need to attach our token to this request
+            config.headers['Girder-Token'] = $cookies.get('girderToken', {
+              domain: 'girder.cis.ndslabs.org'
+            });
+          }
+        }
+        return config;
+      },
+      'requestError': function(rejection) {
+        if (_.includes(rejection.config.url, ApiUri)) {
+          $log.error("Request error encountered: " + rejection.config.url);
+        }
+        return $q.reject(rejection);
+      },
+      'response': function(response) {
+        // If this is a response from our API server
+        if (_.includes(response.config.url, ApiUri)) {
+          // If this was in response to a Girder /user/authentication request
+          if (_.includes(response.config.url, '/user/authentication') && response.config.method === 'GET') {
+            // This response should contain a new token, so save it as a cookie
+            //$cookies.put('Girder-Token', response.data.authToken.token, CookieOptions);
+          }
+        }
+        
+        return response;
+      },
+      // Route to login page if our API server returns a 401
+      'responseError': function(rejection) {
+        // If this is a response from our API server
+        if (_.includes(rejection.config.url, ApiUri)) {
+          $log.error("Response error encountered: " + rejection.config.url);
+        
+          // Read out the HTTP error code
+          var status = rejection.status;
+          
+          // Handle HTTP 401: Not Authorized - User needs to provide credentials
+          if (status == 401) {
+            $log.debug("Routing to login...");
+            $location.path('/login')
+          }
+        }
+        
+        // otherwise
+        return $q.reject(rejection);
+      }
+    };
+  }]);
+  
+  $httpProvider.interceptors.push('authHttpInterceptor');
+  
   // Set up the route(s) for our module
   $routeProvider
     .when('/', {
@@ -128,11 +185,11 @@ angular.module('cis', [ 'ngMessages', 'ngRoute', 'cis-api',
       templateUrl: 'app/main/main.template.html',
       pageTrack: '/'
     })
-    .when('/swagger', {
-      title: 'Crops in Silico API',
-      controller: 'SwaggerCtrl',
-      templateUrl: 'app/swagger/swagger.template.html',
-      pageTrack: '/swagger'
+    .when('/login', {
+      title: 'Sign In',
+      controller: 'LoginCtrl',
+      templateUrl: 'app/login/login.template.html',
+      pageTrack: '/login'
     })
     .otherwise('/');
 }]);
