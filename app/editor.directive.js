@@ -168,7 +168,7 @@ angular.module('cis')
             // Re-render if the graph changes
             scope.$watch("graph", function(newValue, oldValue) { 
                 // Check that new graph is valid
-                if (newValue.nodes && newValue.nodes.length) {
+                if (newValue && newValue.nodes && newValue.nodes.length) {
                     $log.warn("Graph changed... rendering", newValue);
                     $log.warn("Old value was:", oldValue);
                     
