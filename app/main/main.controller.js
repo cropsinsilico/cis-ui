@@ -6,11 +6,29 @@ angular.module('cis')
 .constant('LocalStorageKeys', { edges: 'cis::edges', nodes: 'cis::nodes' })
 
 /** Our main view controller */
-.controller('MainCtrl', [ '$scope', '$window', '$timeout', '$q', '$http', '$log', '$uibModal', '_', 'DEBUG', 'TheGraph', 'SpecService', 'GraphService', 'LocalStorageKeys', 'TheGraphSelection',
-    function($scope, $window, $timeout, $q, $http, $log, $uibModal, _, DEBUG, TheGraph, SpecService, GraphService, LocalStorageKeys, TheGraphSelection) {
+.controller('MainCtrl', [ '$scope', '$window', '$timeout', '$q', '$http', '$log', '$uibModal', '_', 'DEBUG', 'TheGraph', 'SpecService', 'GraphService', 'LocalStorageKeys', 'TheGraphSelection', 'User',
+    function($scope, $window, $timeout, $q, $http, $log, $uibModal, _, DEBUG, TheGraph, SpecService, GraphService, LocalStorageKeys, TheGraphSelection, User) {
   "use strict";
   
   $scope.showPalette = true;
+  
+  $scope._ = _;
+  $scope.refresh = false;
+  
+  $scope.$watch(
+    // When we see the user profile change
+    function() { return User.profile; },
+    // Reload our list of specs
+    function(newValue, oldValue) { $scope.requerySpecs(); }
+  );
+  
+  $scope.getModelOptions = function(library) {
+    return _.omit(library, ['inport', 'outport'])
+  };
+  
+  $scope.getDataOptions = function(library) {
+    return [library['inport'], library['outport']]
+  };
   
   // Load up an empty graph
   let fbpGraph = TheGraph.fbpGraph;
@@ -21,6 +39,8 @@ angular.module('cis')
   // Enable DEBUG features?
   $scope.DEBUG = DEBUG;
   
+  $scope.library = {};
+  $scope.graph = new fbpGraph.Graph();
   
   // Fetch our model library
   $log.debug('Fetching models...');
@@ -28,14 +48,15 @@ angular.module('cis')
   $scope.height = height;
   $scope.width = width;
   $scope.graph = null;
-  SpecService.query().$promise.then(function(specs) {
-    $scope.library = [];
-    angular.forEach(specs, function(spec) {
-      $scope.library[spec.name] = spec;
+  ($scope.requerySpecs = function() {
+    SpecService.query().$promise.then(function(specs) {
+      var specContents = _.map(specs, 'content');
+      $scope.library = _.keyBy(specContents, 'name');
+      //
     });
-    $scope.graph = new fbpGraph.Graph();
-  });
-
+  })();
+  
+  $scope.graph = new fbpGraph.Graph();
   $scope.lastSavedNodes = [];
   $scope.lastSavedEdges = [];
   
@@ -126,13 +147,12 @@ angular.module('cis')
       var spec = SpecService.save({
         name: newModel.name,
         content: newModel
-      });
+      })
       
       spec.$promise.then(function() {
-        console.log("created successfully... synchronizing");
-        $scope.$apply(function() {
-          $scope.library = SpecService.query();
-        });
+        console.log("Syncing catalog...");
+        // FIXME: This does not currently work
+        $scope.requerySpecs();
       });
     }, function () {
       $log.info('Modal dismissed at: ' + new Date());
@@ -158,9 +178,9 @@ angular.module('cis')
   
   $scope.graphIsChanged = function() {
     let changed = false;
-    angular.forEach($scope.graph.nodes, function(node) {
+    /*angular.forEach($scope.graph.nodes, function(node) {
       
-    });
+    });*/
     
     return changed;
     //return $scope.lastSavedNodes !== $scope.graph.nodes || 
@@ -195,26 +215,6 @@ angular.module('cis')
   $scope.addOutport = function() {
     // Add a new outport to the graph, then select it for editing
     TheGraphSelection.selection = $scope.addNodeInstance($scope.library['outport']);
-  };
-  
-  /** Simple filter function */
-  $scope.getModelOptions = function(library) {
-    if (!library || !library.length) {
-      return [];
-    }
-    return _.omitBy(library, function(model) {
-      return model.name === 'inport' || model.name === 'outport';
-    });
-  };
-  
-  /** Simple filter function */
-  $scope.getDataOptions = function(library) {
-    if (!library || !library.length) {
-      return [];
-    }
-    let inport = _.find(library, ['name', 'inport']);
-    let outport = _.find(library, ['name', 'outport']);
-    return [inport, outport];
   };
   
   /** Simple random function */

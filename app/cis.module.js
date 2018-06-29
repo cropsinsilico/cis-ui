@@ -9,8 +9,18 @@ angular.module('cis', [ 'ngMessages', 'ngResource', 'ngRoute', 'ngCookies', 'cis
 /** Enable DEBUG mode? */
 .constant('DEBUG', true)
 
+.factory('User', [ function() { 
+  let userStore = {
+    profile: {}
+  };
+  
+  return userStore;
+}])
+
 /** Set up our connection to REST API */
 .constant('ApiUri', '/api/v1')
+.constant('AuthCookieName', 'girderToken')
+.constant('AuthHeaderName', 'Girder-Token')
 .factory('CisApi', [ 'ApiUri', 'ApiServer', (ApiUri, ApiServer) => {
   return new ApiServer(ApiUri);
 }])
@@ -19,6 +29,10 @@ angular.module('cis', [ 'ngMessages', 'ngResource', 'ngRoute', 'ngCookies', 'cis
 
 .factory('OAuthProviderService', [ '$resource', 'ApiUri', function ($resource, ApiUri) {
     return $resource(ApiUri + '/oauth/provider?redirect=https://www.cis.ndslabs.org', {});
+}])
+
+.factory('UserService', [ '$resource', 'ApiUri', function ($resource, ApiUri) {
+    return $resource(ApiUri + '/user/me', {});
 }])
 
 .factory('SpecService', [ '$resource', 'ApiUri', function ($resource, ApiUri) {
@@ -118,8 +132,8 @@ angular.module('cis', [ 'ngMessages', 'ngResource', 'ngRoute', 'ngCookies', 'cis
   $locationProvider.html5Mode(false);
   
   // Register an HTTP interceptor to handle passing and checking our auth token
-  $provide.factory('authHttpInterceptor', [ '$q', '$log', '$location', '$cookies', '_', 'ApiUri', 
-      function($q, $log, $location, $cookies, _, ApiUri) {
+  $provide.factory('authHttpInterceptor', [ '$q', '$log', '$location', '$cookies', 'AuthHeaderName', 'AuthCookieName', '_', 'ApiUri', 
+      function($q, $log, $location, $cookies, AuthHeaderName, AuthCookieName, _, ApiUri) {
     return {
             // Attach our auth token to each outgoing request (to the api server)
       'request': function(config) {
@@ -128,9 +142,7 @@ angular.module('cis', [ 'ngMessages', 'ngResource', 'ngRoute', 'ngCookies', 'cis
           // If this was *not* an attempt to authenticate
           if (!_.includes(config.url, '/user/authentication')) {
             // We need to attach our token to this request
-            config.headers['Girder-Token'] = $cookies.get('girderToken', {
-              domain: 'girder.cis.ndslabs.org'
-            });
+            config.headers[AuthHeaderName] = $cookies.get(AuthCookieName);
           }
         }
         return config;
@@ -164,8 +176,8 @@ angular.module('cis', [ 'ngMessages', 'ngResource', 'ngRoute', 'ngCookies', 'cis
           
           // Handle HTTP 401: Not Authorized - User needs to provide credentials
           if (status == 401) {
-            $log.debug("Routing to login...");
-            $location.path('/login')
+            //$log.debug("Routing to login...");
+            //$location.path('/login')
           }
         }
         

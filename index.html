@@ -46,16 +46,27 @@
         </div>
     
         <!-- Collect the nav links, forms, and other content for toggling -->
-        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1" ng-controller="LoginCtrl">
           <ul class="nav navbar-nav">
             <!--<li><a href="https://goo.gl/forms/AcEhlzvNFsaVAg3H3" target="_blank">Submit a New Model</a></li>-->
-            <li><a href="#/" ng-controller="MainCtrl" ng-click="submitNewModel()">Submit a New Model</a></li>
+            <li ng-if="user.email">
+              <a href="#/" ng-controller="MainCtrl" ng-click="submitNewModel()">Submit a New Model</a>
+            </li>
           </ul>
           <ul class="nav navbar-nav navbar-right">
-            <li ng-controller="LoginCtrl" ng-if="!isLoggedIn()"><a href="#/login">Log In</a></li>
-            <!--<li ng-controller="LoginCtrl" ng-if="isLoggedIn()"><button href="#/login" ng-click="logout()">Log Out</button></li>-->
+            <li ng-if="!user.email"><a href="#/" ng-click="signInWithGithub()">Log In</a></li>
+            <li class="dropdown" ng-if="user.email">
+              <a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+                <i class="fa fa-fw fa-user"></i> <span ng-bind="user.email"></span> <i class="fa fa-fw fa-caret-down"></i>
+              </a>
+              <ul class="dropdown-menu">
+                <li><a href="#/" ng-click="signOut()">Log Out</a></li>
+              </ul>
+            </li>
             <li class="dropdown">
-              <a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><i class="fa fa-fw fa-question-circle-o"></i> Help</a>
+              <a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+                <i class="fa fa-fw fa-question-circle-o"></i> <i class="fa fa-fw fa-caret-down"></i>
+              </a>
               <ul class="dropdown-menu">
                 <li><a href="#/swagger">API Reference</a></li>
                 <li><a target="_blank" href="https://github.com/cropsinsilico/cropsinsilico.github.io/blob/master/USER-GUIDE.md">User's Guide</a></li>
