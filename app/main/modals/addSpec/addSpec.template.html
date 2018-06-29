@@ -32,7 +32,7 @@
             </ng-messages>
           </div>
           <div class="text-danger" style="text-align:center;" ng-if="nameIsNotUnique(newModel.label)">
-            Label must be unique - the chosen label conflicts with an existing spec ({{ nameIsNotUnique(newModel.label).content.label}})
+            Short name must be unique - the chosen label conflicts with an existing spec ({{ nameIsNotUnique(newModel.label).label}})
           </div>
           
           <!-- Icon Field -->
@@ -897,12 +897,12 @@
           <div class="form-group">
               <label for="newInputField">Model Inputs<span class="text-danger">*</span> <sup><i class="fa fa-fw fa-question-circle" tooltip-placement="left" uib-tooltip="The exact names of any CisInputs ingested by your model."></i></sup></label>
               <ul class="fa-ul">
-                  <li ng-repeat="input in newModel.inputs" class="item">
+                  <li ng-repeat="input in newModel.inports" class="item">
                       <i class="fa-li fa fa-sign-in"></i>
                       <div class="row">
                           <div class="col-xs-8" id="inputText">{{ input }}</div>
                           <div class="col-xs-4">
-                              <button id="removeInputBtn" type="button" class="btn btn-xs btn-default pull-right" ng-click="newModel.inputs.splice(newModel.inputs.indexOf(input), 1)">
+                              <button id="removeInputBtn" type="button" class="btn btn-xs btn-default pull-right" ng-click="newModel.inports.splice(newModel.inports.indexOf(input), 1)">
                                   <i class="fa fa-fw fa-trash"></i>
                               </button>
                           </div>
@@ -916,7 +916,7 @@
                       <input id="newInputField" name="newInputField" class="form-control" ng-model="newInput" ng-pattern="" placeholder="Enter a new input name and click the add button to the right..." />
                   </div>
                   <div class="col-sm-1">
-                      <button id="addInputBtn" type="button" class="btn btn-primary btn-xs pull-right" ng-disabled="!newInput || (newModel.inputs && newModel.inputs.indexOf(newInput) !== -1)" ng-click="newModel.inputs.push(newInput);newInput=''">
+                      <button id="addInputBtn" type="button" class="btn btn-primary btn-xs pull-right" ng-disabled="!newInput || (newModel.inports && newModel.inports.indexOf(newInput) !== -1)" ng-click="newModel.inports.push(newInput);newInput=''">
                           <i class="fa fa-fw fa-plus"></i>
                       </button>
                   </div>
@@ -927,12 +927,12 @@
           <div class="form-group">
               <label for="newOutputField">Model Outputs<span class="text-danger">*</span> <sup><i class="fa fa-fw fa-question-circle" tooltip-placement="left" uib-tooltip="The exact names of any CisOutputs produced by your model."></i></sup></label>
               <ul class="fa-ul">
-                  <li ng-repeat="output in newModel.outputs" class="item">
+                  <li ng-repeat="output in newModel.outports" class="item">
                       <i class="fa-li fa fa-sign-out"></i>
                       <div class="row">
                           <div class="col-xs-8" id="outputText">{{ output }}</div>
                           <div class="col-xs-4">
-                              <button id="removeOutputBtn" type="button" class="btn btn-xs btn-default pull-right" ng-click="newModel.outputs.splice(newModel.outputs.indexOf(output), 1)">
+                              <button id="removeOutputBtn" type="button" class="btn btn-xs btn-default pull-right" ng-click="newModel.outports.splice(newModel.outports.indexOf(output), 1)">
                                   <i class="fa fa-fw fa-trash"></i>
                               </button>
                           </div>
@@ -946,13 +946,13 @@
                       <input id="newOutputField" name="newOutputField" class="form-control" ng-model="newOutput" placeholder="Enter a new output name and click the add button to the right..." />
                   </div>
                   <div class="col-sm-1">
-                      <button id="addOutputBtn" type="button" class="btn btn-primary btn-xs pull-right" ng-disabled="!newOutput || (newModel.outputs && newModel.outputs.indexOf(newOutput) !== -1)" ng-click="newModel.outputs.push(newOutput);newOutput=''">
+                      <button id="addOutputBtn" type="button" class="btn btn-primary btn-xs pull-right" ng-disabled="!newOutput || (newModel.outports && newModel.outports.indexOf(newOutput) !== -1)" ng-click="newModel.outports.push(newOutput);newOutput=''">
                           <i class="fa fa-fw fa-plus"></i>
                       </button>
                   </div>
               </div>
           </div>
-          <div class="text-danger" style="text-align:center;" ng-if="newModel.inputs.length === 0 && newModel.outputs.length === 0">
+          <div class="text-danger" style="text-align:center;" ng-if="newModel.inports.length === 0 && newModel.outports.length === 0">
             You must provide at least one input name or output name of this model.
           </div>
         </form>
@@ -964,7 +964,7 @@
     <div class="row">
       <small><span class="text-danger">*</span> denotes a required field</small>
       <button id="cancelBtn" type="button" class="btn btn-default" data-dismiss="modal" ng-click="close()"><i class="fa fa-fw fa-times"></i> Close</button>
-      <button id="submitBtn" type="submit" class="btn btn-primary" ng-disabled="nameIsNotUnique(newModel.label) || addSpecForm.$invalid || (newModel.inputs.length === 0 && newModel.outputs.length === 0)" data-dismiss="modal" ng-click="submit()"><i class="fa fa-fw fa-send"></i> Submit</button>
+      <button id="submitBtn" type="submit" class="btn btn-primary" ng-disabled="nameIsNotUnique(newModel.label) || addSpecForm.$invalid || (newModel.inports.length === 0 && newModel.outports.length === 0)" data-dismiss="modal" ng-click="submit()"><i class="fa fa-fw fa-send"></i> Submit</button>
     </div>
   </div>
 </section>
