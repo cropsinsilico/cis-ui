@@ -27,6 +27,10 @@ angular.module('cis', [ 'ngMessages', 'ngResource', 'ngRoute', 'ngCookies', 'cis
 
 .factory('_', [ function() { return window._; } ])
 
+.factory('GraphPortService', [ '$resource', function ($resource) {
+    return $resource('/data/graphPorts.json');
+}])
+
 .factory('OAuthProviderService', [ '$resource', 'ApiUri', function ($resource, ApiUri) {
     return $resource(ApiUri + '/oauth/provider?redirect=https://www.cis.ndslabs.org', {});
 }])

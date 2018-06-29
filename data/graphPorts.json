@@ -1,0 +1,22 @@
+[
+    {
+        "name": "inport",
+        "label": "InPort",
+        "description": "An input port for the graph",
+        "icon": "sign-in",
+        "inports": [],
+        "outports": [
+            {"name": "value", "type": "all"}
+        ]
+    },
+    {
+        "name": "outport",
+        "label": "OutPort",
+        "description": "An output port for the graph",
+        "icon": "sign-out",
+        "inports": [
+            {"name": "value", "type": "all"}
+        ],
+        "outports": []
+    }
+]

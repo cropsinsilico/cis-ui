@@ -6,14 +6,21 @@ angular.module('cis')
 .constant('LocalStorageKeys', { edges: 'cis::edges', nodes: 'cis::nodes' })
 
 /** Our main view controller */
-.controller('MainCtrl', [ '$scope', '$window', '$timeout', '$q', '$http', '$log', '$uibModal', '_', 'DEBUG', 'TheGraph', 'SpecService', 'GraphService', 'LocalStorageKeys', 'TheGraphSelection', 'User',
-    function($scope, $window, $timeout, $q, $http, $log, $uibModal, _, DEBUG, TheGraph, SpecService, GraphService, LocalStorageKeys, TheGraphSelection, User) {
+.controller('MainCtrl', [ '$scope', '$window', '$timeout', '$q', '$http', '$log', '$uibModal', '_', 'DEBUG', 'TheGraph', 'GraphPortService', 'SpecService', 'GraphService', 'LocalStorageKeys', 'TheGraphSelection', 'User',
+    function($scope, $window, $timeout, $q, $http, $log, $uibModal, _, DEBUG, TheGraph, GraphPortService, SpecService, GraphService, LocalStorageKeys, TheGraphSelection, User) {
   "use strict";
   
   $scope.showPalette = true;
   
   $scope._ = _;
   $scope.refresh = false;
+  
+  
+  var graphPorts = GraphPortService.query();
+  graphPorts.$promise.then(function() {
+    $scope.inport = _.find(graphPorts, ['name', 'inport']);
+    $scope.outport = _.find(graphPorts, ['name', 'outport']);
+  });
   
   $scope.$watch(
     // When we see the user profile change
@@ -22,12 +29,16 @@ angular.module('cis')
     function(newValue, oldValue) { $scope.requerySpecs(); }
   );
   
+  $scope.$watch('refresh', function(newValue, oldValue) {
+    if (newValue !== oldValue && newValue === true) {
+      console.log("Refresh signal detected... refreshing!");
+      $scope.requerySpecs();
+      $scope.refresh = false;
+    }
+  });
+  
   $scope.getModelOptions = function(library) {
     return _.omit(library, ['inport', 'outport'])
-  };
-  
-  $scope.getDataOptions = function(library) {
-    return [library['inport'], library['outport']]
   };
   
   // Load up an empty graph
@@ -52,7 +63,8 @@ angular.module('cis')
     SpecService.query().$promise.then(function(specs) {
       var specContents = _.map(specs, 'content');
       $scope.library = _.keyBy(specContents, 'name');
-      //
+      $scope.library['inport'] = $scope.inport;
+      $scope.library['outport'] = $scope.outport;
     });
   })();
   
@@ -151,8 +163,7 @@ angular.module('cis')
       
       spec.$promise.then(function() {
         console.log("Syncing catalog...");
-        // FIXME: This does not currently work
-        $scope.requerySpecs();
+        $scope.refresh = true;
       });
     }, function () {
       $log.info('Modal dismissed at: ' + new Date());
