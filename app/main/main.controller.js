@@ -65,6 +65,8 @@ angular.module('cis')
       $scope.library = _.keyBy(specContents, 'name');
       $scope.library['inport'] = $scope.inport;
       $scope.library['outport'] = $scope.outport;
+      
+      // TODO: load Graph from newest "temp-$timestamp"
     });
   })();
   
@@ -162,8 +164,9 @@ angular.module('cis')
       })
       
       spec.$promise.then(function() {
-        console.log("Syncing catalog...");
-        $scope.refresh = true;
+        console.log("Refreshing catalog...");
+        // TODO: save Graph to "temp-$timestamp"
+        $window.location.reload()
       });
     }, function () {
       $log.info('Modal dismissed at: ' + new Date());
