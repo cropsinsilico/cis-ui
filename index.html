@@ -18,7 +18,7 @@
     <link rel="stylesheet" type="text/css" href="node_modules/font-awesome-animation/dist/font-awesome-animation.min.css">
     <link rel="stylesheet" type="text/css" href="node_modules/angular-swagger-ui/dist/css/swagger-ui.min.css"> 
     <link rel="stylesheet" type="text/css" href="node_modules/angular-slider/slider.css" />
-    <link rel="stylesheet" type="text/css" href="../node_modules/the-graph/themes/the-graph-dark.css">
+    <link rel="stylesheet" type="text/css" href="node_modules/the-graph/themes/the-graph-dark.css">
     <!--<link rel="stylesheet" type="text/css" href="node_modules/the-graph/themes/the-graph-light.css">-->
   </head>
   
@@ -46,16 +46,29 @@
         </div>
     
         <!-- Collect the nav links, forms, and other content for toggling -->
-        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1" ng-controller="LoginCtrl">
           <ul class="nav navbar-nav">
             <!--<li><a href="https://goo.gl/forms/AcEhlzvNFsaVAg3H3" target="_blank">Submit a New Model</a></li>-->
-            <li><a href="#/" ng-controller="MainCtrl" ng-click="submitNewModel()">Submit a New Model</a></li>
+            <li ng-if="user.email">
+              <a href="#/" ng-controller="MainCtrl" ng-click="submitNewModel()">Submit a New Model</a>
+            </li>
           </ul>
           <ul class="nav navbar-nav navbar-right">
-            <li class="dropdown">
-              <a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><i class="fa fa-fw fa-question-circle-o"></i> Help</a>
+            <li ng-if="!user.email"><a href="#/" ng-click="signInWithGithub()">Log In</a></li>
+            <li class="dropdown" ng-if="user.email">
+              <a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+                <i class="fa fa-fw fa-user"></i> <span ng-bind="user.email"></span> <i class="fa fa-fw fa-caret-down"></i>
+              </a>
               <ul class="dropdown-menu">
-                <!--<li><a href="#/swagger">API Reference</a></li>-->
+                <li><a href="#/" ng-click="signOut()">Log Out</a></li>
+              </ul>
+            </li>
+            <li class="dropdown">
+              <a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+                <i class="fa fa-fw fa-question-circle-o"></i> <i class="fa fa-fw fa-caret-down"></i>
+              </a>
+              <ul class="dropdown-menu">
+                <li><a href="#/swagger">API Reference</a></li>
                 <li><a target="_blank" href="https://github.com/cropsinsilico/cropsinsilico.github.io/blob/master/USER-GUIDE.md">User's Guide</a></li>
                 <li><a target="_blank" href="https://github.com/cropsinsilico/cropsinsilico.github.io/blob/master/DEVELOPER-GUIDE.md">Developer's Guide</a></li>
                 <li><a target="_blank" href="https://cropsinsilico.github.io/cis_interface/">CLI Documentation</a></li>
@@ -90,6 +103,8 @@
     <script src="node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
     <script src="node_modules/angular/angular.js"></script>
     <script src="node_modules/angular-route/angular-route.min.js"></script>
+    <script src="node_modules/angular-cookies/angular-cookies.min.js"></script>
+    <script src="node_modules/angular-resource/angular-resource.min.js"></script>
     <script src="node_modules/angular-messages/angular-messages.min.js"></script>
     <script src="node_modules/angular-ui-bootstrap/dist/ui-bootstrap-tpls.js"></script>
     
@@ -117,9 +132,10 @@
     <link rel="stylesheet" href="asset/cis.css">
     <script src="app/cis-api.js"></script>
     <script src="app/cis.module.js"></script>
+    <script src="app/login/login.controller.js"></script>
     <script src="app/editor.directive.js"></script>
     <script src="app/main/main.controller.js"></script>
-    <script src="app/main/modals/addModel/addModel.controller.js"></script>
+    <script src="app/main/modals/addSpec/addSpec.controller.js"></script>
     <script src="app/main/modals/exportJson/exportJson.controller.js"></script>
     <script src="app/main/modals/generateYaml/generateYaml.controller.js"></script>
     <script src="app/main/modals/editSelection/editSelection.controller.js"></script>

@@ -4,18 +4,20 @@ angular
 .module('cis')
 
 /**
- * The Controller for our "Export JSON" Modal Window
+ * The Controller for our "Add Spec" Modal Window
  * 
  * @author lambert8
  * @see https://opensource.ncsa.illinois.edu/confluence/display/~lambert8/3.%29+Controllers%2C+Scopes%2C+and+Partial+Views
  */
-.controller('AddModelCtrl', [ '$scope', '$log', '$uibModalInstance', '_',
-    function($scope, $log, $uibModalInstance, _) {
+.controller('AddSpecCtrl', [ '$scope', '$log', '$uibModalInstance', '_', 'specs',
+    function($scope, $log, $uibModalInstance, _, specs) {
   "use strict";
   
   $scope.newInput = '';
   $scope.newOutput = '';
   $scope.modelArgsString = ''; // TODO: Parse this into an array on submit
+  
+  $scope.specs = specs;
   
   $scope.newModel = {
     // model metadata
@@ -33,20 +35,41 @@ angular
     makedir: '',
     
     // runtime info
-    inputs: [],
-    outputs: [],
+    inports: [],
+    outports: [],
+  };
+  
+  /** Returns true if a spec with this name already exists */
+  $scope.nameIsNotUnique = function(name) {
+    return _.find($scope.specs, [ 'name', name.toLowerCase() ]);
   };
 
   $scope.submit = function() {
     $log.debug("Closing modal with success!");
     let model = $scope.newModel;
     
-    // TODO: Convert args string into array
+    // Split args string into array
     if (!$scope.modelArgsString.args || $scope.modelArgsString.args.replace(/ /g,'') === '') {
       model.args = null;
     } else {
       model.args = _.split($scope.modelArgsString.args, ' ');
     }
+    
+    // Coerce inports from strings into objects
+    var inports = angular.copy(model.inports);
+    model.inports = [];
+    angular.forEach(inports, function(port) {
+      model.inports.push({ label: port, name: port.toLowerCase(), type: "all" });
+    });
+    
+    // Coerce outports from strings into objects
+    var outports = angular.copy(model.outports);
+    model.outports = [];
+    angular.forEach(outports, function(port) {
+      model.outports.push({ label: port, name: port.toLowerCase(), type: "all" });
+    });
+    
+    $scope.newModel.name = $scope.newModel.label.toLowerCase();
     
     $uibModalInstance.close(model);
   };

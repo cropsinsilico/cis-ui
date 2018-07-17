@@ -1,6 +1,6 @@
 <section>
-  <the-graph-editor id="editor" class="the-graph-dark" graph="state.graph" library="state.library" 
-      loading="state.loading" width="state.width" height="state.height"></the-graph-editor>
+  <the-graph-editor id="editor" class="the-graph-dark" graph="graph" library="library" 
+      loading="loading" width="width" height="height"></the-graph-editor>
        
   <!-- Model Palette -->
   <div id="modelPalette">
@@ -19,17 +19,17 @@
         <th width="10%" style="text-align:center;" ng-if="DEBUG">Info</th>
         <th width="10%" style="text-align:center;">Add</th>
       </tr>
-      <tr ng-repeat="model in getModelOptions(state.library) track by model.name">
-        <th style="text-align:center;" ><i class="fa fa-fw fa-{{ model.icon }}"></i></th>
-        <td>{{ model.description }} ({{ model.label || model.name }})</td>
+      <tr ng-repeat="(name, spec) in getModelOptions(library) track by name">
+        <th style="text-align:center;" ><i class="fa fa-fw fa-{{ spec.icon }}"></i></th>
+        <td>{{ spec.description }} ({{ spec.label || spec.name }})</td>
         <td style="text-align:center;" ng-if="DEBUG">
-          <button class="btn btn-xs btn-default" style="margin:0;" ng-click="showResults({ results: model, title: 'View Raw Model', isJson: true })">
+          <button class="btn btn-xs btn-default" style="margin:0;" ng-click="showResults({ results: spec, title: 'View Raw Model', isJson: true })">
             <i class="fa fa-fw fa-code"></i> 
           </button>
         </td>
         <td style="text-align:center;">
-          <button class="btn btn-xs btn-primary" style="margin:0;" ng-disabled="selectedItem || graphHasModel(model.name)" tooltip-placement="left" ng-click="addNodeInstance(model)"
-              tooltip-append-to-body="true" uib-tooltip="{{ graphHasModel(model.name) ? model.label + ' has been added' : 'Add a ' + model.description + ' to the canvas' }}">
+          <button class="btn btn-xs btn-primary" style="margin:0;" ng-disabled="selectedItem || graphHasModel(spec.name)" tooltip-placement="left" ng-click="addNodeInstance(spec)"
+              tooltip-append-to-body="true" uib-tooltip="{{ graphHasModel(spec.name) ? spec.label + ' has been added' : 'Add ' + spec.description + ' to the canvas' }}">
             <i class="fa fa-fw fa-plus"></i> 
           </button>
         </td>
@@ -47,17 +47,17 @@
         <th width="10%" style="text-align:center;" ng-if="DEBUG">Info</th>
         <th width="10%" style="text-align:center;">Add</th>
       </tr>
-      <tr ng-repeat="model in getDataOptions(state.library) track by model.name">
-        <th style="text-align:center;" ><i class="fa fa-fw fa-{{ model.icon }}"></i></th>
-        <td>{{ model.description }} ({{ model.label || model.name }})</td>
+      <tr ng-repeat="(name, spec) in [inport, outport] track by name">
+        <th style="text-align:center;" ><i class="fa fa-fw fa-{{ spec.icon }}"></i></th>
+        <td>{{ spec.description }} ({{ spec.label || spec.name }})</td>
         <td style="text-align:center;" ng-if="DEBUG">
-          <button class="btn btn-xs btn-default" style="margin:0;" ng-click="showResults({ results: model, title: 'View Raw Model', isJson: true })">
+          <button class="btn btn-xs btn-default" style="margin:0;" ng-click="showResults({ results: spec, title: 'View Raw Model', isJson: true })">
             <i class="fa fa-fw fa-code"></i> 
           </button>
         </td>
         <td style="text-align:center;">
-          <button class="btn btn-xs btn-primary" style="margin:0;" ng-disabled="selectedItem" tooltip-placement="left" ng-click=" model.name === 'inport' ? addInport() : addOutport()"
-              tooltip-append-to-body="true" uib-tooltip="Add a {{ model.description }} to the canvas">
+          <button class="btn btn-xs btn-primary" style="margin:0;" ng-disabled="selectedItem" tooltip-placement="left" ng-click=" spec.name === 'inport' ? addInport() : addOutport()"
+              tooltip-append-to-body="true" uib-tooltip="Add a {{ spec.label }} to the canvas">
             <i class="fa fa-fw fa-plus"></i> 
           </button>
         </td>
@@ -88,7 +88,7 @@
     
     <!-- Outputs -->
     <div class="pull-right">
-      <button type="button" ng-if="false" class="btn btn-xs btn-default" ng-click="exportGraph()" tooltip-placement="left" uib-tooltip="View Raw JSON of the current graph">
+      <button type="button" ng-if="DEBUG" class="btn btn-xs btn-default" ng-click="exportGraph()" tooltip-placement="left" uib-tooltip="View Raw JSON of the current graph">
         <i class="fa fa-fw fa-code"></i> View Raw
       </button>
       

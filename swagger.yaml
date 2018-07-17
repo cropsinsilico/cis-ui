@@ -1,7 +1,8 @@
 ---
 swagger: "2.0"
 info:
-  description: "This is the API specification for the [Crops in Silico](http://cropsinsilico.org/) project. This documentation was generated using [Swagger](http://swagger.io)."
+  description: "This is the API specification for the [Crops in Silico](http://cropsinsilico.org/)\
+    \ project. This documentation was generated using [Swagger](http://swagger.io)."
   version: "0.1.3"
   title: "Crops in Silico API"
   termsOfService: "https://www.wikihow.com/Write-Terms-and-Conditions"
@@ -10,8 +11,8 @@ info:
   license:
     name: "BSD-3"
     url: "https://opensource.org/licenses/BSD-3-Clause"
-host: "proto.cis.ndslabs.org"
-basePath: "/oauth2/api/v1"
+host: "www.cis.ndslabs.org"
+basePath: "/api/v1"
 tags:
 - name: "models"
   description: "Retrieve server data (static)"
@@ -80,10 +81,10 @@ paths:
       parameters:
       - in: "body"
         name: "body"
-        description: "A new graph of models to run"
+        description: "A new system of models to run with cis_interface"
         required: true
         schema:
-          $ref: "#/definitions/Graph"
+          $ref: "#/definitions/yaml"
       responses:
         200:
           description: "OK"
@@ -277,6 +278,37 @@ definitions:
           client_of: "client_of"
           id: 0
         id: 0
+      - outputs:
+        - name: "name"
+          model_id: "model_id"
+        - name: "name"
+          model_id: "model_id"
+        inputs:
+        - name: "name"
+          model_id: "model_id"
+        - name: "name"
+          model_id: "model_id"
+        name: "name"
+        description: "description"
+        model:
+          args: "args"
+          outputs:
+          - name: "name"
+            model_id: "model_id"
+          - name: "name"
+            model_id: "model_id"
+          is_server: "is_server"
+          driver: {}
+          inputs:
+          - name: "name"
+            model_id: "model_id"
+          - name: "name"
+            model_id: "model_id"
+          name: "name"
+          description: "description"
+          client_of: "client_of"
+          id: 0
+        id: 0
       edges:
       - args: "args"
         name: "name"
@@ -388,7 +420,8 @@ definitions:
         $ref: "#/definitions/Com"
       operation:
         type: "string"
-    description: "Represents a connection from an input Com of a Node to an output Com"
+    description: "Represents a connection from an input Com of a Node to an output\
+      \ Com"
     example:
       args: "args"
       name: "name"
@@ -451,6 +484,11 @@ definitions:
     example:
       name: "name"
       path: "path"
+  yaml:
+    type: "object"
+    properties:
+      yaml:
+        type: "string"
 externalDocs:
   description: "Find out more about Crops in Silico"
   url: "http://cropsinsilico.org/about-us/"

@@ -6,32 +6,71 @@ angular.module('cis')
 .constant('LocalStorageKeys', { edges: 'cis::edges', nodes: 'cis::nodes' })
 
 /** Our main view controller */
-.controller('MainCtrl', [ '$scope', '$window', '$timeout', '$q', '$http', '$log', '$uibModal', '_', 'DEBUG', 'TheGraph', 'Links', 'Nodes', 'Models', 'CisApi', 'LocalStorageKeys', 'TheGraphSelection',
-    function($scope, $window, $timeout, $q, $http, $log, $uibModal, _, DEBUG, TheGraph, Links, Nodes, Models, CisApi, LocalStorageKeys, TheGraphSelection) {
+.controller('MainCtrl', [ '$scope', '$window', '$timeout', '$q', '$http', '$log', '$uibModal', '_', 'DEBUG', 'TheGraph', 'GraphPortService', 'SpecService', 'GraphService', 'LocalStorageKeys', 'TheGraphSelection', 'User',
+    function($scope, $window, $timeout, $q, $http, $log, $uibModal, _, DEBUG, TheGraph, GraphPortService, SpecService, GraphService, LocalStorageKeys, TheGraphSelection, User) {
   "use strict";
   
-  // Support new YAML format?
-  $scope.useConnections = false;
-  
   $scope.showPalette = true;
+  
+  $scope._ = _;
+  $scope.refresh = false;
+  
+  
+  var graphPorts = GraphPortService.query();
+  graphPorts.$promise.then(function() {
+    $scope.inport = _.find(graphPorts, ['name', 'inport']);
+    $scope.outport = _.find(graphPorts, ['name', 'outport']);
+  });
+  
+  $scope.$watch(
+    // When we see the user profile change
+    function() { return User.profile; },
+    // Reload our list of specs
+    function(newValue, oldValue) { $scope.requerySpecs(); }
+  );
+  
+  $scope.$watch('refresh', function(newValue, oldValue) {
+    if (newValue !== oldValue && newValue === true) {
+      console.log("Refresh signal detected... refreshing!");
+      $scope.requerySpecs();
+      $scope.refresh = false;
+    }
+  });
+  
+  $scope.getModelOptions = function(library) {
+    return _.omit(library, ['inport', 'outport'])
+  };
   
   // Load up an empty graph
   let fbpGraph = TheGraph.fbpGraph;
   
-  let height = $window.innerHeight
+  let height = $window.innerHeight;
   let width = $window.innerWidth;
-  
-  $scope.state = {
-    graph: new fbpGraph.Graph(),
-    loading: true,
-    height: height,
-    width: width,
-    library: []
-  };
   
   // Enable DEBUG features?
   $scope.DEBUG = DEBUG;
   
+  $scope.library = {};
+  $scope.graph = new fbpGraph.Graph();
+  
+  // Fetch our model library
+  $log.debug('Fetching models...');
+  $scope.loading = true;
+  $scope.height = height;
+  $scope.width = width;
+  $scope.graph = null;
+  ($scope.requerySpecs = function() {
+    SpecService.query().$promise.then(function(specs) {
+      var specContents = _.map(specs, 'content');
+      $scope.library = _.keyBy(specContents, 'name');
+      $scope.library['inport'] = $scope.inport;
+      $scope.library['outport'] = $scope.outport;
+      
+      // TODO: load Graph from newest "temp-$timestamp"
+    });
+  })();
+  
+  $scope.graph = new fbpGraph.Graph();
   $scope.lastSavedNodes = [];
   $scope.lastSavedEdges = [];
   
@@ -40,9 +79,9 @@ angular.module('cis')
    */
   angular.element($window).on('resize', function () {
     $scope.$apply(function() {
-      $scope.state.width = $window.innerWidth;
-      $scope.state.height = $window.innerHeight;
-      console.log(`Editor width/height: ${$scope.state.width}/${$scope.state.height}`);
+      $scope.width = $window.innerWidth;
+      $scope.height = $window.innerHeight;
+      console.log(`Editor width/height: ${$scope.width}/${$scope.height}`);
     });
   
     // manual $digest required as resize event is outside of angular
@@ -61,7 +100,7 @@ angular.module('cis')
         $scope.cancelEdit();
       }
       // Start a new transaction
-      $scope.state.graph.startTransaction("edit");
+      $scope.graph.startTransaction("edit");
       editValue = angular.copy(newValue);
       
       /*let modalInstance = $uibModal.open({
@@ -86,62 +125,49 @@ angular.module('cis')
     }
   });
   
-  // Fetch our model library
-  $scope.state.library = {};
-  $log.debug('Fetching models...');
-  CisApi.get_models().then(function(data) {
-    $log.debug("Fetched models:", data);
-    $scope.state.library = data;
-  }, function() {
-    $log.debug('Failed to fetch models... Falling back to static data.');
+  // Load from localStorage once models are fetched
+  /*let nodes = angular.fromJson($window.localStorage.getItem(LocalStorageKeys.nodes));
+   
+  // Import our previous state, if one was found
+  if (nodes && nodes.length) {
+    // Import all nodes from localStorage into TheGraph
+    angular.forEach(nodes, node => { $scope.graph.addNode(node.id, node.component, node.metadata); });
     
-    // In case of error, fall back to reading from static file
-    $http.get('/data/models.json').then(function(response) {
-      $scope.state.library = response.data;
-    })
-  }).finally(function() {
-    // Load from localStorage once models are fetched
-    let nodes = angular.fromJson($window.localStorage.getItem(LocalStorageKeys.nodes));
-     
-    // Import our previous state, if one was found
-    if (nodes && nodes.length) {
-      // Import all nodes from localStorage into TheGraph
-      angular.forEach(nodes, node => { $scope.state.graph.addNode(node.id, node.component, node.metadata); });
-      
-      // Then, import all edges
-      let edges = angular.fromJson($window.localStorage.getItem(LocalStorageKeys.edges));
-      edges && angular.forEach(edges, edge => { $scope.state.graph.addEdge(edge.from.node, edge.from.port, edge.to.node, edge.to.port, edge.metadata); });
-      
-      // Store our previously saved state
-      $scope.lastSavedNodes = angular.copy($scope.state.graph.nodes);
-      $scope.lastSavedEdges = angular.copy($scope.state.graph.edges);
-    }
-  
-    $scope.state.loading = false;
-  });
+    // Then, import all edges
+    let edges = angular.fromJson($window.localStorage.getItem(LocalStorageKeys.edges));
+    edges && angular.forEach(edges, edge => { $scope.graph.addEdge(edge.from.node, edge.from.port, edge.to.node, edge.to.port, edge.metadata); });
+    
+    // Store our previously saved state
+    $scope.lastSavedNodes = angular.copy($scope.graph.nodes);
+    $scope.lastSavedEdges = angular.copy($scope.graph.edges);
+  }*/
+
+  $scope.loading = false;
   
   $scope.submitNewModel = function() {
     let modalInstance = $uibModal.open({
       animation: true,
-      templateUrl: 'app/main/modals/addModel/addModel.template.html',
-      controller: 'AddModelCtrl',
+      templateUrl: 'app/main/modals/addSpec/addSpec.template.html',
+      controller: 'AddSpecCtrl',
       size: 'lg',
       keyboard: false,      // Force the user to explicitly click "Close"
       backdrop: 'static',   // Force the user to explicitly click "Close"
-      resolve: {}
+      resolve: { specs: function() { return $scope.library; } }
     });
     
-    
     modalInstance.result.then(function (newModel) {
-      // TODO: POST result to /models
+      // POST result to /spec
       console.log("Submitting new model:", newModel);
+      var spec = SpecService.save({
+        name: newModel.name,
+        content: newModel
+      })
       
-      CisApi.post_models({ body: newModel })
-        .then(function(data) {
-          console.log("Successfully POSTed new model:", data);
-        }, function(response) {
-          console.error("Error POSTing new model:", response.status);
-        });
+      spec.$promise.then(function() {
+        console.log("Refreshing catalog...");
+        // TODO: save Graph to "temp-$timestamp"
+        $window.location.reload()
+      });
     }, function () {
       $log.info('Modal dismissed at: ' + new Date());
     });
@@ -153,7 +179,7 @@ angular.module('cis')
     editValue.metadata = $scope.selectedItem.metadata;
     editValue = null;
     TheGraphSelection.selection = null;
-    $scope.state.graph.endTransaction("edit");
+    $scope.graph.endTransaction("edit");
   };
   
   $scope.cancelEdit = function() {
@@ -161,72 +187,53 @@ angular.module('cis')
     $scope.selectedItem.metadata = editValue.metadata;
     editValue = null;
     TheGraphSelection.selection = null;
-    $scope.state.graph.endTransaction("edit");
+    $scope.graph.endTransaction("edit");
   };
   
   $scope.graphIsChanged = function() {
     let changed = false;
-    angular.forEach($scope.state.graph.nodes, function(node) {
+    /*angular.forEach($scope.graph.nodes, function(node) {
       
-    });
+    });*/
     
     return changed;
-    //return $scope.lastSavedNodes !== $scope.state.graph.nodes || 
-    //       $scope.lastSavedEdges !== $scope.state.graph.edges;
+    //return $scope.lastSavedNodes !== $scope.graph.nodes || 
+    //       $scope.lastSavedEdges !== $scope.graph.edges;
   };
   
   $scope.saveGraph = function() {
-    $window.localStorage.setItem(LocalStorageKeys.nodes, angular.toJson($scope.state.graph.nodes));
-    $window.localStorage.setItem(LocalStorageKeys.edges, angular.toJson($scope.state.graph.edges));
+    $window.localStorage.setItem(LocalStorageKeys.nodes, angular.toJson($scope.graph.nodes));
+    $window.localStorage.setItem(LocalStorageKeys.edges, angular.toJson($scope.graph.edges));
     
-    $scope.lastSavedNodes = angular.copy($scope.state.graph.nodes);
-    $scope.lastSavedEdges = angular.copy($scope.state.graph.edges);
+    $scope.lastSavedNodes = angular.copy($scope.graph.nodes);
+    $scope.lastSavedEdges = angular.copy($scope.graph.edges);
   };
   
   /** Clears out the current graph, returns true if cleared */
   $scope.clearGraph = function() {
     let result = confirm("Are you sure you want to clear your canvas?\nAll saved graph data will be cleared.");
     if (result) {
-      $scope.state.graph = new fbpGraph.Graph();
+      $scope.graph = new fbpGraph.Graph();
       $scope.saveGraph();
     }
-    return result
+    return result;
   };
   
   /** Adds an inport to the current graph */
   $scope.addInport = function() {
     // Add a new inport to the graph, then select it for editing
-    TheGraphSelection.selection = $scope.addNodeInstance($scope.state.library['inport']);
+    TheGraphSelection.selection = $scope.addNodeInstance($scope.library['inport']);
   };
   
   /** Adds an outport to the current graph */
   $scope.addOutport = function() {
     // Add a new outport to the graph, then select it for editing
-    TheGraphSelection.selection = $scope.addNodeInstance($scope.state.library['outport']);
-  };
-  
-  /** Simple filter function */
-  $scope.getModelOptions = function(library) {
-    if (!library || !Object.keys(library).length) {
-      return []
-    }
-    return _.omit(library, ['inport', 'outport']);
-  };
-  
-  /** Simple filter function */
-  $scope.getDataOptions = function(library) {
-    if (!library || !Object.keys(library).length) {
-      return []
-    }
-    let inport = _.find(library, ['name', 'inport']);
-    let outport = _.find(library, ['name', 'outport']);
-    return [inport, outport]
-    
+    TheGraphSelection.selection = $scope.addNodeInstance($scope.library['outport']);
   };
   
   /** Simple random function */
   $scope.getRandomFrom = function(items) {
-    let len = items.length || Object.keys(items).length
+    let len = items.length || Object.keys(items).length;
     let ran = Math.random()*len;
     let floor = Math.floor(ran);
   	return items[floor];
@@ -243,25 +250,25 @@ angular.module('cis')
       x: Math.round(Math.random()*800),
       y: Math.round(Math.random()*600)
     };
-    let newNode = $scope.state.graph.addNode(id, model.name, metadata);
+    let newNode = $scope.graph.addNode(id, model.name, metadata);
     return newNode;
   };
   
   $scope.graphHasModel = function(modelKey) {
-    let exists = _.find($scope.state.graph.nodes, ["component", modelKey]);
+    let exists = _.find($scope.graph.nodes, ["component", modelKey]);
     return exists;
   };
   
   /** Exports the current graph to JSON */
   $scope.exportGraph = function() {
-    $scope.showResults({ results: $scope.state.graph.toJSON(), title: "View Raw Graph", isJson: true });
+    $scope.showResults({ results: $scope.graph.toJSON(), title: "View Raw Graph", isJson: true });
   };
   
   $scope.formatting = false;
   $scope.formatYaml = function() {
     let modelCounter = 1;
     let getModelFromNode = (node) => {
-      let model =  _.find($scope.state.library, ['name', node.component]);
+      let model =  _.find($scope.library, ['name', node.component]);
       // TODO: ModelDriver / type / name
       model.id = modelCounter++;
       angular.forEach(model.inports, (port) => port.model_id = model.name);
@@ -273,15 +280,15 @@ angular.module('cis')
       return model;
     };
     
-    let getSrcNodeFromEdge = (edge) => _.find($scope.state.graph.nodes, ['id', edge.from.node]);
-    let getDestNodeFromEdge = (edge) => _.find($scope.state.graph.nodes, ['id', edge.to.node]);
+    let getSrcNodeFromEdge = (edge) => _.find($scope.graph.nodes, ['id', edge.from.node]);
+    let getDestNodeFromEdge = (edge) => _.find($scope.graph.nodes, ['id', edge.to.node]);
     let getOutportFromModel = (portName, model) => _.find(model.outports, ['name', portName]);
     let getInportFromModel = (portName, model) => _.find(model.inports, ['name', portName]);
     
     // Format nodes as the API expects
     let nodes = [];
-    $log.debug("Transforming nodes: ", $scope.state.graph.nodes);
-    angular.forEach($scope.state.graph.nodes, function(node) {
+    $log.debug("Transforming nodes: ", $scope.graph.nodes);
+    angular.forEach($scope.graph.nodes, function(node) {
       if (node.component === 'inport' || node.component === 'outport') {
         return;
       }
@@ -329,8 +336,8 @@ angular.module('cis')
     // Format edges as the API expects
     let edges = [];
     let connections = [];
-    $log.debug("Transforming edges: ", $scope.state.graph.edges);
-    angular.forEach($scope.state.graph.edges, function(edge) {
+    $log.debug("Transforming edges: ", $scope.graph.edges);
+    angular.forEach($scope.graph.edges, function(edge) {
       let src_node = getSrcNodeFromEdge(edge);
       let dest_node = getDestNodeFromEdge(edge);
       let src_model = getModelFromNode(src_node);
@@ -356,8 +363,8 @@ angular.module('cis')
         if (src_node.metadata.type === 'File') {
           type = 'FileInputDriver';
         } else {
-          args = id
-          type = 'InputDriver'
+          args = id;
+          type = 'InputDriver';
         }
       } else if (dest_model.name == 'outport') {
         args = dest_node.metadata.name;
@@ -365,8 +372,8 @@ angular.module('cis')
         if (dest_node.metadata.type === 'File') {
           type = 'FileOutputDriver';
         } else {
-          args = id
-          type = 'OutputDriver'
+          args = id;
+          type = 'OutputDriver';
         }
       }
       
@@ -387,19 +394,19 @@ angular.module('cis')
       };
       
       if (src_node.metadata['read_meth']) {
-        connection['read_meth'] = src_node.metadata['read_meth']
+        connection['read_meth'] = src_node.metadata['read_meth'];
       }
       
       if (dest_node.metadata['write_meth']) {
-        connection['write_meth'] = dest_node.metadata['write_meth']
+        connection['write_meth'] = dest_node.metadata['write_meth'];
       }
       
       if (edge.metadata['field_names']) {
-        connection['field_names'] = edge.metadata['field_names']
+        connection['field_names'] = edge.metadata['field_names'];
       }
       
       if (edge.metadata['field_units']) {
-        connection['field_units'] = edge.metadata['field_units']
+        connection['field_units'] = edge.metadata['field_units'];
       }
       
       connections.push(connection);
@@ -409,53 +416,6 @@ angular.module('cis')
     
     console.log("Submitting for formatting", toYaml);
     $scope.showResults({ title: "Formatted Manifest", results: toYaml });
-    
-    /* TODO: Neutered this API call for now
-    $scope.formatting = true;
-    
-    console.log("Sending nodes: ", nodes);
-    console.log("Sending edges: ", edges);
-    
-    CisApi.post_graphs({ 
-      body: {
-        nodes: nodes,
-        edges: edges
-      }
-    }).then(function(data) {
-      $scope.showResults({ results: data, title: "View Graph YAML", isJson: false });
-    }, function() {
-      $log.error("Failed to send to graph to API server");
-      alert("Error submitting request: is the server running?");
-    }).finally(function() {
-      $scope.formatting = false;
-    });
-    */
-  };
-  
-  $scope.running = false;
-  $scope.runGraph = function() {
-    $scope.running = true;
-    alert("Coming Soon!");
-    $scope.running = false;
-  };
-  
-  /** DEPRECATED */
-  $scope.runSimulation = function() {
-    $scope.running = true;
-    
-    // Just run example C model for now
-    let name = "example:hello_c";
-    let path = "hello/hello_c";
-    
-    let simulationData = {models: [{ name, path }]};
-    
-    CisApi.post_simulations({ body: simulationData })
-    .then(function(data) {
-      alert(data);
-    })
-    .finally(function() {
-      $scope.running = false;
-    });
   };
   
   
