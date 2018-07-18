@@ -6,15 +6,14 @@ angular.module('cis')
 .constant('LocalStorageKeys', { edges: 'cis::edges', nodes: 'cis::nodes' })
 
 /** Our main view controller */
-.controller('MainCtrl', [ '$scope', '$window', '$timeout', '$q', '$http', '$log', '$uibModal', '_', 'DEBUG', 'TheGraph', 'GraphPortService', 'SpecService', 'GraphService', 'LocalStorageKeys', 'TheGraphSelection', 'User',
-    function($scope, $window, $timeout, $q, $http, $log, $uibModal, _, DEBUG, TheGraph, GraphPortService, SpecService, GraphService, LocalStorageKeys, TheGraphSelection, User) {
+.controller('MainCtrl', [ '$scope', '$window', '$timeout', '$q', '$interval', '$http', '$log', '$uibModal', '_', 'DEBUG', 'TheGraph', 'GraphPortService', 'SpecService', 'GraphService', 'LocalStorageKeys', 'TheGraphSelection', 'User',
+    function($scope, $window, $timeout, $q, $interval, $http, $log, $uibModal, _, DEBUG, TheGraph, GraphPortService, SpecService, GraphService, LocalStorageKeys, TheGraphSelection, User) {
   "use strict";
   
-  $scope.showPalette = true;
+  $scope.showPalette = false;
   
   $scope._ = _;
   $scope.refresh = false;
-  
   
   var graphPorts = GraphPortService.query();
   graphPorts.$promise.then(function() {
@@ -22,11 +21,21 @@ angular.module('cis')
     $scope.outport = _.find(graphPorts, ['name', 'outport']);
   });
   
+  // Auto-save to local storage every 5 seconds
+  $scope.interval = $interval(function() {
+    $scope.saveGraph();
+    $log.log("Graph auto-saved");
+  }, 5000);
+  
   $scope.$watch(
     // When we see the user profile change
     function() { return User.profile; },
     // Reload our list of specs
-    function(newValue, oldValue) { $scope.requerySpecs(); }
+    function(newValue, oldValue) {
+      $scope.user = newValue;
+      $scope.requeryGraphs();
+      $scope.requerySpecs();
+    }
   );
   
   $scope.$watch('refresh', function(newValue, oldValue) {
@@ -41,64 +50,72 @@ angular.module('cis')
     return _.omit(library, ['inport', 'outport'])
   };
   
-  // Load up an empty graph
-  let fbpGraph = TheGraph.fbpGraph;
-  
-  let height = $window.innerHeight;
-  let width = $window.innerWidth;
-  
   // Enable DEBUG features?
   $scope.DEBUG = DEBUG;
   
+  // Graph metadata
+  let fbpGraph = TheGraph.fbpGraph;
+  $scope.loading = true;
+  $scope.height = $window.innerHeight;
+  $scope.width = $window.innerWidth;
+  $scope.graph = null;
+  $scope.lastSavedNodes = [];
+  $scope.lastSavedEdges = [];
+  let editValue = null;
   $scope.library = {};
-  $scope.graph = new fbpGraph.Graph();
+  
+  // Fetch our saved graphs
+  ($scope.requeryGraphs = function() {
+    $scope.savedGraphs = GraphService.query();
+  })();
   
   // Fetch our model library
-  $log.debug('Fetching models...');
-  $scope.loading = true;
-  $scope.height = height;
-  $scope.width = width;
-  $scope.graph = null;
   ($scope.requerySpecs = function() {
-    SpecService.query().$promise.then(function(specs) {
-      var specContents = _.map(specs, 'content');
+    $log.debug('Fetching models...');
+    let specs = SpecService.query();
+    specs.$promise.then(function(specs) {
+      // Inject creatorId
+      angular.forEach(specs, function(spec) {
+        spec.content.creatorId = spec.creatorId;
+      });
+      
+      let specContents = _.map(specs, 'content');
       $scope.library = _.keyBy(specContents, 'name');
       $scope.library['inport'] = $scope.inport;
       $scope.library['outport'] = $scope.outport;
       
-      // TODO: load Graph from newest "temp-$timestamp"
+      // Load up an empty graph
+      $scope.graph = new fbpGraph.Graph();
+      
+      // Load from localStorage once models are fetched
+      let nodes = angular.fromJson($window.localStorage.getItem(LocalStorageKeys.nodes));
+       
+      // Import our previous state, if one was found
+      if (nodes && nodes.length) {
+        // Import all nodes from localStorage into TheGraph
+        angular.forEach(nodes, node => { $scope.graph.addNode(node.id, node.component, node.metadata); });
+        
+        // Then, import all edges
+        let edges = angular.fromJson($window.localStorage.getItem(LocalStorageKeys.edges));
+        edges && angular.forEach(edges, edge => { $scope.graph.addEdge(edge.from.node, edge.from.port, edge.to.node, edge.to.port, edge.metadata); });
+        
+        // Store our previously saved state
+        $scope.lastSavedNodes = angular.copy($scope.graph.nodes);
+        $scope.lastSavedEdges = angular.copy($scope.graph.edges);
+      }
     });
   })();
-  
-  $scope.graph = new fbpGraph.Graph();
-  $scope.lastSavedNodes = [];
-  $scope.lastSavedEdges = [];
-  
-  /**
-   * Window resize event handling
-   */
-  angular.element($window).on('resize', function () {
-    $scope.$apply(function() {
-      $scope.width = $window.innerWidth;
-      $scope.height = $window.innerHeight;
-      console.log(`Editor width/height: ${$scope.width}/${$scope.height}`);
-    });
-  
-    // manual $digest required as resize event is outside of angular
-    $scope.$digest();
-  });
-  
-  let editValue = null;
   
   // Update selected item when service data changes
   $scope.selectedItem = null;
   $scope.$watch(function() { return TheGraphSelection.selection; }, function(newValue, oldValue) {
+    // Clear out existing transaction if it was not saved
+    if (editValue !== null) {
+      $scope.cancelEdit();
+    }
+      
     $scope.selectedItem = newValue;
     if (!oldValue && newValue && oldValue !== newValue) {
-      // Clear out existing transaction if it was not saved
-      if (editValue !== null) {
-        $scope.cancelEdit();
-      }
       // Start a new transaction
       $scope.graph.startTransaction("edit");
       editValue = angular.copy(newValue);
@@ -124,23 +141,6 @@ angular.module('cis')
       */
     }
   });
-  
-  // Load from localStorage once models are fetched
-  /*let nodes = angular.fromJson($window.localStorage.getItem(LocalStorageKeys.nodes));
-   
-  // Import our previous state, if one was found
-  if (nodes && nodes.length) {
-    // Import all nodes from localStorage into TheGraph
-    angular.forEach(nodes, node => { $scope.graph.addNode(node.id, node.component, node.metadata); });
-    
-    // Then, import all edges
-    let edges = angular.fromJson($window.localStorage.getItem(LocalStorageKeys.edges));
-    edges && angular.forEach(edges, edge => { $scope.graph.addEdge(edge.from.node, edge.from.port, edge.to.node, edge.to.port, edge.metadata); });
-    
-    // Store our previously saved state
-    $scope.lastSavedNodes = angular.copy($scope.graph.nodes);
-    $scope.lastSavedEdges = angular.copy($scope.graph.edges);
-  }*/
 
   $scope.loading = false;
   
@@ -166,28 +166,49 @@ angular.module('cis')
       spec.$promise.then(function() {
         console.log("Refreshing catalog...");
         // TODO: save Graph to "temp-$timestamp"
-        $window.location.reload()
+        $scope.saveGraph();
+        $window.location.reload();
       });
     }, function () {
       $log.info('Modal dismissed at: ' + new Date());
     });
   };
   
+  $scope.deleteSpec = function(spec) {
+    let specs = SpecService.query();
+    specs.$promise.then(function() {
+      let specResource = _.find(specs, [ 'content.name', spec.name ]);
+      specResource.$remove().then(function() {
+        $scope.saveGraph();
+        $window.location.reload();
+      });
+    });
+  };
+  
   $scope.saveEdit = function() {
     console.log("Saving over previous value:", editValue);
-    console.log("Saved!");
+    $scope.selectedItem.new = false;
     editValue.metadata = $scope.selectedItem.metadata;
     editValue = null;
     TheGraphSelection.selection = null;
     $scope.graph.endTransaction("edit");
+    console.log("Saved!");
   };
   
   $scope.cancelEdit = function() {
-    console.log("Canceled!");
-    $scope.selectedItem.metadata = editValue.metadata;
+    console.log("Canceling edit...");
+    if ($scope.selectedItem.new) {
+      let existing = _.find($scope.graph.nodes, [ 'id', $scope.selectedItem.id ]);
+      $scope.graph.nodes.splice($scope.graph.nodes.indexOf(existing), 1);
+      // This was an aborted "add" operation.. delete the invalid leftover state
+      //$scope.graph.removeNode()
+    } else {
+      $scope.selectedItem.metadata = editValue.metadata;
+    }
     editValue = null;
     TheGraphSelection.selection = null;
     $scope.graph.endTransaction("edit");
+    console.log("Canceled!");
   };
   
   $scope.graphIsChanged = function() {
@@ -201,6 +222,83 @@ angular.module('cis')
     //       $scope.lastSavedEdges !== $scope.graph.edges;
   };
   
+  $scope.deleteGraph = function(graph) {
+    graph.$remove().then(function() {
+      $scope.requeryGraphs();
+    });
+  };
+  
+  $scope.loadGraphFromDB = function(name) {
+    if (!name) {
+      $log.warn("Cannot load graph - no name specified");
+      return;
+    }
+    
+    let saved = _.find($scope.savedGraphs, [ 'name', name ]);
+    
+    if (!saved) {
+      $log.warn("Unable to load graph - no graph found with name: " + name);
+      return;
+    }
+    
+    // Load from API
+    //let nodes = angular.fromJson($window.localStorage.getItem(LocalStorageKeys.nodes));
+    let nodes = saved.content.processes;
+     
+    // Import our previous state, if one was found
+    if (nodes && Object.keys(nodes).length) {
+      // Import all nodes from localStorage into TheGraph
+      angular.forEach(nodes, node => { $scope.graph.addNode(node.id, node.component, node.metadata); });
+      
+      // Then, import all edges
+      let edges = saved.content.connections;
+      edges && angular.forEach(edges, edge => { $scope.graph.addEdge(edge.from.node, edge.from.port, edge.to.node, edge.to.port, edge.metadata); });
+      
+      // Store our previously saved state
+      $scope.lastSavedNodes = angular.copy($scope.graph.nodes);
+      $scope.lastSavedEdges = angular.copy($scope.graph.edges);
+    }
+  };
+  
+  $scope.saveGraphToDB = function(name) {
+    var name = prompt("Please enter a name for this graph", "");
+    if (!name) {
+      $log.warn("Cannot save graph - no name specified");
+      return;
+    }
+    
+    // Save graph to localStorage
+    $scope.saveGraph();
+    
+    let existing = _.find($scope.savedGraphs, [ 'name', name ])
+    if (existing) {
+      // Name already exists - overwrite existing contents
+      existing.content = {
+        processes: $scope.graph.nodes, 
+        connections: $scope.graph.edges
+      };
+      
+      // Save and synchronize our list of saved graphs
+      existing.$update().then(function() {
+        $scope.requeryGraphs();
+      });
+    } else {
+      // Does not exist - save a new graph with this name
+      let graph = {
+        name: name,
+        content: {
+          processes: $scope.graph.nodes, 
+          connections: $scope.graph.edges
+        }
+      };
+      
+      // Save and synchronize our list of saved graphs
+      GraphService.save(graph).$promise.then(function() {
+        $scope.requeryGraphs();
+      });
+    }
+  };
+  
   $scope.saveGraph = function() {
     $window.localStorage.setItem(LocalStorageKeys.nodes, angular.toJson($scope.graph.nodes));
     $window.localStorage.setItem(LocalStorageKeys.edges, angular.toJson($scope.graph.edges));
@@ -211,7 +309,7 @@ angular.module('cis')
   
   /** Clears out the current graph, returns true if cleared */
   $scope.clearGraph = function() {
-    let result = confirm("Are you sure you want to clear your canvas?\nAll saved graph data will be cleared.");
+    let result = confirm("Are you sure you want to clear your canvas?\nAll saved graph data will be cleared from your browser's local storage.");
     if (result) {
       $scope.graph = new fbpGraph.Graph();
       $scope.saveGraph();
@@ -222,13 +320,17 @@ angular.module('cis')
   /** Adds an inport to the current graph */
   $scope.addInport = function() {
     // Add a new inport to the graph, then select it for editing
-    TheGraphSelection.selection = $scope.addNodeInstance($scope.library['inport']);
+    let inport = $scope.addNodeInstance($scope.library['inport']);
+    inport.new = true;
+    return TheGraphSelection.selection = inport;
   };
   
   /** Adds an outport to the current graph */
   $scope.addOutport = function() {
     // Add a new outport to the graph, then select it for editing
-    TheGraphSelection.selection = $scope.addNodeInstance($scope.library['outport']);
+    let outport = $scope.addNodeInstance($scope.library['outport']);
+    outport.new = true;
+    return TheGraphSelection.selection = outport;
   };
   
   /** Simple random function */
