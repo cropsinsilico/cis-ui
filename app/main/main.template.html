@@ -34,7 +34,7 @@
           </button>
         </td>
         <td style="text-align:center;">
-          <button class="btn btn-xs btn-primary" style="margin:0;" ng-disabled="selectedItem || graphHasModel(spec.name)" tooltip-placement="left" ng-click="addNodeInstance(spec);showPalette=false"
+          <button class="btn btn-xs btn-primary" style="margin:0;" ng-disabled="selectedItem || graphHasModel(spec.name)" tooltip-placement="left" ng-click="addNodeInstance(spec);togglePalette()"
               tooltip-append-to-body="true" uib-tooltip="{{ graphHasModel(spec.name) ? spec.label + ' has been added' : 'Add ' + spec.description + ' to the canvas' }}">
             <i class="fa fa-fw fa-plus"></i> 
           </button>
@@ -62,7 +62,7 @@
           </button>
         </td>
         <td style="text-align:center;">
-          <button class="btn btn-xs btn-primary" style="margin:0;" ng-disabled="selectedItem" tooltip-placement="left" ng-click="spec.name === 'inport' ? addInport() : addOutport();showPalette=false"
+          <button class="btn btn-xs btn-primary" style="margin:0;" ng-disabled="selectedItem" tooltip-placement="left" ng-click="spec.name === 'inport' ? addInport() : addOutport();togglePalette()"
               tooltip-append-to-body="true" uib-tooltip="Add a {{ spec.label }} to the canvas">
             <i class="fa fa-fw fa-plus"></i> 
           </button>
@@ -84,7 +84,7 @@
       </button>
       <ul class="dropdown-menu">
         <li ng-repeat="graph in savedGraphs">
-          <a class="pull-left" href="#/" ng-click="loadGraphFromDB(graph.name)">{{ graph.name }}</a>
+          <a class="pull-left" href="#/" ng-click="loadGraphFromDB(graph.name);togglePalette(false);">{{ graph.name }}</a>
           <button class="btn btn-xs btn-danger pull-right" ng-click="deleteGraph(graph)" ng-if="!graph.public && graph.creatorId === user._id">
             <i class="fa fa-fw fa-trash"></i>
           </button>

@@ -21,11 +21,21 @@ angular.module('cis')
     $scope.outport = _.find(graphPorts, ['name', 'outport']);
   });
   
-  // Auto-save to local storage every 5 seconds
+  $scope.togglePalette = function(newValue) {
+    if (typeof(newValue) === "undefined") {
+      // Toggle value if no newValue specified
+      return $scope.showPalette = !$scope.showPalette;
+    } else {
+      // Set value explicitly in newValue is specified
+      return $scope.showPalette = newValue;
+    }
+  }
+  
+  // Auto-save to local storage every 3 seconds
   $scope.interval = $interval(function() {
     $scope.saveGraph();
     $log.log("Graph auto-saved");
-  }, 5000);
+  }, 3000);
   
   $scope.$watch(
     // When we see the user profile change
