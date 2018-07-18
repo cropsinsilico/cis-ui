@@ -156,14 +156,14 @@ angular.module('cis')
                 // FIXME: This seems to work despite many errors in the console
                 //ReactDOM.unmountComponentAtNode(editor);
                 
-                window.removeEventListener('resize', render);
+                //window.removeEventListener('resize', render);
                 let reactEle = React.createElement(TheGraph.App, props);
                 ReactDOM.render(reactEle, editor);
             
             };
             
             //scope.graph.on('endTransaction', render); // graph changed
-            window.addEventListener("resize", render);
+            //window.addEventListener("resize", render);
             
             // Re-render if the graph changes
             scope.$watch("graph", function(newValue, oldValue) { 
@@ -184,19 +184,9 @@ angular.module('cis')
                 }
             }, true);
             
-            angular.element($window).bind('resize', function() {
-                scope.height = $window.innerHeight;
-                scope.width = $window.innerWidth;
-                $log.info(`Resize event detected: ${scope.width}x${scope.height}... reloading!`);
-                render();
-    
-                // manual $digest required as resize event is outside of angular
-                scope.$digest();
-            });
-            
             // Detect when the parent's dimensions change and resize accordingly
             // FIXME: This seems hacky, but nothing else seemed to work
-            scope.$watch(
+            /*scope.$watch(
                 function () { 
                     return {
                        width: $window.innerWidth,
@@ -212,11 +202,11 @@ angular.module('cis')
                   }
                   let w = scope.width = $window.innerWidth;
                   let h = scope.height = $window.innerHeight;
-                  $log.warn(`Resize event detected: ${w}x${h}... reloading!`);
+                  $log.warn(`Resize event detected 1: ${w}x${h}... reloading!`);
                   render();
                }, //listener 
                true //deep watch
-            );
+            );*/
             
             scope.$watchCollection("library", function(newValue, oldValue) {
                 $log.debug("Library changed... reloading!", newValue);
@@ -232,6 +222,25 @@ angular.module('cis')
                 $log.debug("Edges changed... reloading!", newValue);
                 render();
             });
+            
+            
+            var onResize = function() {
+                scope.height = window.innerHeight;
+                scope.width = window.innerWidth;
+                $log.info(`Resize event detected 2: ${scope.width}x${scope.height}... reloading!`);
+                render();
+    
+                // manual $digest required as resize event is outside of angular
+                scope.$digest();
+            };
+            
+            function cleanUp() {
+                angular.element($window).off('resize', onResize);
+            }
+            
+            angular.element($window).on('resize', onResize);
+            scope.$on('$destroy', cleanUp);
+            
         }
     }
 }])

@@ -40,11 +40,15 @@ angular.module('cis', [ 'ngMessages', 'ngResource', 'ngRoute', 'ngCookies', 'cis
 }])
 
 .factory('SpecService', [ '$resource', 'ApiUri', function ($resource, ApiUri) {
-    return $resource(ApiUri + '/spec/:id', {id: "@_id"});
+    return $resource(ApiUri + '/spec/:id', {id: "@_id"}, {
+      update: {method: 'PUT'}
+    });
 }])
 
 .factory('GraphService', [ '$resource', 'ApiUri', function ($resource, ApiUri) {
-    return $resource(ApiUri + '/graph', {});
+    return $resource(ApiUri + '/graph/:id', {id: "@_id"}, {
+      update: {method: 'PUT'}
+    });
 }])
 
 .factory('Clipboard', function() {

@@ -8,7 +8,7 @@
       <h4 class="pull-left libraryHeader">Model Library</h4>
       <button class="btn btn-xs btn-default pull-right" ng-click="showPalette = !showPalette">
         <i class="fa fa-fw fa-toggle-up" ng-if="showPalette"></i>
-        <i class="fa fa-fw fa-toggle-down" ng-if="!showPalette"></i>
+        <i class="fa fa-fw fa-search" ng-if="!showPalette"></i>
       </button>
     </div>
     
@@ -16,19 +16,25 @@
       <tr>
         <th width="10%" style="text-align:center;" >Icon</th>
         <th>Model</th>
+        <th width="10%" style="text-align:center;" ng-if="user && user._id">Delete</th>
         <th width="10%" style="text-align:center;" ng-if="DEBUG">Info</th>
         <th width="10%" style="text-align:center;">Add</th>
       </tr>
       <tr ng-repeat="(name, spec) in getModelOptions(library) track by name">
         <th style="text-align:center;" ><i class="fa fa-fw fa-{{ spec.icon }}"></i></th>
         <td>{{ spec.description }} ({{ spec.label || spec.name }})</td>
+        <td style="text-align:center;" ng-if="user && user._id">
+          <button class="btn btn-xs btn-danger" style="margin:0;" ng-click="deleteSpec(spec)" ng-if="spec.creatorId === user._id">
+            <i class="fa fa-fw fa-trash"></i> 
+          </button>
+        </td>
         <td style="text-align:center;" ng-if="DEBUG">
           <button class="btn btn-xs btn-default" style="margin:0;" ng-click="showResults({ results: spec, title: 'View Raw Model', isJson: true })">
             <i class="fa fa-fw fa-code"></i> 
           </button>
         </td>
         <td style="text-align:center;">
-          <button class="btn btn-xs btn-primary" style="margin:0;" ng-disabled="selectedItem || graphHasModel(spec.name)" tooltip-placement="left" ng-click="addNodeInstance(spec)"
+          <button class="btn btn-xs btn-primary" style="margin:0;" ng-disabled="selectedItem || graphHasModel(spec.name)" tooltip-placement="left" ng-click="addNodeInstance(spec);togglePalette()"
               tooltip-append-to-body="true" uib-tooltip="{{ graphHasModel(spec.name) ? spec.label + ' has been added' : 'Add ' + spec.description + ' to the canvas' }}">
             <i class="fa fa-fw fa-plus"></i> 
           </button>
@@ -56,7 +62,7 @@
           </button>
         </td>
         <td style="text-align:center;">
-          <button class="btn btn-xs btn-primary" style="margin:0;" ng-disabled="selectedItem" tooltip-placement="left" ng-click=" spec.name === 'inport' ? addInport() : addOutport()"
+          <button class="btn btn-xs btn-primary" style="margin:0;" ng-disabled="selectedItem" tooltip-placement="left" ng-click="spec.name === 'inport' ? addInport() : addOutport();togglePalette()"
               tooltip-append-to-body="true" uib-tooltip="Add a {{ spec.label }} to the canvas">
             <i class="fa fa-fw fa-plus"></i> 
           </button>
@@ -69,12 +75,24 @@
   <div id="buttonBar">
     <!-- Graph Operations -->
     <div class="pull-left">
-      <button class="btn btn-xs btn-success" ng-click="saveGraph()" tooltip-placement="right" ng-disabled="selectedItem" tooltip-append-to-body="true" uib-tooltip="Save current graph into your browser's local storage">
-        <i class="fa fa-fw fa-save" ng-class="{ 'faa-horizontal animated': graphIsChanged() }"></i> Save Graph
+      <button class="btn btn-xs btn-success" ng-click="saveGraphToDB()" ng-if="user && user._id" tooltip-placement="right" ng-disabled="selectedItem" tooltip-append-to-body="true" uib-tooltip="Save current graph to the database">
+        <i class="fa fa-fw fa-cloud-upload" ng-class="{ 'faa-horizontal animated': graphIsChanged() }"></i> Save
       </button>
       
+      <button class="dropdown-toggle btn btn-xs btn-info" data-toggle="dropdown" role="button" ng-disabled="!savedGraphs || !savedGraphs.length" aria-haspopup="true" aria-expanded="false" tooltip-placement="right" ng-disabled="selectedItem" tooltip-append-to-body="true" uib-tooltip="Load current graph from the database">
+        <i class="fa fa-fw fa-cloud-download"></i> Load <i class="fa fa-fw fa-caret-down"></i>
+      </button>
+      <ul class="dropdown-menu">
+        <li ng-repeat="graph in savedGraphs">
+          <a class="pull-left" href="#/" ng-click="loadGraphFromDB(graph.name);togglePalette(false);">{{ graph.name }}</a>
+          <button class="btn btn-xs btn-danger pull-right" ng-click="deleteGraph(graph)" ng-if="!graph.public && graph.creatorId === user._id">
+            <i class="fa fa-fw fa-trash"></i>
+          </button>
+        </li>
+      </ul>
+      
       <button class="btn btn-xs btn-danger" ng-click="clearGraph()" tooltip-placement="right" ng-disabled="selectedItem" tooltip-append-to-body="true" uib-tooltip="Clear current graph from the canvas">
-        <i class="fa fa-fw fa-trash"></i> Clear Graph
+        <i class="fa fa-fw fa-trash"></i> Clear
       </button>
       
       <!--<button class="btn btn-xs btn-default" style="color:orange" ng-click="addInport()" ng-disabled="selectedItem" tooltip-placement="right" tooltip-append-to-body="true" uib-tooltip="Add an InPort to current graph">
@@ -92,7 +110,7 @@
         <i class="fa fa-fw fa-code"></i> View Raw
       </button>
       
-      <button type="submit" class="btn btn-xs btn-info" ng-disabled="formatting || selectedItem" ng-click="formatYaml()" tooltip-placement="left" tooltip-append-to-body="true" uib-tooltip="Output a manifest file for submitting a graph to cis_interface">
+      <button type="submit" class="btn btn-xs btn-primary" ng-disabled="formatting || selectedItem" ng-click="formatYaml()" tooltip-placement="left" tooltip-append-to-body="true" uib-tooltip="Output a manifest file for submitting a graph to cis_interface">
         <i class="fa fa-fw" ng-class="{ 'fa-file-text-o': !formatting, 'fa-spinner fa-pulse': formatting }"></i> Generate Manifest
       </button>
       
@@ -102,7 +120,7 @@
     </div>
   </div>
   
-  <div id="editSidebar" ng-if="selectedItem">
+  <div id="editSidebar" ng-if="selectedItem" style="overflow-y:scroll">
     <h4>{{ selectedItem.metadata.label || selectedItem.id }} Properties</h4>
     <form role="form" name="editForm" ng-submit="saveEdit()">
       <div id="editSidebarContents">
