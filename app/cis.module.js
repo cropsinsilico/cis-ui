@@ -45,7 +45,7 @@ angular.module('cis', [ 'ngMessages', 'ngResource', 'ngRoute', 'ngCookies', 'cis
 }])
 
 .factory('OAuthProviderService', [ '$resource', 'ApiUri', function ($resource, ApiUri) {
-    return $resource(ApiUri + '/oauth/provider?redirect=/', {});
+    return $resource(ApiUri + '/oauth/provider?redirect=%2F', {});
 }])
 
 .factory('UserService', [ '$resource', 'ApiUri', function ($resource, ApiUri) {
