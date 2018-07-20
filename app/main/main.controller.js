@@ -6,8 +6,8 @@ angular.module('cis')
 .constant('LocalStorageKeys', { edges: 'cis::edges', nodes: 'cis::nodes' })
 
 /** Our main view controller */
-.controller('MainCtrl', [ '$scope', '$window', '$timeout', '$q', '$interval', '$http', '$log', '$uibModal', '_', 'DEBUG', 'TheGraph', 'GraphPortService', 'SpecService', 'GraphService', 'LocalStorageKeys', 'TheGraphSelection', 'User',
-    function($scope, $window, $timeout, $q, $interval, $http, $log, $uibModal, _, DEBUG, TheGraph, GraphPortService, SpecService, GraphService, LocalStorageKeys, TheGraphSelection, User) {
+.controller('MainCtrl', [ '$scope', '$rootScope', '$window', '$timeout', '$q', '$interval', '$http', '$log', '$uibModal', '_', 'DEBUG', 'TheGraph', 'GraphPortService', 'SpecService', 'GraphService', 'LocalStorageKeys', 'TheGraphSelection', 'User',
+    function($scope, $rootScope, $window, $timeout, $q, $interval, $http, $log, $uibModal, _, DEBUG, TheGraph, GraphPortService, SpecService, GraphService, LocalStorageKeys, TheGraphSelection, User) {
   "use strict";
   
   $scope.showPalette = false;
@@ -42,7 +42,7 @@ angular.module('cis')
     function() { return User.profile; },
     // Reload our list of specs
     function(newValue, oldValue) {
-      $scope.user = newValue;
+      $rootScope.user = newValue;
       $scope.requeryGraphs();
       $scope.requerySpecs();
     }
@@ -71,7 +71,7 @@ angular.module('cis')
   $scope.graph = null;
   $scope.lastSavedNodes = [];
   $scope.lastSavedEdges = [];
-  let editValue = null;
+  $scope.editValue = null;
   $scope.library = {};
   
   // Fetch our saved graphs
@@ -120,15 +120,15 @@ angular.module('cis')
   $scope.selectedItem = null;
   $scope.$watch(function() { return TheGraphSelection.selection; }, function(newValue, oldValue) {
     // Clear out existing transaction if it was not saved
-    if (editValue !== null) {
+    if ($scope.editValue !== null) {
       $scope.cancelEdit();
     }
-      
+    
     $scope.selectedItem = newValue;
     if (!oldValue && newValue && oldValue !== newValue) {
       // Start a new transaction
       $scope.graph.startTransaction("edit");
-      editValue = angular.copy(newValue);
+      $scope.editValue = angular.copy(newValue);
       
       /*let modalInstance = $uibModal.open({
         animation: true,
@@ -154,7 +154,7 @@ angular.module('cis')
 
   $scope.loading = false;
   
-  $scope.submitNewModel = function() {
+  $rootScope.submitNewModel = function() {
     let modalInstance = $uibModal.open({
       animation: true,
       templateUrl: 'app/main/modals/addSpec/addSpec.template.html',
@@ -196,10 +196,10 @@ angular.module('cis')
   };
   
   $scope.saveEdit = function() {
-    console.log("Saving over previous value:", editValue);
+    console.log("Saving over previous value:", $scope.editValue);
     $scope.selectedItem.new = false;
-    editValue.metadata = $scope.selectedItem.metadata;
-    editValue = null;
+    $scope.editValue.metadata = $scope.selectedItem.metadata;
+    $scope.editValue = null;
     TheGraphSelection.selection = null;
     $scope.graph.endTransaction("edit");
     console.log("Saved!");
@@ -213,9 +213,9 @@ angular.module('cis')
       // This was an aborted "add" operation.. delete the invalid leftover state
       //$scope.graph.removeNode()
     } else {
-      $scope.selectedItem.metadata = editValue.metadata;
+      $scope.selectedItem.metadata = $scope.editValue.metadata;
     }
-    editValue = null;
+    $scope.editValue = null;
     TheGraphSelection.selection = null;
     $scope.graph.endTransaction("edit");
     console.log("Canceled!");
