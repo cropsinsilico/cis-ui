@@ -2,6 +2,8 @@
 Welcome to the User's Guide for the Crops in Silico Model Composer UI. The purpose of this document is to describe the usage of the User Interface. If any of the steps described in this document are unclear or confusing, please direct your questions to [Crops in Silico Support](mailto:lambert8@illinois.edu)
 
 # Orientation
+![Orientaton](/screenshots/CiS_Orientation.png?raw=true "Orientation")
+
 The Model Composer UI consists of several smaller components:
 * Navbar
 * Canvas (aka "The Graph")
@@ -17,6 +19,8 @@ In front of the Canvas, there are also a few helpful floating windows:
 
 The Model Library starts collapsed, and can be found on the top-left of the canvas. This consists of a simple table listing of the existing models that the system knows about. Here we can also add InPorts and OutPorts to our graph.
 
+![Expanded Model Palette](/screenshots/CiS_Expanded_Model_Palette.png?raw=true "Expanded Model Palette")
+
 The Button Bar runs along the top-right of the canvas. It contains actions such as `Save`, `Load`, `Clear`, and `Generate Manifest`. Save or Load will synchronize your canvas and the state of your graph in the database. Clear removes all nodes and edges from the current canvas, but does not affect graphs that have been stored in the database. "Generate Manifest" will convert the current graph on the canvas to the format that is required by the `cisrun` CLI.
 
 The Context Menu appears when an entity in the canvas is right-clicked. It appears as a round menu that centers on where the mouse cursor was clicked. Several functions, including `Edit` and `Delete`, are offered based on the type of entity that is clicked.
@@ -29,6 +33,11 @@ The Canvas accepts a few mouse/keyboard inputs:
 * `Left-click`: Select a port on a node
 * `Left-click (hold)`: Drag a node around the canvas
 * `Right-click`: Display the context-menu for the clicked graph element
+
+## Loading an Example Graph
+The Button Bar at the top-right should offer a `Load` button. Clicking on this button will expand a dropdown list of all saved graphs and examples currently accessible. Choosing one of these examples will load its contents into your Canvas, allowing you to visualize and edit the graph before generating a manifest for use with `cisrun`.
+
+NOTE: In order to facilitate composing different models and examples, `Load` does not Clear your existing graph state.
 
 ## Adding a Node
 The Model Library on the left side offers an "Add" button beside each model. Click this button to add a new node to the canvas representing the model you've chosen. Once added, you can left-click this node and hold to drag it around the  canvas. On the new node, you should see grey dots on the left/right sides - these are the inputs (left side) and outputs (right side) that this model accepts.
@@ -67,11 +76,48 @@ Right-clicking an edge will bring up the context menu, and allows you to delete 
 * Field Names (optional): If this edge contains multiple fields, you can specify their names as a comma-separated list of values
 * Field Units (optional): If this edge contains multiple fields, you can specify their units as a comma-separated list of values
 
-# Creating a New Model
+# Logging In
+For users who simply wish to build new graphs from our existing sets of models, we do not require them to create an account or log into the system. Anyone who wishes to Create a New Model or Save a Composed Graph to the database, however, will need to sign up for an account. This is simply to track which users created which models, to avoid showing unvetted or defunct options to all users.
+
+To begin the login process, click `Log In` at the top-right in the Navbar:
+
+![OAuth Start](/screenshots/CiS_OAuth_Start.png?raw=true "OAuth Start")
+
+You will then be prompted for your GitHub account credentials. If you do not already have a GitHub account, you can [sign up for one for free on GitHub.com](https://github.com/join?source=header-home)
+
+![OAuth Authentication](/screenshots/CiS_OAuth_Login.png?raw=true "OAuth Authentication")
+
+After signing in, you will be asked to Authorize the Crops in Silico Platform to access your GitHub account information. We only examine your user profile information and use it to create al inked account in our system.
+
+![OAuth Authorization](/screenshots/CiS_OAuth_Authorize.png?raw=true "OAuth Authorization")
+
+Click "Authorize" to be redirected the Crops in Silico application. You are now logged in as your GitHub user, and should see a couple of new buttons have appeared in the User Interface:
+* Save Graph
+* Submit a New Model
+
+![OAuth Authorized](/screenshots/CiS_OAuth_End.png?raw=true "OAuth Authorized")
+
+## Saving a Composed Graph
+After logging in, the Button Bar will include a `Save` button. Clicking this button will offer you a prompt to name this graph. If a valid name is entered, the graph will be saved to the database.
+
+### Loading a Previously-Saved Graph
+After a graph has been saved, it should appear in the `Load` dropdown on the Button Bar. Choosing a previously-saved graph will load its contents into the Canvas.
+
+NOTE: In order to facilitate composing different models and examples, `Load` does not Clear your existing graph state.
+
+### Deleting a Previously-Saved Graph
+For graphs that you have saved, you should see a `Delete` button beside them. Simply click this button to remove the saved graph from the database.
+
+## Creating a New Model
 Do you have a new model that you would like to contribute? After logging in, the Navbar offers a link that will allow you to submit your own custom model metadata. Simply `Log In` at the top-right, then click `Submit a New Model` at the top-left. A pop-up should appear allowing you to enter all necessary metadata fields of you model. Once created, your model appears in your personal catalog for testing and debugging.
 
-## Official Model Submission
-When you are satisfied with the working state of your model, you can submit it to our official catalog as an issue or pull request to the [cis-specs](https://github.com/cropsinsilico/cis-specs) repository. Here it will go through a peer review process where it will be testing and vetted. If it passes the review, it will be accepted into our official catalog, where all users will be able to consume and use the new model.
+### Deleting a Model
+If you have created a model that you would like to remove, you should see a `Delete` button listed on the Model Palette once when it is expanded. Click the search icon to expand the Model Palette. You should see a red `Delete` button beside any unofficial specs that you have created.
 
-We are working to automate this submission process further, and thank you for your patience while we determine the best course of action.
+NOTE: Once a model or graph has been officially submitted, it cannot be deleted
+
+## Official Submission
+When you are satisfied with the working state of your model or graph, you can submit it to our official catalog as an issue or pull request to the [cis-specs](https://github.com/cropsinsilico/cis-specs) repository. Here it will go through a peer review process where it will be testing and vetted. If it passes the review, it will be accepted into our official catalog, where all users will be able to consume and use the new model.
+
+We are working to automate this submission process further, and we thank you for your patience while we determine the best course of action.
 
