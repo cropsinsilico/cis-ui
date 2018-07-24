@@ -106,7 +106,7 @@ angular.module('cis')
       $scope.library['inport'] = $scope.inport;
       $scope.library['outport'] = $scope.outport;
       
-      $scope.loadAutosavedGraph();
+      $scope.loadGraph();
     });
   })();
 
