@@ -9,9 +9,22 @@ angular.module('cis', [ 'ngMessages', 'ngResource', 'ngRoute', 'ngCookies', 'cis
 /** Enable DEBUG mode? */
 .constant('DEBUG', true)
 
-.factory('User', [ function() { 
+.factory('User', [ '$window', '$cookies', 'UserService', 'OAuthProviderService', function($window, $cookies, UserService, OAuthProviderService) { 
   let userStore = {
-    profile: {}
+    profile: UserService.get(),
+    signUpWithGirder: function() { $window.location.href = '/girder#?dialog=register'; },
+    signInWithGirder: function() { $window.location.href = '/girder#?dialog=login'; },
+    signInWithGithub: function() {
+      console.log("Signing in...");
+      OAuthProviderService.get().$promise.then(function(providers) {
+        $window.location.href = providers['GitHub'];
+      });
+    },
+    signOut: function() {
+      console.log("Signing out...");
+      $cookies.remove('girderToken');
+      return userStore.profile = UserService.get();
+    }
   };
   
   return userStore;
@@ -32,7 +45,7 @@ angular.module('cis', [ 'ngMessages', 'ngResource', 'ngRoute', 'ngCookies', 'cis
 }])
 
 .factory('OAuthProviderService', [ '$resource', 'ApiUri', function ($resource, ApiUri) {
-    return $resource(ApiUri + '/oauth/provider?redirect=/', {});
+    return $resource(ApiUri + '/oauth/provider?redirect=%2F', {});
 }])
 
 .factory('UserService', [ '$resource', 'ApiUri', function ($resource, ApiUri) {
@@ -202,12 +215,14 @@ angular.module('cis', [ 'ngMessages', 'ngResource', 'ngRoute', 'ngCookies', 'cis
     .when('/', {
       title: 'Crops in Silico',
       controller: 'MainCtrl',
+      controllerAs: 'mainCtrl',
       templateUrl: 'app/main/main.template.html',
       pageTrack: '/'
     })
     .when('/login', {
       title: 'Sign In',
       controller: 'LoginCtrl',
+      controllerAs: 'loginCtrl',
       templateUrl: 'app/login/login.template.html',
       pageTrack: '/login'
     })
