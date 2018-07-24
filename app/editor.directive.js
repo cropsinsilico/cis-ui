@@ -153,9 +153,6 @@ angular.module('cis')
                 editor.width = props.width;
                 editor.height = props.height;
                 
-                // FIXME: This seems to work despite many errors in the console
-                //ReactDOM.unmountComponentAtNode(editor);
-                
                 //window.removeEventListener('resize', render);
                 let reactEle = React.createElement(TheGraph.App, props);
                 ReactDOM.render(reactEle, editor);
@@ -228,6 +225,9 @@ angular.module('cis')
                 scope.height = window.innerHeight;
                 scope.width = window.innerWidth;
                 $log.info(`Resize event detected 2: ${scope.width}x${scope.height}... reloading!`);
+                
+                // FIXME: This seems to work despite many errors in the console
+                ReactDOM.unmountComponentAtNode(element);
                 render();
     
                 // manual $digest required as resize event is outside of angular
