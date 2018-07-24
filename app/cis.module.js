@@ -7,7 +7,7 @@ angular.module('cis', [ 'ngMessages', 'ngResource', 'ngRoute', 'ngCookies', 'cis
   'angular-clipboard', 'ui.bootstrap', 'ui.slider', 'swaggerUi' ])
 
 /** Enable DEBUG mode? */
-.constant('DEBUG', true)
+.constant('DEBUG', false)
 
 .factory('User', [ '$window', '$cookies', 'UserService', 'OAuthProviderService', function($window, $cookies, UserService, OAuthProviderService) { 
   let userStore = {
