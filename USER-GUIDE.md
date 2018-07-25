@@ -1,6 +1,8 @@
 # User Guide
 Welcome to the User's Guide for the Crops in Silico Model Composer UI. The purpose of this document is to describe the usage of the User Interface. If any of the steps described in this document are unclear or confusing, please direct your questions to [Crops in Silico Support](mailto:lambert8@illinois.edu)
 
+To assist the Support Team in their investigation, please be sure to include the browser type/version and operating system that you were using when the troublesome behavior was encountered.
+
 ## Table of Contents
 * [Orientation](USER-GUIDE.md#orientation)
 * [Canvas Controls](USER-GUIDE.md#canvas-controls)
@@ -62,6 +64,9 @@ NOTE: In order to facilitate composing different models and examples, `Load` doe
 The Model Library on the left side offers an "Add" button beside each model. Click this button to add a new node to the canvas representing the model you've chosen. Once added, you can left-click this node and hold to drag it around the  canvas. On the new node, you should see grey dots on the left/right sides - these are the inputs (left side) and outputs (right side) that this model accepts.
 
 For more details, see the documentation for [Model file input/output](https://cropsinsilico.github.io/cis_interface/getting_started.html#model-file-input-output)
+
+### About the Bounding Box
+While dragging, you may notice a lighter gray circle around the dragged node. This is the "bounding box" that indicates valid areas where your node can be dragged - as your node moves the bounding box moves with it! This behavior is meant to prevent you from dragging a node so fast that the mouse cursor exits the node before the "drag" event is picked up.
 
 ## Adding an Edge
 To create an edge, simply click on an output on a model - this should display a floating edge that ends at your cursor. Then, select an input on  another model. You can also choose an input first and connect that to an output.
