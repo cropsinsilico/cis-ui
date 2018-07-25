@@ -1,6 +1,25 @@
 # User Guide
 Welcome to the User's Guide for the Crops in Silico Model Composer UI. The purpose of this document is to describe the usage of the User Interface. If any of the steps described in this document are unclear or confusing, please direct your questions to [Crops in Silico Support](mailto:lambert8@illinois.edu)
 
+## Table of Contents
+* [Orientation](USER-GUIDE.md#orientation)
+* [Canvas Controls](USER-GUIDE.md#canvas-controls)
+  * [Loading an Example Graph](USER-GUIDE.md#loading-an-example-graph)
+  * [Adding a Node](USER-GUIDE.md#adding-a-node)
+  * [Adding an Edge](USER-GUIDE.md#adding-an-edge)
+  * [Adding an InPort / OutPort](USER-GUIDE.md#adding-an-inport--outport)
+  * [Right-Click Context Menu](USER-GUIDE.md#right-click-context-menu)
+    * [Nodes](USER-GUIDE.md#nodes)
+    * [InPorts / OutPorts](USER-GUIDE.md#inports--outports)
+    * [Edges](USER-GUIDE.md#edges)
+* [Logging In](USER-GUIDE.md#logging-in)
+  * [Saving a Composed Graph](USER-GUIDE.md#saving-a-composed-graph)
+    * [Loading a Previously-Saved Graph](USER-GUIDE.md#loading-a-previously-saved-graph)
+    * [Deleting a Previously-Saved Graph](USER-GUIDE.md#deleting-a-previously-saved-graph)
+  * [Creating a New Model](USER-GUIDE.md#creating-a-new-model)
+    * [Deleting a Model](USER-GUIDE.md#deleting-a-model)
+ * [Official Submission](USER-GUIDE.md#official-submission)
+
 # Orientation
 ![Orientaton](/screenshots/CiS_Orientation.png?raw=true "Orientation")
 
@@ -8,22 +27,22 @@ The Model Composer UI consists of several smaller components:
 * Navbar
 * Canvas (aka "The Graph")
 
-The Navbar runs along the top of the UI and contains the Crops in Silico brand name and logo. On the left side, you will find a link to submit a new model. On the right side, you will also find the `Log In` button and a `Help` dropdown which contains links to this user guide, the developer's guide, and the documentation for the `cisrun` CLI tool.
+The *Navbar* runs along the top of the UI and contains the Crops in Silico brand name and logo. On the left side, you will find a link to submit a new model. On the right side, you will also find the `Log In` button and a `Help` dropdown which contains links to this user guide, the developer's guide, and the documentation for the `cisrun` CLI tool.
 
-The Canvas is the grid with the black background in the center of the screen. This displays the current state of the graph that the user is working on. 
+The *Canvas* is the grid with the black background in the center of the screen. This displays the current state of the graph that the user is working on. 
 
 In front of the Canvas, there are also a few helpful floating windows:
 * Model Library (aka "Palette")
 * Button Bar
 * Context Menu + Edit Sidebar
 
-The Model Library starts collapsed, and can be found on the top-left of the canvas. This consists of a simple table listing of the existing models that the system knows about. Here we can also add InPorts and OutPorts to our graph.
+The *Model Library* starts collapsed, and can be found on the top-left of the canvas. This consists of a simple table listing of the existing models that the system knows about. Here we can also add InPorts and OutPorts to our graph. Simply click the `Add` (+) button and the new node will appear in the Canvas. If the node appears off-screen, you can easily find it by pressing the `F` key to focus on the entire graph. For models that you have created, here you can also find the option to delete them (see [Creating a New Model](USER-GUIDE.md#creating-a-new-model)).
 
 ![Expanded Model Palette](/screenshots/CiS_Expanded_Model_Palette.png?raw=true "Expanded Model Palette")
 
-The Button Bar runs along the top-right of the canvas. It contains actions such as `Save`, `Load`, `Clear`, and `Generate Manifest`. Save or Load will synchronize your canvas and the state of your graph in the database. Clear removes all nodes and edges from the current canvas, but does not affect graphs that have been stored in the database. "Generate Manifest" will convert the current graph on the canvas to the format that is required by the `cisrun` CLI.
+The *Button Bar* runs along the top-right of the canvas. It contains actions such as `Save`, `Load`, `Clear`, and `Generate Manifest`. `Save` will store the state of your current graph to the database, while `Load` will import a given state from the database. `Load` can also be used to compose multiple examples together by loading multiple graphs in succession. `Clear` will remove all nodes and edges from the current canvas, but does not affect graphs that have been stored in the database. `Generate Manifest` will convert the current graph on the canvas to the format that is required by the `cisrun` CLI.
 
-The Context Menu appears when an entity in the canvas is right-clicked. It appears as a round menu that centers on where the mouse cursor was clicked. Several functions, including `Edit` and `Delete`, are offered based on the type of entity that is clicked.
+The *Context Menu* appears when an entity in the canvas is right-clicked. It appears as a round menu that centers on where the mouse click occurred. `Edit` and `Delete` are offered the only actions offered, and only when right-clicking on Edges or Nodes (including InPorts and OutPorts).
 
 If `Edit` is chosen, the Edit Sidebar will be displayed on the right edge of the canvas. The sidebar allows you to edit the metadata of the entity you have selected. This sidebar will also appear when adding an InPort or OutPort to specify the source/destination of the data.
 
