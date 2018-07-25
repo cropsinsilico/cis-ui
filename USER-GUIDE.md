@@ -42,7 +42,7 @@ The *Model Library* starts collapsed, and can be found on the top-left of the ca
 
 ![Expanded Model Palette](/screenshots/CiS_Expanded_Model_Palette.png?raw=true "Expanded Model Palette")
 
-The *Button Bar* runs along the top-right of the canvas. It contains actions such as `Save`, `Load`, `Clear`, and `Generate Manifest`. `Save` will store the state of your current graph to the database, while `Load` will import a given state from the database. `Load` can also be used to compose multiple examples together by loading multiple graphs in succession. `Clear` will remove all nodes and edges from the current canvas, but does not affect graphs that have been stored in the database. `Generate Manifest` will convert the current graph on the canvas to the format that is required by the `cisrun` CLI.
+The *Button Bar* runs along the top-right of the canvas. It contains actions such as `Save`, `Load`, `Clear`, and `Generate Manifest`. `Save` will store the state of your current graph to the database, while `Load` will import a given state from the database. `Clear` will remove all nodes and edges from the current canvas, but does not affect graphs that have been stored in the database. `Generate Manifest` will convert the current graph on the canvas to the format that is required by the `cisrun` CLI.
 
 The *Context Menu* appears when an entity in the canvas is right-clicked. It appears as a round menu that centers on where the mouse click occurred. `Edit` and `Delete` are offered the only actions offered, and only when right-clicking on Edges or Nodes (including InPorts and OutPorts).
 
@@ -57,8 +57,6 @@ The Canvas accepts a few mouse/keyboard inputs:
 
 ## Loading an Example Graph
 The Button Bar at the top-right should offer a `Load` button. Clicking on this button will expand a dropdown list of all saved graphs and examples currently accessible. Choosing one of these examples will load its contents into your Canvas, allowing you to visualize and edit the graph before generating a manifest for use with `cisrun`.
-
-NOTE: In order to facilitate composing different models and examples, `Load` does not Clear your existing graph state.
 
 ## Adding a Node
 The Model Library on the left side offers an "Add" button beside each model. Click this button to add a new node to the canvas representing the model you've chosen. Once added, you can left-click this node and hold to drag it around the  canvas. On the new node, you should see grey dots on the left/right sides - these are the inputs (left side) and outputs (right side) that this model accepts.
