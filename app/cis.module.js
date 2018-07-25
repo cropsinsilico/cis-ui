@@ -4,7 +4,7 @@
 
 
 angular.module('cis', [ 'ngMessages', 'ngResource', 'ngRoute', 'ngCookies', 'cis-api', 
-  'angular-clipboard', 'ui.bootstrap', 'ui.slider', 'swaggerUi' ])
+  'angular-clipboard', 'ui.bootstrap', 'ui.slider', 'swaggerUi', 'ngCacheBuster' ])
 
 /** Enable DEBUG mode? */
 .constant('DEBUG', true)
@@ -140,11 +140,14 @@ angular.module('cis', [ 'ngMessages', 'ngResource', 'ngRoute', 'ngCookies', 'cis
 })
 
 /** Configure routes for our module */
-.config([ '$locationProvider', '$logProvider', '$routeProvider', '$provide', '$httpProvider', 'DEBUG',
-    function($locationProvider, $logProvider, $routeProvider, $provide, $httpProvider, DEBUG) {
+.config([ '$locationProvider', '$logProvider', '$routeProvider', '$provide', '$httpProvider', 'httpRequestInterceptorCacheBusterProvider', 'DEBUG', 
+    function($locationProvider, $logProvider, $routeProvider, $provide, $httpProvider, httpRequestInterceptorCacheBusterProvider, DEBUG) {
   "use strict";
   
   // TODO: Google Analytics?
+  
+  // Set our match list for the cache buster
+  httpRequestInterceptorCacheBusterProvider.setMatchlist([/.*node_modules.*/,/.*api.*/]);
   
   // Squelch debug-level log messages
   $logProvider.debugEnabled(DEBUG); 
