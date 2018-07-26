@@ -130,7 +130,6 @@
             <input type="text" class="form-control" id="idField" name="idField" ng-model="selectedItem.id" ng-disabled="'true'" required />
         </div>
         
-        
         <!-- Component Field (Nodes only) -->
         <!-- FIXME: this should probably use <select> instead of <input>, 
           although it is currently disabled -->
@@ -169,7 +168,7 @@
         <div ng-if="selectedItem.component === 'inport' || selectedItem.component === 'outport'">
           <!-- Type Field -->
           <div class="form-group">
-            <label for="typeField">Type <sup><i class="fa fa-fw fa-question-circle" tooltip-placement="left" tooltip-append-to-body="true" uib-tooltip="The source/destination type for this value"></i></sup></label>
+            <label for="typeField">Type <sup><i class="fa fa-fw fa-question-circle" tooltip-placement="left" tooltip-append-to-body="true" uib-tooltip="The {{ selectedItem.component === 'inport' ? 'source' : 'destination' }} type for this {{ selectedItem.component }}"></i></sup></label>
             <select type="text" class="form-control" id="typeField" name="typeField" ng-model="selectedItem.metadata.type" required>
                 <option>File</option>
                 <option>Queue</option>
@@ -182,7 +181,7 @@
           
           <!-- Value Field -->
           <div class="form-group">
-            <label for="nameField">Value <sup><i class="fa fa-fw fa-question-circle" tooltip-placement="left" tooltip-append-to-body="true" uib-tooltip="The source/destination name of this input/output"></i></sup></label>
+            <label for="nameField">{{ selectedItem.metadata.type === 'File' ? 'Path' : 'Name' }} <sup><i class="fa fa-fw fa-question-circle" tooltip-placement="left" tooltip-append-to-body="true" uib-tooltip="The {{ selectedItem.metadata.type === 'File' ? 'file path' : 'queue name' }} for this {{ selectedItem.component }}'s data"></i></sup></label>
             <input type="text" class="form-control" id="nameField" name="nameField" ng-model="selectedItem.metadata.name" required />
             
             <ng-messages class="text-danger" for="editForm.nameField.$error" role="alert">
@@ -192,7 +191,7 @@
           
           <!-- Read Method Field -->
           <div class="form-group" ng-if="selectedItem.component === 'inport'">
-            <label for="readMethField">Read Method (optional) <sup><i class="fa fa-fw fa-question-circle" tooltip-placement="left" tooltip-append-to-body="true" uib-tooltip="How should this input be parsed?"></i></sup></label>
+            <label for="readMethField">Read Method (optional) <sup><i class="fa fa-fw fa-question-circle" tooltip-placement="left" tooltip-append-to-body="true" uib-tooltip="How should the input data be parsed?"></i></sup></label>
             <select type="text" class="form-control" id="readMethField" name="readMethField" ng-model="selectedItem.metadata.read_meth">
                 <option>table</option>
                 <option>table_array</option>
