@@ -32,6 +32,8 @@ body {
   padding: 0;
 }
 #modelPalette {
+  max-height: 550px;
+  overflow-y: auto;
   position: fixed; 
   left: 15px; 
   top: 50px;
