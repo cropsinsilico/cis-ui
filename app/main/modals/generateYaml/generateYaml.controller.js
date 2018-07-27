@@ -23,8 +23,7 @@ angular
       alert('Sorry, copy to clipboard is not supported');
       return;
     }
-    let formatted = $scope.reformat($scope.legacy);
-    clipboard.copyText(formatted);
+    clipboard.copyText(results);
   };
 
   $scope.close = function() {
