@@ -9,8 +9,8 @@ angular
  * @author lambert8
  * @see https://opensource.ncsa.illinois.edu/confluence/display/~lambert8/3.%29+Controllers%2C+Scopes%2C+and+Partial+Views
  */
-.controller('AddSpecCtrl', [ '$scope', '$log', '$uibModalInstance', '_', 'specs', 'isEdit',
-    function($scope, $log, $uibModalInstance, _, specs, isEdit) {
+.controller('AddSpecCtrl', [ '$scope', '$log', '$uibModalInstance', '_', 'specs',
+    function($scope, $log, $uibModalInstance, _, specs) {
   "use strict";
   
   $scope.newInput = '';
@@ -20,7 +20,6 @@ angular
   $scope.specs = specs;
   
   
-  $scope.isEdit = isEdit;
   $scope.newModel = {
     // model metadata
     label: '',
