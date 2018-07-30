@@ -44,6 +44,12 @@ angular
   $scope.nameIsNotUnique = function(name) {
     return _.find($scope.specs, [ 'name', name.toLowerCase() ]);
   };
+  
+  var deleteIfEmpty = function(propName) {
+    if (!$scope.newModel[propName]) {
+      delete $scope.newModel[propName];
+    }
+  };
 
   $scope.submit = function() {
     $log.debug("Closing modal with success!");
@@ -71,6 +77,11 @@ angular
     });
     
     $scope.newModel.name = $scope.newModel.label.toLowerCase();
+    
+    deleteIfEmpty('sourcedir');
+    deleteIfEmpty('cmakeargs');
+    deleteIfEmpty('makefile');
+    deleteIfEmpty('makedir');
     
     $uibModalInstance.close(model);
   };
