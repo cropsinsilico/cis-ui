@@ -16,35 +16,27 @@
       <tr>
         <th width="10%" style="text-align:center;" >Icon</th>
         <th>Model</th>
-        <th width="10%" style="text-align:center;" ng-if="user && user._id">Submit</th>
-        <th width="10%" style="text-align:center;" ng-if="user && user._id">Delete</th>
-        <th width="10%" style="text-align:center;" ng-if="DEBUG">Info</th>
-        <th width="10%" style="text-align:center;">Add</th>
+        <th width="30%" style="text-align:center;">Actions</th>
       </tr>
       <tr ng-repeat="(name, spec) in getModelOptions(library) track by name">
         <th style="text-align:center;" ><i class="fa fa-fw fa-{{ spec.icon }}"></i></th>
         <td>{{ spec.description }} ({{ spec.label || spec.name }})</td>
-        <td style="text-align:center;" ng-if="user && user._id">
-          <button class="btn btn-xs btn-default" style="margin:0;" ng-click="submitSpecToGitHub(spec)" ng-if="spec.creatorId === user._id" 
+        <td style="text-align:center;">
+          <button class="btn btn-xs btn-default" style="margin:0;" ng-click="submitSpecToGitHub(spec)" ng-if="user && user._id && spec.creatorId === user._id"
               tooltip-append-to-body="true" uib-tooltip="Submit this model to the official catalog, pending review">
             <i class="fa fa-fw fa-github"></i> 
           </button>
-        </td>
-        <td style="text-align:center;" ng-if="user && user._id">
-          <button class="btn btn-xs btn-danger" style="margin:0;" ng-click="deleteSpec(spec)" ng-if="spec.creatorId === user._id" 
-              tooltip-append-to-body="true" uib-tooltip="Delete this spec from the catalog. You will be prompted before deletion">
-            <i class="fa fa-fw fa-trash"></i> 
-          </button>
-        </td>
-        <td style="text-align:center;" ng-if="DEBUG">
-          <button class="btn btn-xs btn-default" style="margin:0;" ng-click="showResults({ results: spec, title: 'View Raw Model', isJson: true })">
+          <button class="btn btn-xs btn-default" style="margin:0;" ng-if="DEBUG" ng-click="showResults({ results: spec, title: 'View Raw Model', isJson: true })"
+            tooltip-append-to-body="true" uib-tooltip="View the raw JSON for this Spec">
             <i class="fa fa-fw fa-code"></i> 
           </button>
-        </td>
-        <td style="text-align:center;">
-          <button class="btn btn-xs btn-primary" style="margin:0;" ng-disabled="selectedItem || graphHasModel(spec.name)" tooltip-placement="left" ng-click="addNodeInstance(spec);togglePalette()"
+          <button class="btn btn-xs btn-primary" style="margin:0;" ng-disabled="selectedItem || graphHasModel(spec.name)" ng-click="addNodeInstance(spec);togglePalette()"
               tooltip-append-to-body="true" uib-tooltip="{{ graphHasModel(spec.name) ? spec.label + ' has been added' : 'Add ' + spec.description + ' to the canvas' }}">
             <i class="fa fa-fw fa-plus"></i> 
+          </button>
+          <button class="btn btn-xs btn-danger" style="margin:0;" ng-click="deleteSpec(spec)" ng-if="user && user._id && spec.creatorId === user._id" 
+              tooltip-append-to-body="true" uib-tooltip="Delete this spec from your personal catalog. You will be prompted before deletion">
+            <i class="fa fa-fw fa-trash"></i> 
           </button>
         </td>
       </tr>
