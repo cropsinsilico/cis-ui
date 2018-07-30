@@ -343,7 +343,7 @@ angular.module('cis')
     
     // Load from API
     //let nodes = angular.fromJson($window.localStorage.getItem(LocalStorageKeys.nodes));
-    $scope.loadGraph(saved.content.processes, saved.content.connection)
+    $scope.loadGraph(saved.content.processes, saved.content.connections)
   };
   
   /**
