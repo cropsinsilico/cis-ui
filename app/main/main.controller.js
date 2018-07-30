@@ -31,7 +31,7 @@ angular.module('cis')
   $scope.interval = $interval(function() {
     $scope.saveGraph();
     $log.log("Graph auto-saved");
-  }, 3000);
+  }, 10000);
   
   /**
    * Watch for the user's profile to change (e.g. on login / logout).
@@ -343,21 +343,7 @@ angular.module('cis')
     
     // Load from API
     //let nodes = angular.fromJson($window.localStorage.getItem(LocalStorageKeys.nodes));
-    let nodes = saved.content.processes;
-     
-    // Import our previous state, if one was found
-    if (nodes && Object.keys(nodes).length) {
-      // Import all nodes from localStorage into TheGraph
-      angular.forEach(nodes, node => { $scope.graph.addNode(node.id, node.component, node.metadata); });
-      
-      // Then, import all edges
-      let edges = saved.content.connections;
-      edges && angular.forEach(edges, edge => { $scope.graph.addEdge(edge.from.node, edge.from.port, edge.to.node, edge.to.port, edge.metadata); });
-      
-      // Store our previously saved state
-      $scope.lastSavedNodes = angular.copy($scope.graph.nodes);
-      $scope.lastSavedEdges = angular.copy($scope.graph.edges);
-    }
+    $scope.loadGraph(saved.content.processes, saved.content.connection)
   };
   
   /**
@@ -416,7 +402,14 @@ angular.module('cis')
       // Import our previous state, if one was found
       if (loadedNodes && loadedNodes.length) {
         // Import all nodes from localStorage into TheGraph
-        angular.forEach(loadedNodes, node => { $scope.graph.addNode(node.id, node.component, node.metadata); });
+        angular.forEach(loadedNodes, node => {
+          var exists = _.find($scope.graph.nodes, [ 'id', node.id ]);
+          if (!exists) {
+            $scope.graph.addNode(node.id, node.component, node.metadata);
+          } else {
+            $log.info("Node ID " + node.id + " already exists in TheGraph.. skipping");
+          }
+        });
         
         // Then, import all edges
         let loadedEdges = edges || angular.fromJson($window.localStorage.getItem(LocalStorageKeys.edges));
@@ -507,7 +500,7 @@ angular.module('cis')
    * loaded again from localStorage. The user should now see the new spec listed in their 
    * palette.
    */ 
-  $rootScope.submitNewModel = function() {
+  $rootScope.createNewModel = function() {
     let modalInstance = $uibModal.open({
       animation: true,
       templateUrl: 'app/main/modals/addSpec/addSpec.template.html',
@@ -531,6 +524,22 @@ angular.module('cis')
         // TODO: save Graph to "temp-$timestamp"
         $scope.saveGraph();
         $window.location.reload();
+      });
+    });
+  };
+  
+  $scope.submitSpecToGitHub = function(spec) {
+    // Find our target spec id and delete the spec
+    var specs = SpecService.query();
+    specs.$promise.then(function() {
+      var specResource = _.find(specs, [ 'content.name', spec.name ]);
+      var url = ApiUri + '/spec/' + specResource._id + '/issue';
+      $http.post(url, specResource).then(function(response) {
+        $log.info("Successfully submitted spec to GitHub:", specResource);
+      }, function(response) {
+        var error = response.data;
+        var headers = response.headers('location');
+        $log.error("Error submitting spec to GitHub" + error.message);
       });
     });
   };
