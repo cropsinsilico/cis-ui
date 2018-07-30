@@ -9,8 +9,8 @@ angular
  * @author lambert8
  * @see https://opensource.ncsa.illinois.edu/confluence/display/~lambert8/3.%29+Controllers%2C+Scopes%2C+and+Partial+Views
  */
-.controller('AddSpecCtrl', [ '$scope', '$log', '$uibModalInstance', '_', 'specs',
-    function($scope, $log, $uibModalInstance, _, specs) {
+.controller('AddSpecCtrl', [ '$scope', '$log', '$uibModalInstance', '_', 'specs', 'isEdit',
+    function($scope, $log, $uibModalInstance, _, specs, isEdit) {
   "use strict";
   
   $scope.newInput = '';
@@ -19,6 +19,8 @@ angular
   
   $scope.specs = specs;
   
+  
+  $scope.isEdit = isEdit;
   $scope.newModel = {
     // model metadata
     label: '',
@@ -49,10 +51,10 @@ angular
     let model = $scope.newModel;
     
     // Split args string into array
-    if (!$scope.modelArgsString.args || $scope.modelArgsString.args.replace(/ /g,'') === '') {
+    if (!$scope.modelArgsString || $scope.modelArgsString.replace(/ /g,'') === '') {
       model.args = null;
     } else {
-      model.args = _.split($scope.modelArgsString.args, ' ');
+      model.args = _.split($scope.modelArgsString, ' ');
     }
     
     // Coerce inports from strings into objects
