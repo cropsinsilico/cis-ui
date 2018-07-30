@@ -393,6 +393,13 @@ angular.module('cis')
    * Populates TheGraph from the last auto-save in the browser's localStorage.
    */ 
   $scope.loadGraph = function(nodes, edges) {
+      // Get confirmation, then clear the user's graph
+      if (nodes && nodes.length) {
+        if (!$scope.clearGraph()) {
+          return;
+        }
+      }
+      
       // Load up an empty graph
       $scope.graph = new fbpGraph.Graph();
       
@@ -460,7 +467,7 @@ angular.module('cis')
   $scope.formatYaml = function() {
     // Submit the graph JSON for conversion to cisrun YAML format
     $scope.formatting = true;
-    let formattedYaml = $http.post(ApiUri + '/graph/convert', {
+    $http.post(ApiUri + '/graph/convert', {
       "content": $scope.graph.toJSON()
     }).then(function(response) {
       $scope.showResults({ title: "Formatted Manifest", results: response.data });
@@ -535,11 +542,18 @@ angular.module('cis')
       var specResource = _.find(specs, [ 'content.name', spec.name ]);
       var url = ApiUri + '/spec/' + specResource._id + '/issue';
       $http.post(url, specResource).then(function(response) {
-        $log.info("Successfully submitted spec to GitHub:", specResource);
+        $log.info((response.status === 201 ? "Successfully" : "Already") +  " submitted spec to GitHub:", specResource);
+        $scope.requerySpecs();
+        if (confirm("Issue has been " + (response.status === 201 ? "successfully" : "already") + " submitted to GitHub. View the issue now?")) {
+          var apiResponseSuffix = response.data['issue_url'].split("repos")[1];
+          var targetUrl = 'https://github.com' + apiResponseSuffix;
+          $window.location.href = targetUrl;
+        }
       }, function(response) {
         var error = response.data;
-        var headers = response.headers('location');
-        $log.error("Error submitting spec to GitHub" + error.message);
+        if (error) {
+          $log.error("Error submitting spec to GitHub:" + error.message);
+        }
       });
     });
   };
