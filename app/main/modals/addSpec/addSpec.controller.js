@@ -19,6 +19,7 @@ angular
   
   $scope.specs = specs;
   
+  
   $scope.newModel = {
     // model metadata
     label: '',
@@ -27,7 +28,7 @@ angular
     icon: '',
     
     // execution info
-    driver: '',
+    language: '',
     args: [],
     sourcedir: '',
     cmakeargs: '',
@@ -43,16 +44,22 @@ angular
   $scope.nameIsNotUnique = function(name) {
     return _.find($scope.specs, [ 'name', name.toLowerCase() ]);
   };
+  
+  var deleteIfEmpty = function(propName) {
+    if (!$scope.newModel[propName]) {
+      delete $scope.newModel[propName];
+    }
+  };
 
   $scope.submit = function() {
     $log.debug("Closing modal with success!");
     let model = $scope.newModel;
     
     // Split args string into array
-    if (!$scope.modelArgsString.args || $scope.modelArgsString.args.replace(/ /g,'') === '') {
+    if (!$scope.modelArgsString || $scope.modelArgsString.replace(/ /g,'') === '') {
       model.args = null;
     } else {
-      model.args = _.split($scope.modelArgsString.args, ' ');
+      model.args = _.split($scope.modelArgsString, ' ');
     }
     
     // Coerce inports from strings into objects
@@ -70,6 +77,11 @@ angular
     });
     
     $scope.newModel.name = $scope.newModel.label.toLowerCase();
+    
+    deleteIfEmpty('sourcedir');
+    deleteIfEmpty('cmakeargs');
+    deleteIfEmpty('makefile');
+    deleteIfEmpty('makedir');
     
     $uibModalInstance.close(model);
   };
