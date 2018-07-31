@@ -1,6 +1,7 @@
-FROM node:carbon
+FROM node:carbon-alpine
 
 # Install depedencies
+RUN apk add --update vim git 
 RUN npm install -g grunt http-server
 
 # Copy in source
@@ -19,4 +20,4 @@ RUN npm install && \
 
 
 ENTRYPOINT [ "http-server" ]
-CMD [ "-p", "3000", "-d", "False" ]
+CMD [ "-p", "80", "-d", "False" ]
