@@ -6,7 +6,7 @@
   <div id="modelPalette">
     <div class="paletteHeader">
       <h4 class="pull-left libraryHeader">Model Library</h4>
-      <button class="btn btn-xs btn-default pull-right" ng-click="showPalette = !showPalette">
+      <button class="btn btn-xs pull-right" ng-class="{ 'btn-info': !showPalette, 'btn-default': showPalette }" ng-click="showPalette = !showPalette">
         <i class="fa fa-fw fa-toggle-up" ng-if="showPalette"></i>
         <i class="fa fa-fw fa-search" ng-if="!showPalette"></i>
       </button>
@@ -16,25 +16,25 @@
       <tr>
         <th width="10%" style="text-align:center;" >Icon</th>
         <th>Model</th>
-        <th width="10%" style="text-align:center;" ng-if="user && user._id">Delete</th>
-        <th width="10%" style="text-align:center;" ng-if="DEBUG">Info</th>
-        <th width="10%" style="text-align:center;">Add</th>
+        <th width="30%" style="text-align:right;">Actions</th>
       </tr>
       <tr ng-repeat="(name, spec) in getModelOptions(library) track by name">
         <th style="text-align:center;" ><i class="fa fa-fw fa-{{ spec.icon }}"></i></th>
         <td>{{ spec.description }} ({{ spec.label || spec.name }})</td>
-        <td style="text-align:center;" ng-if="user && user._id">
-          <button class="btn btn-xs btn-danger" style="margin:0;" ng-click="deleteSpec(spec)" ng-if="spec.creatorId === user._id">
-            <i class="fa fa-fw fa-trash"></i> 
+        <td style="text-align:right;">
+          <button class="btn btn-xs btn-default" style="margin:0;" ng-if="DEBUG" ng-click="submitSpecToGitHub(spec)" ng-if="user && user._id && spec.creatorId === user._id"
+              tooltip-append-to-body="true" uib-tooltip="Submit this model to the official catalog, pending review">
+            <i class="fa fa-fw fa-github"></i> 
           </button>
-        </td>
-        <td style="text-align:center;" ng-if="DEBUG">
-          <button class="btn btn-xs btn-default" style="margin:0;" ng-click="showResults({ results: spec, title: 'View Raw Model', isJson: true })">
+          <button class="btn btn-xs btn-default" style="margin:0;" ng-if="DEBUG" ng-click="showResults({ results: spec, title: 'View Raw Model', isJson: true })"
+            tooltip-append-to-body="true" uib-tooltip="View the raw JSON for this Spec">
             <i class="fa fa-fw fa-code"></i> 
           </button>
-        </td>
-        <td style="text-align:center;">
-          <button class="btn btn-xs btn-primary" style="margin:0;" ng-disabled="selectedItem || graphHasModel(spec.name)" tooltip-placement="left" ng-click="addNodeInstance(spec);togglePalette()"
+          <button class="btn btn-xs btn-danger" style="margin:0;" ng-click="deleteSpec(spec)" ng-if="user && user._id && spec.creatorId === user._id" 
+              tooltip-append-to-body="true" uib-tooltip="Delete this spec from your personal catalog. You will be prompted before deletion">
+            <i class="fa fa-fw fa-trash"></i> 
+          </button>
+          <button class="btn btn-xs btn-primary" style="margin:0;" ng-disabled="selectedItem || graphHasModel(spec.name)" ng-click="addNodeInstance(spec);togglePalette()"
               tooltip-append-to-body="true" uib-tooltip="{{ graphHasModel(spec.name) ? spec.label + ' has been added' : 'Add ' + spec.description + ' to the canvas' }}">
             <i class="fa fa-fw fa-plus"></i> 
           </button>
@@ -50,18 +50,15 @@
       <tr>
         <th width="10%" style="text-align:center;" >Icon</th>
         <th>Model</th>
-        <th width="10%" style="text-align:center;" ng-if="DEBUG">Info</th>
-        <th width="10%" style="text-align:center;">Add</th>
+        <th width="30%" style="text-align:right;">Actions</th>
       </tr>
       <tr ng-repeat="(name, spec) in [inport, outport] track by name">
         <th style="text-align:center;" ><i class="fa fa-fw fa-{{ spec.icon }}"></i></th>
         <td>{{ spec.description }} ({{ spec.label || spec.name }})</td>
-        <td style="text-align:center;" ng-if="DEBUG">
-          <button class="btn btn-xs btn-default" style="margin:0;" ng-click="showResults({ results: spec, title: 'View Raw Model', isJson: true })">
+        <td style="text-align:right;">
+          <button class="btn btn-xs btn-default" style="margin:0;" ng-if="DEBUG" ng-click="showResults({ results: spec, title: 'View Raw Model', isJson: true })">
             <i class="fa fa-fw fa-code"></i> 
           </button>
-        </td>
-        <td style="text-align:center;">
           <button class="btn btn-xs btn-primary" style="margin:0;" ng-disabled="selectedItem" tooltip-placement="left" ng-click="spec.name === 'inport' ? addInport() : addOutport();togglePalette()"
               tooltip-append-to-body="true" uib-tooltip="Add a {{ spec.label }} to the canvas">
             <i class="fa fa-fw fa-plus"></i> 
@@ -83,7 +80,7 @@
         <i class="fa fa-fw fa-cloud-download"></i> Load <i class="fa fa-fw fa-caret-down"></i>
       </button>
       <ul class="dropdown-menu">
-        <li ng-repeat="graph in savedGraphs">
+        <li ng-repeat="graph in savedGraphs" tooltip-placement="right" uib-tooltip="{{ graph.updated ? ('Last Updated: ' + graph.updated) : ('Created: ' + graph.created) }}">
           <a class="pull-left" href="#/" ng-click="loadGraphFromDB(graph.name);togglePalette(false);">{{ graph.name }}</a>
           <button class="btn btn-xs btn-danger pull-right" ng-click="deleteGraph(graph)" ng-if="!graph.public && graph.creatorId === user._id">
             <i class="fa fa-fw fa-trash"></i>
@@ -94,14 +91,6 @@
       <button class="btn btn-xs btn-danger" ng-click="clearGraph()" tooltip-placement="right" ng-disabled="selectedItem" tooltip-append-to-body="true" uib-tooltip="Clear current graph from the canvas">
         <i class="fa fa-fw fa-trash"></i> Clear
       </button>
-      
-      <!--<button class="btn btn-xs btn-default" style="color:orange" ng-click="addInport()" ng-disabled="selectedItem" tooltip-placement="right" tooltip-append-to-body="true" uib-tooltip="Add an InPort to current graph">
-        <i class="fa fa-fw fa-sign-in"></i> Add InPort
-      </button>
-      
-      <button class="btn btn-xs btn-default" style="color:green" ng-click="addOutport()" ng-disabled="selectedItem" tooltip-placement="right" tooltip-append-to-body="true" uib-tooltip="Add an OutPort to current graph">
-        <i class="fa fa-fw fa-sign-out"></i> Add OutPort
-      </button>-->
     </div>
     
     <!-- Outputs -->
@@ -129,7 +118,6 @@
             <label for="idField">ID <sup><i class="fa fa-fw fa-question-circle" tooltip-placement="left" tooltip-append-to-body="true" uib-tooltip="The unique random id of this node"></i></sup></label>
             <input type="text" class="form-control" id="idField" name="idField" ng-model="selectedItem.id" ng-disabled="'true'" required />
         </div>
-        
         
         <!-- Component Field (Nodes only) -->
         <!-- FIXME: this should probably use <select> instead of <input>, 
@@ -169,7 +157,7 @@
         <div ng-if="selectedItem.component === 'inport' || selectedItem.component === 'outport'">
           <!-- Type Field -->
           <div class="form-group">
-            <label for="typeField">Type <sup><i class="fa fa-fw fa-question-circle" tooltip-placement="left" tooltip-append-to-body="true" uib-tooltip="The source/destination type for this value"></i></sup></label>
+            <label for="typeField">Type <sup><i class="fa fa-fw fa-question-circle" tooltip-placement="left" tooltip-append-to-body="true" uib-tooltip="The {{ selectedItem.component === 'inport' ? 'source' : 'destination' }} type for this {{ selectedItem.component }}"></i></sup></label>
             <select type="text" class="form-control" id="typeField" name="typeField" ng-model="selectedItem.metadata.type" required>
                 <option>File</option>
                 <option>Queue</option>
@@ -182,7 +170,7 @@
           
           <!-- Value Field -->
           <div class="form-group">
-            <label for="nameField">Value <sup><i class="fa fa-fw fa-question-circle" tooltip-placement="left" tooltip-append-to-body="true" uib-tooltip="The source/destination name of this input/output"></i></sup></label>
+            <label for="nameField">{{ selectedItem.metadata.type === 'File' ? 'Path' : 'Name' }} <sup><i class="fa fa-fw fa-question-circle" tooltip-placement="left" tooltip-append-to-body="true" uib-tooltip="The {{ selectedItem.metadata.type === 'File' ? 'file path' : 'queue name' }} for this {{ selectedItem.component }}'s data"></i></sup></label>
             <input type="text" class="form-control" id="nameField" name="nameField" ng-model="selectedItem.metadata.name" required />
             
             <ng-messages class="text-danger" for="editForm.nameField.$error" role="alert">
@@ -192,7 +180,7 @@
           
           <!-- Read Method Field -->
           <div class="form-group" ng-if="selectedItem.component === 'inport'">
-            <label for="readMethField">Read Method (optional) <sup><i class="fa fa-fw fa-question-circle" tooltip-placement="left" tooltip-append-to-body="true" uib-tooltip="How should this input be parsed?"></i></sup></label>
+            <label for="readMethField">Read Method (optional) <sup><i class="fa fa-fw fa-question-circle" tooltip-placement="left" tooltip-append-to-body="true" uib-tooltip="How should the input data be parsed?"></i></sup></label>
             <select type="text" class="form-control" id="readMethField" name="readMethField" ng-model="selectedItem.metadata.read_meth">
                 <option>table</option>
                 <option>table_array</option>

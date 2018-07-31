@@ -32,6 +32,8 @@ body {
   padding: 0;
 }
 #modelPalette {
+  max-height: 550px;
+  overflow-y: auto;
   position: fixed; 
   left: 15px; 
   top: 50px;
@@ -165,4 +167,8 @@ button {
 
 .validation-text {
   text-align: center;
+}
+
+.language-popover { 
+  max-width:350px; 
 }

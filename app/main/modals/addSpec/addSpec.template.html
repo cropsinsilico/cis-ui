@@ -835,28 +835,39 @@
           
           <!-- Model Type Field (aka Driver or Language) -->
           <div class="form-group">
-            <label for="driverField">Language<span class="text-danger">*</span> <sup><i class="fa fa-fw fa-question-circle" tooltip-placement="right" tooltip-append-to-body="true" uib-tooltip="The type of driver that should be user to execute this model."></i></sup></label>
-              <select type="text" class="form-control" id="driverField" name="driverField" ng-model="newModel.driver" required>
-                <option>PythonModelDriver</option>
-                <option>GCCModelDriver</option>
-                <option>MatlabModelDriver</option>
-                <option>MakeModelDriver</option>
-                <option>CMakeModelDriver</option>
-                <option>ModelDriver</option>
-              </select>
-              
-              <ng-messages class="text-danger validation-text" ng-if="!addSpecForm.driverField.$pristine" for="addSpecForm.driverField.$error" role="alert">
-                <ng-message when="required">Model Driver is required</ng-message>
-              </ng-messages>
-              
-              <div class="text-info validation-text" ng-switch="newModel.driver">
-                <div ng-switch-when="PythonModelDriver">The PythonModelDriver can be used to run a model written in Python.</div>
-                <div ng-switch-when="GCCModelDriver">The GCCModelDriver can be used to run a model that requires compilation in gcc or g++.</div>
-                <div ng-switch-when="MatlabModelDriver">The MatlabModelDriver can be used to run a model that requires Matlab.</div>
-                <div ng-switch-when="MakeModelDriver">The MakeModelDriver can be used to run a model that requires compilation via Makefile.</div>
-                <div ng-switch-when="CMakeModelDriver">The CMakeModelDriver can be used to run a model that requires compilation via CMake.</div>
-                <div ng-switch-when="ModelDriver">The ModelDriver can be used to run a model as a pre-compiled binary.</div>
-              </div>
+            <label for="driverField">Language<span class="text-danger">*</span> 
+              <sup>
+                <i class="fa fa-fw fa-question-circle" popover-placement="right" 
+                popover-append-to-body="true" popover-trigger="outsideClick" popover-class="language-popover" 
+                uib-popover-template="'/app/main/modals/addSpec/languageInfo.template.html'"></i>
+              </sup>
+            </label>
+            
+            <select type="text" class="form-control" id="driverField" name="driverField" ng-model="newModel.language" required>
+              <option value="executable">Executable</option>
+              <option value="python">Python</option>
+              <option value="c">C</option>
+              <option value="c++/c">C++ / C</option>
+              <option value="matlab">Matlab</option>
+              <option value="make">Make</option>
+              <option value="cmake">CMake</option>
+              <option value="lpy">LPy</option>
+            </select>
+            
+            <ng-messages class="text-danger validation-text" ng-if="!addSpecForm.driverField.$pristine" for="addSpecForm.driverField.$error" role="alert">
+              <ng-message when="required">Model Driver is required</ng-message>
+            </ng-messages>
+            
+            <div class="text-info validation-text" ng-switch="newModel.language">
+              <div ng-switch-when="python">Choose Python to run a model written in Python.</div>
+              <div ng-switch-when="c">Choose C to run a model written purely in C, without the use any C++.</div>
+              <div ng-switch-when="c++/c">Choose C++ / C to run a model written in C++, or using a mixture of C++ and C.</div>
+              <div ng-switch-when="matlab">Choose Matlab to run a model written in Matlab.</div>
+              <div ng-switch-when="make">Choose Make for models that use a Makefile recipe.</div>
+              <div ng-switch-when="cmake">Choose CMake for models that use a CMake recipe.</div>
+              <div ng-switch-when="lpy">Choose LPy for models that utilize LPy systems.</div>
+              <div ng-switch-when="executable">Choose Executable to run a pre-compiled binary.</div>
+            </div>
           </div>
           
           <!-- Command Field (aka Args) -->

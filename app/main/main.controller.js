@@ -6,21 +6,17 @@ angular.module('cis')
 .constant('LocalStorageKeys', { edges: 'cis::edges', nodes: 'cis::nodes' })
 
 /** Our main view controller */
-.controller('MainCtrl', [ '$scope', '$rootScope', '$window', '$timeout', '$q', '$interval', '$http', '$log', '$uibModal', '_', 'DEBUG', 'TheGraph', 'GraphPortService', 'SpecService', 'GraphService', 'LocalStorageKeys', 'TheGraphSelection', 'User',
-    function($scope, $rootScope, $window, $timeout, $q, $interval, $http, $log, $uibModal, _, DEBUG, TheGraph, GraphPortService, SpecService, GraphService, LocalStorageKeys, TheGraphSelection, User) {
+.controller('MainCtrl', [ '$scope', '$rootScope', '$window', '$timeout', '$q', '$interval', '$http', '$log', '$uibModal', '_', 'ApiUri', 'DEBUG', 'TheGraph', 'GraphPortService', 'SpecService', 'GraphService', 'LocalStorageKeys', 'TheGraphSelection', 'User',
+    function($scope, $rootScope, $window, $timeout, $q, $interval, $http, $log, $uibModal, _, ApiUri, DEBUG, TheGraph, GraphPortService, SpecService, GraphService, LocalStorageKeys, TheGraphSelection, User) {
   "use strict";
   
+  /** If true, display the model palette on the left side of TheGraph */
   $scope.showPalette = false;
   
-  $scope._ = _;
-  $scope.refresh = false;
-  
-  var graphPorts = GraphPortService.query();
-  graphPorts.$promise.then(function() {
-    $scope.inport = _.find(graphPorts, ['name', 'inport']);
-    $scope.outport = _.find(graphPorts, ['name', 'outport']);
-  });
-  
+  /**
+   * If specified, force the model palette to the given state (e.g. shown/hidden).
+   * If no state is given, toggle display of the model palette.
+   */
   $scope.togglePalette = function(newValue) {
     if (typeof(newValue) === "undefined") {
       // Toggle value if no newValue specified
@@ -31,12 +27,16 @@ angular.module('cis')
     }
   }
   
-  // Auto-save to local storage every 3 seconds
+  /** Auto-saves TheGraph's state to local storage every 3 seconds */
   $scope.interval = $interval(function() {
     $scope.saveGraph();
     $log.log("Graph auto-saved");
-  }, 3000);
+  }, 10000);
   
+  /**
+   * Watch for the user's profile to change (e.g. on login / logout).
+   * If a change is detected, re-fetch all server data.
+   */
   $scope.$watch(
     // When we see the user profile change
     function() { return User.profile; },
@@ -48,19 +48,16 @@ angular.module('cis')
     }
   );
   
-  $scope.$watch('refresh', function(newValue, oldValue) {
-    if (newValue !== oldValue && newValue === true) {
-      console.log("Refresh signal detected... refreshing!");
-      $scope.requerySpecs();
-      $scope.refresh = false;
-    }
-  });
-  
+  /**
+   * Returns only real model specs. While InPort and OutPort are types of nodes
+   * in TheGraph, they are not really models that cis_interface can run.
+   */
   $scope.getModelOptions = function(library) {
     return _.omit(library, ['inport', 'outport'])
   };
   
   // Enable DEBUG features?
+  // NOTE: See app/cis.module.js
   $scope.DEBUG = DEBUG;
   
   // Graph metadata
@@ -74,12 +71,27 @@ angular.module('cis')
   $scope.editValue = null;
   $scope.library = {};
   
-  // Fetch our saved graphs
+  /**
+   * Fetches our graph port definitions from static file. 
+   */
+  var graphPorts = GraphPortService.query();
+  graphPorts.$promise.then(function() {
+    $scope.inport = _.find(graphPorts, ['name', 'inport']);
+    $scope.outport = _.find(graphPorts, ['name', 'outport']);
+  });
+  
+  /**
+   * Fetches our saved graphs from the database. 
+   * NOTE: This helper function is defined and executed instantly.
+   */
   ($scope.requeryGraphs = function() {
     $scope.savedGraphs = GraphService.query();
   })();
   
-  // Fetch our model library
+  /**
+   * Fetches our model library from the database. 
+   * NOTE: This helper function is defined and executed instantly.
+   */
   ($scope.requerySpecs = function() {
     $log.debug('Fetching models...');
     let specs = SpecService.query();
@@ -94,29 +106,17 @@ angular.module('cis')
       $scope.library['inport'] = $scope.inport;
       $scope.library['outport'] = $scope.outport;
       
-      // Load up an empty graph
-      $scope.graph = new fbpGraph.Graph();
-      
-      // Load from localStorage once models are fetched
-      let nodes = angular.fromJson($window.localStorage.getItem(LocalStorageKeys.nodes));
-       
-      // Import our previous state, if one was found
-      if (nodes && nodes.length) {
-        // Import all nodes from localStorage into TheGraph
-        angular.forEach(nodes, node => { $scope.graph.addNode(node.id, node.component, node.metadata); });
-        
-        // Then, import all edges
-        let edges = angular.fromJson($window.localStorage.getItem(LocalStorageKeys.edges));
-        edges && angular.forEach(edges, edge => { $scope.graph.addEdge(edge.from.node, edge.from.port, edge.to.node, edge.to.port, edge.metadata); });
-        
-        // Store our previously saved state
-        $scope.lastSavedNodes = angular.copy($scope.graph.nodes);
-        $scope.lastSavedEdges = angular.copy($scope.graph.edges);
-      }
+      $scope.loadGraph();
     });
   })();
+
+  // We have finished fetching all of our server-side data
+  $scope.loading = false;
   
-  // Update selected item when service data changes
+  /**
+   * Watch for our selection in TheGraph to change. If it does, open the Edit Sidebar
+   * to edit the selected entity.
+   */
   $scope.selectedItem = null;
   $scope.$watch(function() { return TheGraphSelection.selection; }, function(newValue, oldValue) {
     // Clear out existing transaction if it was not saved
@@ -151,50 +151,10 @@ angular.module('cis')
       */
     }
   });
-
-  $scope.loading = false;
   
-  $rootScope.submitNewModel = function() {
-    let modalInstance = $uibModal.open({
-      animation: true,
-      templateUrl: 'app/main/modals/addSpec/addSpec.template.html',
-      controller: 'AddSpecCtrl',
-      size: 'lg',
-      keyboard: false,      // Force the user to explicitly click "Close"
-      backdrop: 'static',   // Force the user to explicitly click "Close"
-      resolve: { specs: function() { return $scope.library; } }
-    });
-    
-    modalInstance.result.then(function (newModel) {
-      // POST result to /spec
-      console.log("Submitting new model:", newModel);
-      var spec = SpecService.save({
-        name: newModel.name,
-        content: newModel
-      })
-      
-      spec.$promise.then(function() {
-        console.log("Refreshing catalog...");
-        // TODO: save Graph to "temp-$timestamp"
-        $scope.saveGraph();
-        $window.location.reload();
-      });
-    }, function () {
-      $log.info('Modal dismissed at: ' + new Date());
-    });
-  };
-  
-  $scope.deleteSpec = function(spec) {
-    let specs = SpecService.query();
-    specs.$promise.then(function() {
-      let specResource = _.find(specs, [ 'content.name', spec.name ]);
-      specResource.$remove().then(function() {
-        $scope.saveGraph();
-        $window.location.reload();
-      });
-    });
-  };
-  
+  /**
+   * Close the Edit Sidebar, saving any changes made since "Edit" was last pressed.
+   */ 
   $scope.saveEdit = function() {
     console.log("Saving over previous value:", $scope.editValue);
     $scope.selectedItem.new = false;
@@ -205,6 +165,9 @@ angular.module('cis')
     console.log("Saved!");
   };
   
+  /**
+   * Close the Edit Sidebar, reverting any changes made to the node since last save.
+   */ 
   $scope.cancelEdit = function() {
     console.log("Canceling edit...");
     if ($scope.selectedItem.new) {
@@ -221,6 +184,68 @@ angular.module('cis')
     console.log("Canceled!");
   };
   
+  /**
+   * Adds a new InPort to TheGraph at random x/y coordinates 
+   * and opens the edit sidebar. If "Cancel" is selected in the sidebar before
+   * the node is first saved, the node will be deleted from TheGraph.
+   */ 
+  $scope.addInport = function() {
+    // Add a new inport to the graph, then select it for editing
+    let inport = $scope.addNodeInstance($scope.library['inport']);
+
+    // Mark this node as "new" so we know to delete it if "Cancel" is clicked
+    inport.new = true;
+    
+    // Select this new node to open the Edit Sidebar
+    return TheGraphSelection.selection = inport;
+  };
+  
+  /**
+   * Adds a new OutPort to TheGraph at random x/y coordinates 
+   * and opens the edit sidebar. If "Cancel" is selected in the sidebar before
+   * the node is first saved, the node will be deleted from TheGraph.
+   */ 
+  $scope.addOutport = function() {
+    // Add a new outport to the graph, then select it for editing
+    let outport = $scope.addNodeInstance($scope.library['outport']);
+    
+    // Mark this node as "new" so we know to delete it if "Cancel" is clicked
+    outport.new = true;
+    
+    // Select this new node to open the Edit Sidebar
+    return TheGraphSelection.selection = outport;
+  };
+  
+  /**
+   * Adds an instance of the given node at random x/y coordinates
+   * @param {} model - the model/component from the library to create the node
+   */ 
+  $scope.addNodeInstance = function(model) {
+    // Assign a pseudorandom ID
+    let id = Math.round(Math.random()*100000).toString(36);
+    
+    // Build up metadata for our new instance
+    let metadata = {
+      label: model.label,
+      x: Math.round(Math.random()*800),
+      y: Math.round(Math.random()*600)
+    };
+    let newNode = $scope.graph.addNode(id, model.name, metadata);
+    return newNode;
+  };
+  
+  /**
+   * Returns true iff the given model exists as a node/process in TheGraph
+   * @param {string} modelKey - the key of the model to look for
+   */ 
+  $scope.graphHasModel = function(modelKey) {
+    let exists = _.find($scope.graph.nodes, ["component", modelKey]);
+    return exists;
+  };
+  
+  /**
+   * Returns true if the graph has changed since the last time the user has saved.
+   */ 
   $scope.graphIsChanged = function() {
     let changed = false;
     /*angular.forEach($scope.graph.nodes, function(node) {
@@ -232,12 +257,77 @@ angular.module('cis')
     //       $scope.lastSavedEdges !== $scope.graph.edges;
   };
   
-  $scope.deleteGraph = function(graph) {
-    graph.$remove().then(function() {
-      $scope.requeryGraphs();
-    });
+  /**
+   * Prompts the user to delete a particular model spec, returns true if deleted.
+   * NOTE: The API will prevent users from deleting public model specs.
+   */ 
+  $scope.deleteSpec = function(spec, skipConfirmation) {
+    var result = false;
+    if (skipConfirmation) {
+      result = true;
+    } else {
+      result = confirm("WARNING: The selected model will no longer be accessible and cannot be recovered.\n"
+      + "Any saved graphs containing this model will be deleted, as they will no longer be valid.\n" +
+      "Are you sure you want to delete this model?");
+    }
+    
+    if (result) {
+      // Find all graphs containing the spec to be deleted
+      var graphsContainingSpec = _.filter($scope.savedGraphs, function(graph) {
+        var found = _.find(graph.content.processes, ['component', spec.name ]);
+        if (found) {
+          console.log("Found: ", found);
+        }
+        return found;
+      });
+      
+      // Delete any saved graphs containing the spec (they are no longer valid)
+      angular.forEach(graphsContainingSpec, function(graph) {
+        console.log("Deleting graph to delete spec (" + spec.name + "):", graph);
+        $scope.deleteGraph(graph, true);
+      });
+      
+      // Delete this node from our canvas/localStorage, if necessary
+      var existingNode = _.find($scope.graph.nodes, [ 'component', spec.name ]);
+      if (existingNode) {
+        $scope.graph.removeNode(existingNode.id);
+      }
+      
+      // Find our target spec id and delete the spec
+      var specs = SpecService.query();
+      specs.$promise.then(function() {
+        var specResource = _.find(specs, [ 'content.name', spec.name ]);
+        specResource.$remove().then(function() {
+          $scope.saveGraph();
+          $window.location.reload();
+        });
+      });
+    }
+    return result;
   };
   
+  /**
+   * Prompts the user to delete a particular saved graph, returns true if deleted.
+   * NOTE: The API will prevent users from deleting public graphs.
+   */ 
+  $scope.deleteGraph = function(graph, skipConfirmation) {
+    var result = false;
+    if (skipConfirmation) {
+      result = true;
+    } else {
+      result = confirm("WARNING: The selected graph will no longer be accessible and cannot be recovered.\nAre you sure you want to delete this graph?");
+    }
+    if (result) {
+      graph.$remove().then(function() {
+        $scope.requeryGraphs();
+      });
+    }
+    return result;
+  };
+  
+  /**
+   * Import a saved graph of the given name over the top of the existing state of TheGraph
+   */ 
   $scope.loadGraphFromDB = function(name) {
     if (!name) {
       $log.warn("Cannot load graph - no name specified");
@@ -253,25 +343,15 @@ angular.module('cis')
     
     // Load from API
     //let nodes = angular.fromJson($window.localStorage.getItem(LocalStorageKeys.nodes));
-    let nodes = saved.content.processes;
-     
-    // Import our previous state, if one was found
-    if (nodes && Object.keys(nodes).length) {
-      // Import all nodes from localStorage into TheGraph
-      angular.forEach(nodes, node => { $scope.graph.addNode(node.id, node.component, node.metadata); });
-      
-      // Then, import all edges
-      let edges = saved.content.connections;
-      edges && angular.forEach(edges, edge => { $scope.graph.addEdge(edge.from.node, edge.from.port, edge.to.node, edge.to.port, edge.metadata); });
-      
-      // Store our previously saved state
-      $scope.lastSavedNodes = angular.copy($scope.graph.nodes);
-      $scope.lastSavedEdges = angular.copy($scope.graph.edges);
-    }
+    $scope.loadGraph(saved.content.processes, saved.content.connections)
   };
   
+  /**
+   * Save the current graph to the database with the given name.
+   */ 
   $scope.saveGraphToDB = function(name) {
     var name = prompt("Please enter a name for this graph", "");
+    // TODO: Prompt only if not given a name?
     if (!name) {
       $log.warn("Cannot save graph - no name specified");
       return;
@@ -309,6 +389,48 @@ angular.module('cis')
     }
   };
   
+  /**
+   * Populates TheGraph from the last auto-save in the browser's localStorage.
+   */ 
+  $scope.loadGraph = function(nodes, edges) {
+      // Get confirmation, then clear the user's graph
+      if (nodes && nodes.length) {
+        if (!$scope.clearGraph()) {
+          return;
+        }
+      }
+      
+      // Load up an empty graph
+      $scope.graph = new fbpGraph.Graph();
+      
+      // Load from localStorage once models are fetched
+      let loadedNodes = nodes || angular.fromJson($window.localStorage.getItem(LocalStorageKeys.nodes));
+       
+      // Import our previous state, if one was found
+      if (loadedNodes && loadedNodes.length) {
+        // Import all nodes from localStorage into TheGraph
+        angular.forEach(loadedNodes, node => {
+          var exists = _.find($scope.graph.nodes, [ 'id', node.id ]);
+          if (!exists) {
+            $scope.graph.addNode(node.id, node.component, node.metadata);
+          } else {
+            $log.info("Node ID " + node.id + " already exists in TheGraph.. skipping");
+          }
+        });
+        
+        // Then, import all edges
+        let loadedEdges = edges || angular.fromJson($window.localStorage.getItem(LocalStorageKeys.edges));
+        loadedEdges && angular.forEach(loadedEdges, edge => { $scope.graph.addEdge(edge.from.node, edge.from.port, edge.to.node, edge.to.port, edge.metadata); });
+        
+        // Store our previously saved state
+        $scope.lastSavedNodes = angular.copy($scope.graph.nodes);
+        $scope.lastSavedEdges = angular.copy($scope.graph.edges);
+      }
+  };
+  
+  /**
+   * Auto-saves the current graph to the browser's localStorage.
+   */ 
   $scope.saveGraph = function() {
     $window.localStorage.setItem(LocalStorageKeys.nodes, angular.toJson($scope.graph.nodes));
     $window.localStorage.setItem(LocalStorageKeys.edges, angular.toJson($scope.graph.edges));
@@ -317,7 +439,9 @@ angular.module('cis')
     $scope.lastSavedEdges = angular.copy($scope.graph.edges);
   };
   
-  /** Clears out the current graph, returns true if cleared */
+  /**
+   * Prompts the user to clear out the current graph, returns true if cleared.
+   */ 
   $scope.clearGraph = function() {
     let result = confirm("Are you sure you want to clear your canvas?\nAll saved graph data will be cleared from your browser's local storage.");
     if (result) {
@@ -327,214 +451,38 @@ angular.module('cis')
     return result;
   };
   
-  /** Adds an inport to the current graph */
-  $scope.addInport = function() {
-    // Add a new inport to the graph, then select it for editing
-    let inport = $scope.addNodeInstance($scope.library['inport']);
-    inport.new = true;
-    return TheGraphSelection.selection = inport;
-  };
-  
-  /** Adds an outport to the current graph */
-  $scope.addOutport = function() {
-    // Add a new outport to the graph, then select it for editing
-    let outport = $scope.addNodeInstance($scope.library['outport']);
-    outport.new = true;
-    return TheGraphSelection.selection = outport;
-  };
-  
-  /** Simple random function */
-  $scope.getRandomFrom = function(items) {
-    let len = items.length || Object.keys(items).length;
-    let ran = Math.random()*len;
-    let floor = Math.floor(ran);
-  	return items[floor];
-  };
-  
-  /** Adds a random node */
-  $scope.addNodeInstance = function(model) {
-    // Assign a pseudorandom ID
-    let id = Math.round(Math.random()*100000).toString(36);
-    
-    // Build up metadata for our new instance
-    let metadata = {
-      label: model.label,
-      x: Math.round(Math.random()*800),
-      y: Math.round(Math.random()*600)
-    };
-    let newNode = $scope.graph.addNode(id, model.name, metadata);
-    return newNode;
-  };
-  
-  $scope.graphHasModel = function(modelKey) {
-    let exists = _.find($scope.graph.nodes, ["component", modelKey]);
-    return exists;
-  };
-  
-  /** Exports the current graph to JSON */
+  /**
+   * Display a modal window exporting the current graph to JSON
+   */ 
   $scope.exportGraph = function() {
     $scope.showResults({ results: $scope.graph.toJSON(), title: "View Raw Graph", isJson: true });
   };
   
+  /**
+   * Convert TheGraph JSON to the YAML format expected by cis_interface.
+   * @param {} results - the result to show in the modal body
+   * @param {bool} isJson - if true, format as JSON, else assume result is pre-formatted
+   */ 
   $scope.formatting = false;
   $scope.formatYaml = function() {
-    let modelCounter = 1;
-    let getModelFromNode = (node) => {
-      let model =  _.find($scope.library, ['name', node.component]);
-      // TODO: ModelDriver / type / name
-      model.id = modelCounter++;
-      angular.forEach(model.inports, (port) => port.model_id = model.name);
-      angular.forEach(model.outports, (port) => port.model_id = model.name);
-        
-      model.inputs = model.inports;
-      model.outputs = model.outports;
-      
-      return model;
-    };
-    
-    let getSrcNodeFromEdge = (edge) => _.find($scope.graph.nodes, ['id', edge.from.node]);
-    let getDestNodeFromEdge = (edge) => _.find($scope.graph.nodes, ['id', edge.to.node]);
-    let getOutportFromModel = (portName, model) => _.find(model.outports, ['name', portName]);
-    let getInportFromModel = (portName, model) => _.find(model.inports, ['name', portName]);
-    
-    // Format nodes as the API expects
-    let nodes = [];
-    $log.debug("Transforming nodes: ", $scope.graph.nodes);
-    angular.forEach($scope.graph.nodes, function(node) {
-      if (node.component === 'inport' || node.component === 'outport') {
-        return;
-      }
-      let model = getModelFromNode(node);
-      
-      // TODO: Read ModelDriver / args from model object
-      let args = model.args;
-      let driver = model.driver;
-      
-      let inputs = [];
-      if (model.inports.length > 1) {
-        angular.forEach(model.inports, function(item) { inputs.push(item.label || item.name); });
-      } else if (model.inports.length === 1)  {
-        inputs = model.inports[0].label;
-      }
-      
-      let outputs = [];
-      if (model.outports.length > 1) {
-        angular.forEach(model.outports, function(item) { outputs.push(item.label || item.name); });
-      } else if (model.outports.length === 1) {
-        outputs = model.outports[0].label;
-      }
-      
-      let newModel = {
-        //id: nodeCount++, //node.id, 
-        //model: model,
-        name: model.label || model.name || node.id,
-        args: args,
-        driver: driver,
-        inputs: inputs,
-        outputs: outputs
-        //description: node.metadata.description,
-      };
-      
-      if (model.cmakeargs) { newModel.cmakeargs = model.cmakeargs }
-      if (model.makefile) { newModel.makefile = model.makefile }
-      if (model.makedir) { newModel.makedir = model.makedir }
-      if (model.sourcedir) { newModel.sourcedir = model.sourcedir }
-      if (model.builddir) { newModel.builddir = model.builddir }
-      if (model.preserve_cache) { newModel.preserve_cache = model.preserve_cache }
-      
-      nodes.push(newModel);
+    // Submit the graph JSON for conversion to cisrun YAML format
+    $scope.formatting = true;
+    $http.post(ApiUri + '/graph/convert', {
+      "content": $scope.graph.toJSON()
+    }).then(function(response) {
+      $scope.showResults({ title: "Formatted Manifest", results: response.data });
+    }, function(response) {
+      var error = response.data;
+      console.error("Error formatting graph:", error.message)
+    }).finally(function() {
+      $scope.formatting = false;
     });
-    
-    // Format edges as the API expects
-    let edges = [];
-    let connections = [];
-    $log.debug("Transforming edges: ", $scope.graph.edges);
-    angular.forEach($scope.graph.edges, function(edge) {
-      let src_node = getSrcNodeFromEdge(edge);
-      let dest_node = getDestNodeFromEdge(edge);
-      let src_model = getModelFromNode(src_node);
-      let dest_model = getModelFromNode(dest_node);
-      let src_port = getOutportFromModel(edge.from.port, src_model);
-      let dest_port = getInportFromModel(edge.to.port, dest_model);
-      
-      // Add model_id? is this even necessary?
-      src_port.model_id = src_model.name;
-      dest_port.model_id = dest_model.name;
-      
-      // Add node_id? is this even necessary?
-      src_port.node_id = src_node.id;
-      dest_port.node_id = dest_node.id;
-      
-      let id = src_node.id + ":" + src_port.name + "_" + dest_node.id + ":" + dest_port.name;
-      
-      // TODO: edge name / type
-      let args = edge.metadata.name; // || 'unused';
-      let type = edge.metadata.type; // || 'InputDriver';
-      if (src_model.name == 'inport') {
-        args = src_node.metadata.name;
-        if (src_node.metadata.type === 'File') {
-          type = 'FileInputDriver';
-        } else {
-          args = id;
-          type = 'InputDriver';
-        }
-      } else if (dest_model.name == 'outport') {
-        args = dest_node.metadata.name;
-        type = dest_node.metadata.type;
-        if (dest_node.metadata.type === 'File') {
-          type = 'FileOutputDriver';
-        } else {
-          args = id;
-          type = 'OutputDriver';
-        }
-      }
-      
-      
-      // TODO: Reconnect to API
-      edges.push({ 
-        id: id, 
-        name: edge.metadata.label || edge.id || id,
-        type: type,
-        args: args, 
-        source: src_port,
-        destination: dest_port,
-        //description: node.metadata.description,
-      });
-      let connection = {
-        input: src_port.label || src_node.metadata.name,
-        output: dest_port.label || dest_node.metadata.name
-      };
-      
-      if (src_node.metadata['read_meth']) {
-        connection['read_meth'] = src_node.metadata['read_meth'];
-      }
-      
-      if (dest_node.metadata['write_meth']) {
-        connection['write_meth'] = dest_node.metadata['write_meth'];
-      }
-      
-      if (edge.metadata['field_names']) {
-        connection['field_names'] = edge.metadata['field_names'];
-      }
-      
-      if (edge.metadata['field_units']) {
-        connection['field_units'] = edge.metadata['field_units'];
-      }
-      
-      connections.push(connection);
-    });
-    
-    let toYaml = { nodes: nodes, edges: edges, connections: connections };
-    
-    console.log("Submitting for formatting", toYaml);
-    $scope.showResults({ title: "Formatted Manifest", results: toYaml });
   };
   
-  
   /**
-   * Display a modal window showing details about the requested resource
+   * Display a modal window showing details about the requested resource.
    * @param {} results - the result to show in the modal body
-   * @param {} isJson - if false, format as YAML
+   * @param {bool} isJson - if true, format as JSON, else assume result is pre-formatted
    */ 
   $scope.showResults = function(params) { 
     $uibModal.open({
@@ -548,6 +496,65 @@ angular.module('cis')
         results: () => params.results,
         title: () => params.title || "View Details"
       }
+    });
+  };
+  
+  /**
+   * Display a modal allowing the user to enter fields necessary to crate a new model spec.
+   * 
+   * If the modal is dismissed with success, the user's graph will be saved to localStorage
+   * and a refresh will be forced, after which the previous state of the user's browser is 
+   * loaded again from localStorage. The user should now see the new spec listed in their 
+   * palette.
+   */ 
+  $rootScope.createNewModel = function() {
+    let modalInstance = $uibModal.open({
+      animation: true,
+      templateUrl: 'app/main/modals/addSpec/addSpec.template.html',
+      controller: 'AddSpecCtrl',
+      size: 'lg',
+      keyboard: false,      // Force the user to explicitly click "Close"
+      backdrop: 'static',   // Force the user to explicitly click "Close"
+      resolve: { specs: function() { return $scope.library; } }
+    });
+    
+    modalInstance.result.then(function (newModel) {
+      // POST result to /spec
+      console.log("Submitting new model:", newModel);
+      var spec = SpecService.save({
+        name: newModel.name,
+        content: newModel
+      })
+      
+      spec.$promise.then(function() {
+        console.log("Refreshing catalog...");
+        // TODO: save Graph to "temp-$timestamp"
+        $scope.saveGraph();
+        $window.location.reload();
+      });
+    });
+  };
+  
+  $scope.submitSpecToGitHub = function(spec) {
+    // Find our target spec id and delete the spec
+    var specs = SpecService.query();
+    specs.$promise.then(function() {
+      var specResource = _.find(specs, [ 'content.name', spec.name ]);
+      var url = ApiUri + '/spec/' + specResource._id + '/issue';
+      $http.post(url, specResource).then(function(response) {
+        $log.info((response.status === 201 ? "Successfully" : "Already") +  " submitted spec to GitHub:", specResource);
+        $scope.requerySpecs();
+        if (confirm("Issue has " + (response.status === 201 ? "successfully" : "already") + " been submitted to GitHub. View the issue now?")) {
+          var apiResponseSuffix = response.data['issue_url'].split("repos")[1];
+          var targetUrl = 'https://github.com' + apiResponseSuffix;
+          $window.location.href = targetUrl;
+        }
+      }, function(response) {
+        var error = response.data;
+        if (error) {
+          $log.error("Error submitting spec to GitHub:" + error.message);
+        }
+      });
     });
   };
 }]);

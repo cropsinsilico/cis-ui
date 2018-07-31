@@ -13,8 +13,8 @@ angular.module('cis')
 }])
 
 /** Wraps TheGraph React component into a reusable AngularJS directive */
-.directive('theGraphEditor', [ '$window', '$log', 'React', 'ReactDOM', 'TheGraph', 'Clipboard', 'TheGraphSelection',
-        function($window, $log, React, ReactDOM, TheGraph, Clipboard, TheGraphSelection) {
+.directive('theGraphEditor', [ '$window', '$log', 'React', 'ReactDOM', 'TheGraph', 'TheGraphSelection',
+        function($window, $log, React, ReactDOM, TheGraph, TheGraphSelection) {
     return {
         restrict: 'E',
         scope: {
@@ -34,19 +34,8 @@ angular.module('cis')
             let deleteEdge = function(graph, itemKey, item) {
               graph.removeEdge(item.from.node, item.from.port, item.to.node, item.to.port);
             }
-            let copyNode = function(graph, itemKey, item) {
-              Clipboard.copy(graph, [itemKey]);
-            }
-            let editNode = function(graph, itemKey, item) {
-              console.log("Selected node for editing: " + item.id);
-              
-              // Must call $apply here to propagate update
-              scope.$apply(function() {
-                TheGraphSelection.selection = item;
-              });
-            };
-            let editEdge = function(graph, itemKey, item) {
-              console.log("Selected edge for editing: " + item.id);
+            let edit = function(graph, itemKey, item) {
+              $log.debug("Selected entity for editing: " + item.id);
               
               // Must call $apply here to propagate update
               scope.$apply(function() {
@@ -54,38 +43,6 @@ angular.module('cis')
               });
             };
             let contextMenus = {
-              main: null,
-              selection: null,
-              nodeInport: null,
-              nodeOutport: null,
-              graphInport: {
-                icon: "sign-in",
-                iconColor: 2,
-                n4: {
-                  label: "inport"
-                },
-                s4: {
-                  icon: "trash-o",
-                  iconLabel: "delete",
-                  action: function (graph, itemKey, item) {
-                    graph.removeInport(itemKey);
-                  }
-                }
-              },
-              graphOutport: {
-                icon: "sign-out",
-                iconColor: 5,
-                n4: {
-                  label: "outport"
-                },
-                s4: {
-                  icon: "trash-o",
-                  iconLabel: "delete",
-                  action: function (graph, itemKey, item) {
-                    graph.removeOutport(itemKey);
-                  }
-                }
-              },
               edge: {
                 icon: "long-arrow-right",
                 s4: {
@@ -96,7 +53,7 @@ angular.module('cis')
                 e4: {
                   icon: "edit",
                   iconLabel: "edit",
-                  action: editEdge
+                  action: edit
                 }
               },
               node: {
@@ -105,27 +62,12 @@ angular.module('cis')
                   iconLabel: "delete",
                   action: deleteNode
                 },
-                /*w4: {
-                  icon: "copy",
-                  iconLabel: "copy",
-                  action: copyNode
-                },*/
                 e4: {
                   icon: "edit",
                   iconLabel: "edit",
-                  action: editNode
+                  action: edit
                 }
-              },
-              group: {
-                icon: "th",
-                s4: {
-                  icon: "trash-o",
-                  iconLabel: "ungroup",
-                  action: function (graph, itemKey, item) {
-                    graph.removeGroup(itemKey);
-                  },
-                },
-              },
+              }
             };
             
             // Signal to React that the element has changed and needs to be redrawn
@@ -153,17 +95,10 @@ angular.module('cis')
                 editor.width = props.width;
                 editor.height = props.height;
                 
-                // FIXME: This seems to work despite many errors in the console
-                //ReactDOM.unmountComponentAtNode(editor);
-                
                 //window.removeEventListener('resize', render);
                 let reactEle = React.createElement(TheGraph.App, props);
                 ReactDOM.render(reactEle, editor);
-            
             };
-            
-            //scope.graph.on('endTransaction', render); // graph changed
-            //window.addEventListener("resize", render);
             
             // Re-render if the graph changes
             scope.$watch("graph", function(newValue, oldValue) { 
@@ -174,7 +109,7 @@ angular.module('cis')
                     
                     // Check if new graph has been loaded before component library
                     if (!scope.library || !Object.keys(scope.library).length) {
-                        $log.warn("Library mismatch... preloading library from graph", newValue);
+                        $log.warn("Library mismatch... attempting to preload library from graph", newValue);
                         
                         // Pre-load library from current graph
                         // (overwritten by real models once they finish loading)
@@ -183,30 +118,6 @@ angular.module('cis')
                     render();
                 }
             }, true);
-            
-            // Detect when the parent's dimensions change and resize accordingly
-            // FIXME: This seems hacky, but nothing else seemed to work
-            /*scope.$watch(
-                function () { 
-                    return {
-                       width: $window.innerWidth,
-                       height: $window.innerHeight,
-                    }
-               },
-               function (newValue, oldValue) {
-                  // Only rerender when dimensions actually change
-                  if (!newValue || !newValue.width || !newValue.height 
-                      || (newValue.width === oldValue.width 
-                        && newValue.height === oldValue.height)) {
-                    return;
-                  }
-                  let w = scope.width = $window.innerWidth;
-                  let h = scope.height = $window.innerHeight;
-                  $log.warn(`Resize event detected 1: ${w}x${h}... reloading!`);
-                  render();
-               }, //listener 
-               true //deep watch
-            );*/
             
             scope.$watchCollection("library", function(newValue, oldValue) {
                 $log.debug("Library changed... reloading!", newValue);
@@ -223,11 +134,12 @@ angular.module('cis')
                 render();
             });
             
-            
             var onResize = function() {
                 scope.height = window.innerHeight;
                 scope.width = window.innerWidth;
-                $log.info(`Resize event detected 2: ${scope.width}x${scope.height}... reloading!`);
+                $log.debug(`Resize event detected 2: ${scope.width}x${scope.height}... reloading!`);
+                
+                ReactDOM.unmountComponentAtNode(element);
                 render();
     
                 // manual $digest required as resize event is outside of angular
