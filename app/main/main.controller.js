@@ -544,7 +544,7 @@ angular.module('cis')
       $http.post(url, specResource).then(function(response) {
         $log.info((response.status === 201 ? "Successfully" : "Already") +  " submitted spec to GitHub:", specResource);
         $scope.requerySpecs();
-        if (confirm("Issue has been " + (response.status === 201 ? "successfully" : "already") + " submitted to GitHub. View the issue now?")) {
+        if (confirm("Issue has " + (response.status === 201 ? "successfully" : "already") + " been submitted to GitHub. View the issue now?")) {
           var apiResponseSuffix = response.data['issue_url'].split("repos")[1];
           var targetUrl = 'https://github.com' + apiResponseSuffix;
           $window.location.href = targetUrl;
