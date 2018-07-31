@@ -1,4 +1,4 @@
-FROM node:boron
+FROM node:carbon
 
 # Install depedencies
 RUN npm install -g grunt http-server
@@ -8,7 +8,15 @@ ENV SRCDIR /usr/share/nginx/html
 WORKDIR $SRCDIR
 COPY . .
 
-RUN npm install
+# XXX: npm postinstall won't run, execute manually
+RUN npm install && \
+    cd node_modules/the-graph && \
+    npm install && \
+    grunt build && \
+    rm -rf node-modules/ && \
+    cd ../.. && \
+    grunt
+
 
 ENTRYPOINT [ "http-server" ]
 CMD [ "-p", "3000", "-d", "False" ]
