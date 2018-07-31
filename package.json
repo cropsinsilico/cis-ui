@@ -5,7 +5,7 @@
   "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "postinstall": "cd node_modules/the-graph && npm install && grunt build && cd ../.."
+    "postinstall": "cd node_modules/the-graph && npm install && grunt build && cd ../.. && grunt"
   },
   "repository": {
     "type": "git",
@@ -24,8 +24,6 @@
     "angular-messages": "1.5.11",
     "angular-resource": "1.5.11",
     "angular-route": "1.5.11",
-    "angular-slider": "0.2.3",
-    "angular-swagger-ui": "^0.5.4",
     "angular-ui-bootstrap": "~1.2.4",
     "bootstrap": "3.3.7",
     "font-awesome": "4.7.0",
@@ -43,10 +41,6 @@
     "grunt-cache-bust": "^1.7.0",
     "grunt-contrib-csslint": "2.0.0",
     "grunt-contrib-jshint": "1.1.0",
-    "grunt-karma": "2.0.0",
-    "grunt-protractor-runner": "5.0.0",
-    "grunt-swagger-js-codegen": "0.4.6",
-    "karma": "1.7.1",
     "load-grunt-tasks": "3.5.2",
     "time-grunt": "1.4.0"
   }

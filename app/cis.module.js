@@ -3,11 +3,10 @@
 // React + AngularJS: see https://blog.rapid7.com/2016/02/03/combining-angularjs-and-reactjs-for-better-applications/
 
 
-angular.module('cis', [ 'ngMessages', 'ngResource', 'ngRoute', 'ngCookies', 'cis-api', 
-  'angular-clipboard', 'ui.bootstrap', 'ui.slider', 'swaggerUi', 'ngCacheBuster' ])
+angular.module('cis', [ 'ngMessages', 'ngResource', 'ngRoute', 'ngCookies', 'angular-clipboard', 'ui.bootstrap', 'ngCacheBuster' ])
 
 /** Enable DEBUG mode? */
-.constant('DEBUG', true)
+.constant('DEBUG', false)
 
 .factory('User', [ '$window', '$cookies', 'UserService', 'OAuthProviderService', function($window, $cookies, UserService, OAuthProviderService) { 
   let userStore = {
@@ -64,81 +63,6 @@ angular.module('cis', [ 'ngMessages', 'ngResource', 'ngRoute', 'ngCookies', 'cis
     });
 }])
 
-.factory('Clipboard', function() {
-  let clipboardContent = {nodes:[], edges:[]}; // XXX: hidden state
-  let factory = {};
-  
-  let makeNewId = function(label) {
-    var num = 60466176; // 36^5
-    num = Math.floor(Math.random() * num);
-    var id = label + '_' + num.toString(36);
-    return id;
-  }
-  
-  factory.copy = function(graph, keys) {
-    //Duplicate all the nodes before putting them in clipboard
-    //this will make this work also with cut/Paste and once we
-    //decide if/how we will implement cross-document copy&paste will work there too
-    clipboardContent = { nodes:[], edges:[] };
-    
-    let map = {};
-    let i, len;
-    for (i = 0, len = keys.length; i < len; i++) {
-      let key = keys[i];
-      let node = graph.getNode(key);
-      let newNode = angular.copy(node);
-      newNode.id = makeNewId(node.component);
-      clipboardContent.nodes.push(newNode);
-      map[node.id] = newNode.id;
-    }
-    for (i = 0, len = graph.edges.length; i < len; i++) {
-      let edge = graph.edges[i];
-      let fromNode = edge.from.node;
-      let toNode = edge.to.node;
-      if (map.hasOwnProperty(fromNode) && map.hasOwnProperty(toNode)) {
-        let newEdge = angular.copy(edge);
-        newEdge.from.node = map[fromNode];
-        newEdge.to.node = map[toNode];
-        clipboardContent.edges.push(newEdge);
-      }
-    }
-  
-  }
-  
-  factory.paste = function(graph) {
-    let map = {};
-    let pasted = { nodes:[], edges:[] };
-    
-    let i, len;
-    for (i = 0, len = clipboardContent.nodes.length; i < len; i++) {
-      let node = clipboardContent.nodes[i];
-      let meta = angular.copy(node.metadata);
-      meta.x += 36;
-      meta.y += 36;
-      let newNode = graph.addNode(makeNewId(node.component), node.component, meta);
-      map[node.id] = newNode.id;
-      pasted.nodes.push(newNode);
-    }
-    for (i = 0, len = clipboardContent.edges.length; i < len; i++) {
-      let edge = clipboardContent.edges[i];
-      let newEdgeMeta = angular.copy(edge.metadata);
-      let newEdge;
-      if (edge.from.hasOwnProperty('index') || edge.to.hasOwnProperty('index')) {
-        // One or both ports are addressable
-        let fromIndex = edge.from.index || null;
-        let toIndex = edge.to.index || null;
-        newEdge = graph.addEdgeIndex(map[edge.from.node], edge.from.port, fromIndex, map[edge.to.node], edge.to.port, toIndex, newEdgeMeta);
-      } else {
-        newEdge = graph.addEdge(map[edge.from.node], edge.from.port, map[edge.to.node], edge.to.port, newEdgeMeta);
-      }
-      pasted.edges.push(newEdge);
-    }
-    return pasted;
-  }
-  
-  return factory;
-})
-
 /** Configure routes for our module */
 .config([ '$locationProvider', '$logProvider', '$routeProvider', '$provide', '$httpProvider', 'httpRequestInterceptorCacheBusterProvider', 'DEBUG', 
     function($locationProvider, $logProvider, $routeProvider, $provide, $httpProvider, httpRequestInterceptorCacheBusterProvider, DEBUG) {
@@ -152,7 +76,7 @@ angular.module('cis', [ 'ngMessages', 'ngResource', 'ngRoute', 'ngCookies', 'cis
   // Squelch debug-level log messages
   $logProvider.debugEnabled(DEBUG); 
   
-  // FIXME: Enable HTML 5 mode
+  // FIXME: Enable HTML 5 mode?
   $locationProvider.html5Mode(false);
   
   // Register an HTTP interceptor to handle passing and checking our auth token
@@ -177,32 +101,11 @@ angular.module('cis', [ 'ngMessages', 'ngResource', 'ngRoute', 'ngCookies', 'cis
         }
         return $q.reject(rejection);
       },
-      'response': function(response) {
-        // If this is a response from our API server
-        if (_.includes(response.config.url, ApiUri)) {
-          // If this was in response to a Girder /user/authentication request
-          if (_.includes(response.config.url, '/user/authentication') && response.config.method === 'GET') {
-            // This response should contain a new token, so save it as a cookie
-            //$cookies.put('Girder-Token', response.data.authToken.token, CookieOptions);
-          }
-        }
-        
-        return response;
-      },
       // Route to login page if our API server returns a 401
       'responseError': function(rejection) {
         // If this is a response from our API server
         if (_.includes(rejection.config.url, ApiUri)) {
           $log.error("Response error encountered: " + rejection.config.url);
-        
-          // Read out the HTTP error code
-          var status = rejection.status;
-          
-          // Handle HTTP 401: Not Authorized - User needs to provide credentials
-          if (status == 401) {
-            //$log.debug("Routing to login...");
-            //$location.path('/login')
-          }
         }
         
         // otherwise
