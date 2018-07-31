@@ -28,7 +28,7 @@ angular
     icon: '',
     
     // execution info
-    driver: '',
+    language: '',
     args: [],
     sourcedir: '',
     cmakeargs: '',
