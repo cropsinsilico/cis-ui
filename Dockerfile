@@ -18,6 +18,6 @@ RUN npm install && \
     cd ../.. && \
     grunt
 
-
+EXPOSE 80
 ENTRYPOINT [ "http-server" ]
 CMD [ "-p", "80", "-d", "False" ]
