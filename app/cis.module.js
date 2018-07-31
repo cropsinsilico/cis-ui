@@ -8,19 +8,19 @@ angular.module('cis', [ 'ngMessages', 'ngResource', 'ngRoute', 'ngCookies', 'ang
 /** Enable DEBUG mode? */
 .constant('DEBUG', false)
 
-.factory('User', [ '$window', '$cookies', 'UserService', 'OAuthProviderService', function($window, $cookies, UserService, OAuthProviderService) { 
+.factory('User', [ '$window', '$log', '$cookies', 'UserService', 'OAuthProviderService', function($window, $log, $cookies, UserService, OAuthProviderService) { 
   let userStore = {
     profile: UserService.get(),
     signUpWithGirder: function() { $window.location.href = '/girder#?dialog=register'; },
     signInWithGirder: function() { $window.location.href = '/girder#?dialog=login'; },
     signInWithGithub: function() {
-      console.log("Signing in...");
+      $log.debug("Signing in...");
       OAuthProviderService.get().$promise.then(function(providers) {
         $window.location.href = providers['GitHub'];
       });
     },
     signOut: function() {
-      console.log("Signing out...");
+      $log.debug("Signing out...");
       $cookies.remove('girderToken');
       return userStore.profile = UserService.get();
     }
@@ -71,7 +71,7 @@ angular.module('cis', [ 'ngMessages', 'ngResource', 'ngRoute', 'ngCookies', 'ang
   // TODO: Google Analytics?
   
   // Set our match list for the cache buster
-  httpRequestInterceptorCacheBusterProvider.setMatchlist([/.*node_modules.*/,/.*api.*/]);
+  httpRequestInterceptorCacheBusterProvider.setMatchlist([/.*node_modules.*/,/.*api.*/,/.*uib.*/]);
   
   // Squelch debug-level log messages
   $logProvider.debugEnabled(DEBUG); 
