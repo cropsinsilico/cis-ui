@@ -3,8 +3,6 @@
 angular
 .module('cis')
 
-.factory('jsyaml', [() => window.jsyaml])
-
 /**
  * The Controller for our "Edit Selection" Modal Window
  * 

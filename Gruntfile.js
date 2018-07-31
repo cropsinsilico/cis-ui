@@ -57,24 +57,6 @@ module.exports = function(grunt) {
       }
     },
 
-    'swagger-js-codegen': {
-        cis: {
-            options: {
-                apis: [
-                    {
-                        swagger: 'swagger.yaml',
-                        className: 'ApiServer',
-                        moduleName: 'cis-api', // This is the model and file name 
-                        angularjs: true
-                    }
-                ],
-                dest: 'app/'
-            },
-            dist: {
-            }
-        }
-    },
-
     cacheBust: {
         taskName: {
             options: {
