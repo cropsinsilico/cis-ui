@@ -7,7 +7,7 @@ RUN npm install -g grunt http-server
 # Copy in source
 ENV SRCDIR /usr/share/nginx/html
 WORKDIR $SRCDIR
-COPY . .
+COPY package.json .
 
 # XXX: npm postinstall won't run, execute manually
 RUN npm install && \
@@ -15,9 +15,10 @@ RUN npm install && \
     npm install && \
     grunt build && \
     rm -rf node-modules/ && \
-    cd ../.. && \
-    grunt
+    cd ../..
 
+COPY . .
+RUN grunt
 EXPOSE 80
 ENTRYPOINT [ "http-server" ]
 CMD [ "-p", "80", "-d", "False" ]
