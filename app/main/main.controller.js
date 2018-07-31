@@ -156,20 +156,20 @@ angular.module('cis')
    * Close the Edit Sidebar, saving any changes made since "Edit" was last pressed.
    */ 
   $scope.saveEdit = function() {
-    console.log("Saving over previous value:", $scope.editValue);
+    $log.info("Saving over previous value:", $scope.editValue);
     $scope.selectedItem.new = false;
     $scope.editValue.metadata = $scope.selectedItem.metadata;
     $scope.editValue = null;
     TheGraphSelection.selection = null;
     $scope.graph.endTransaction("edit");
-    console.log("Saved!");
+    $log.debug("Saved!");
   };
   
   /**
    * Close the Edit Sidebar, reverting any changes made to the node since last save.
    */ 
   $scope.cancelEdit = function() {
-    console.log("Canceling edit...");
+    $log.debug("Canceling edit...");
     if ($scope.selectedItem.new) {
       let existing = _.find($scope.graph.nodes, [ 'id', $scope.selectedItem.id ]);
       $scope.graph.nodes.splice($scope.graph.nodes.indexOf(existing), 1);
@@ -181,7 +181,7 @@ angular.module('cis')
     $scope.editValue = null;
     TheGraphSelection.selection = null;
     $scope.graph.endTransaction("edit");
-    console.log("Canceled!");
+    $log.debug("Canceled!");
   };
   
   /**
@@ -274,16 +274,12 @@ angular.module('cis')
     if (result) {
       // Find all graphs containing the spec to be deleted
       var graphsContainingSpec = _.filter($scope.savedGraphs, function(graph) {
-        var found = _.find(graph.content.processes, ['component', spec.name ]);
-        if (found) {
-          console.log("Found: ", found);
-        }
-        return found;
+        return _.find(graph.content.processes, ['component', spec.name ]);
       });
       
       // Delete any saved graphs containing the spec (they are no longer valid)
       angular.forEach(graphsContainingSpec, function(graph) {
-        console.log("Deleting graph to delete spec (" + spec.name + "):", graph);
+        $log.info("Deleting graph to delete spec (" + spec.name + "):", graph);
         $scope.deleteGraph(graph, true);
       });
       
@@ -530,7 +526,7 @@ angular.module('cis')
       })
       
       spec.$promise.then(function() {
-        $log.debug("Refreshing catalog...");
+        $log.info("Refreshing catalog...");
         $scope.saveGraph();
         $window.location.reload();
       });
@@ -560,7 +556,7 @@ angular.module('cis')
     
     modalInstance.result.then(function (updatedModel) {
       // PUT result to /spec
-      console.log("Submitting updated model:", updatedModel);
+      $log.debug("Submitting updated model:", updatedModel);
       
       // Find our target spec id and update the spec content
       var specs = SpecService.query();
@@ -568,7 +564,7 @@ angular.module('cis')
         var specResource = _.find(specs, [ 'content.name', spec.name ]);
         specResource.content = updatedModel;
         specResource.$update().then(function() {
-          console.log("Refreshing catalog...");
+          $log.info("Refreshing catalog...");
           $scope.saveGraph();
           $window.location.reload();
         });
