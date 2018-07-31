@@ -40,6 +40,7 @@
   },
   "devDependencies": {
     "grunt": "1.0.1",
+    "grunt-cache-bust": "^1.7.0",
     "grunt-contrib-csslint": "2.0.0",
     "grunt-contrib-jshint": "1.1.0",
     "grunt-karma": "2.0.0",

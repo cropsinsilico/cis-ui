@@ -74,6 +74,20 @@ module.exports = function(grunt) {
             }
         }
     },
+
+    cacheBust: {
+        taskName: {
+            options: {
+                queryString: true,
+                assets: [
+                   'asset/**',
+                   'app/**',
+                   'node_modules/**'
+                ]
+            },
+            src: ['index.html']
+        }
+    },
     
     // TODO: configure grunt to run karma unit tests + coverage
     karma: {
@@ -108,6 +122,7 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-csslint');
   grunt.loadNpmTasks('grunt-karma');
   grunt.loadNpmTasks('grunt-protractor-runner');
+  grunt.loadNpmTasks('grunt-cache-bust');
 
   // Adjust task execution order here
   //grunt.registerTask('start', [ 'express:prod' ]);
@@ -116,6 +131,6 @@ module.exports = function(grunt) {
 
   grunt.registerTask('ship', [ 'swagger', 'lint', /*'optimize'*/ ]);
   grunt.registerTask('swagger', [ 'swagger-js-codegen' ]);
-
+  grunt.registerTask('cache-bust', [ 'cacheBust' ]);
   grunt.registerTask('default', [ 'ship', 'start' ]);
 };
