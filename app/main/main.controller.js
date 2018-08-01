@@ -156,20 +156,20 @@ angular.module('cis')
    * Close the Edit Sidebar, saving any changes made since "Edit" was last pressed.
    */ 
   $scope.saveEdit = function() {
-    console.log("Saving over previous value:", $scope.editValue);
+    $log.info("Saving over previous value:", $scope.editValue);
     $scope.selectedItem.new = false;
     $scope.editValue.metadata = $scope.selectedItem.metadata;
     $scope.editValue = null;
     TheGraphSelection.selection = null;
     $scope.graph.endTransaction("edit");
-    console.log("Saved!");
+    $log.debug("Saved!");
   };
   
   /**
    * Close the Edit Sidebar, reverting any changes made to the node since last save.
    */ 
   $scope.cancelEdit = function() {
-    console.log("Canceling edit...");
+    $log.debug("Canceling edit...");
     if ($scope.selectedItem.new) {
       let existing = _.find($scope.graph.nodes, [ 'id', $scope.selectedItem.id ]);
       $scope.graph.nodes.splice($scope.graph.nodes.indexOf(existing), 1);
@@ -181,7 +181,7 @@ angular.module('cis')
     $scope.editValue = null;
     TheGraphSelection.selection = null;
     $scope.graph.endTransaction("edit");
-    console.log("Canceled!");
+    $log.debug("Canceled!");
   };
   
   /**
@@ -274,16 +274,12 @@ angular.module('cis')
     if (result) {
       // Find all graphs containing the spec to be deleted
       var graphsContainingSpec = _.filter($scope.savedGraphs, function(graph) {
-        var found = _.find(graph.content.processes, ['component', spec.name ]);
-        if (found) {
-          console.log("Found: ", found);
-        }
-        return found;
+        return _.find(graph.content.processes, ['component', spec.name ]);
       });
       
       // Delete any saved graphs containing the spec (they are no longer valid)
       angular.forEach(graphsContainingSpec, function(graph) {
-        console.log("Deleting graph to delete spec (" + spec.name + "):", graph);
+        $log.info("Deleting graph to delete spec (" + spec.name + "):", graph);
         $scope.deleteGraph(graph, true);
       });
       
@@ -500,7 +496,7 @@ angular.module('cis')
   };
   
   /**
-   * Display a modal allowing the user to enter fields necessary to crate a new model spec.
+   * Display a modal allowing the user to enter fields necessary to create a new model spec.
    * 
    * If the modal is dismissed with success, the user's graph will be saved to localStorage
    * and a refresh will be forced, after which the previous state of the user's browser is 
@@ -515,22 +511,64 @@ angular.module('cis')
       size: 'lg',
       keyboard: false,      // Force the user to explicitly click "Close"
       backdrop: 'static',   // Force the user to explicitly click "Close"
-      resolve: { specs: function() { return $scope.library; } }
+      resolve: { 
+        specs: function() { return $scope.library; },
+        specToEdit: function() { return null; },
+      }
     });
     
     modalInstance.result.then(function (newModel) {
       // POST result to /spec
-      console.log("Submitting new model:", newModel);
+      $log.debug("Submitting new model:", newModel);
       var spec = SpecService.save({
         name: newModel.name,
         content: newModel
       })
       
       spec.$promise.then(function() {
-        console.log("Refreshing catalog...");
-        // TODO: save Graph to "temp-$timestamp"
+        $log.info("Refreshing catalog...");
         $scope.saveGraph();
         $window.location.reload();
+      });
+    });
+  };
+  
+  /**
+   * Display a modal allowing the user to edit fields of a model spec in their perosnal catalog.
+   * 
+   * If the modal is dismissed with success, the user's graph will be saved to localStorage
+   * and a refresh will be forced, after which the previous state of the user's browser is 
+   * loaded again from localStorage. The updated version of the spec will be used going forward.
+   */ 
+  $rootScope.editSpec = function(spec) {
+    let modalInstance = $uibModal.open({
+      animation: true,
+      templateUrl: 'app/main/modals/addSpec/addSpec.template.html',
+      controller: 'AddSpecCtrl',
+      size: 'lg',
+      keyboard: false,      // Force the user to explicitly click "Close"
+      backdrop: 'static',   // Force the user to explicitly click "Close"
+      resolve: { 
+        specs: function() { return $scope.library; }, 
+        specToEdit: function() { return angular.copy(spec); },
+      }
+    });
+    
+    modalInstance.result.then(function (updatedModel) {
+      // PUT result to /spec
+      $log.debug("Submitting updated model:", updatedModel);
+      
+      // Find our target spec id and update the spec content
+      var specs = SpecService.query();
+      specs.$promise.then(function() {
+        var specResource = _.find(specs, [ 'content.name', spec.name ]);
+        specResource.content = updatedModel;
+        specResource.$update().then(function() {
+          $log.info("Refreshing catalog...");
+          $scope.saveGraph();
+          $window.location.reload();
+        });
+        
       });
     });
   };

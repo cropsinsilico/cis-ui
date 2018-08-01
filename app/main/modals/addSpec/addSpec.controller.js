@@ -9,36 +9,48 @@ angular
  * @author lambert8
  * @see https://opensource.ncsa.illinois.edu/confluence/display/~lambert8/3.%29+Controllers%2C+Scopes%2C+and+Partial+Views
  */
-.controller('AddSpecCtrl', [ '$scope', '$log', '$uibModalInstance', '_', 'specs',
-    function($scope, $log, $uibModalInstance, _, specs) {
+.controller('AddSpecCtrl', [ '$scope', '$log', '$uibModalInstance', '_', 'specs', 'specToEdit',
+    function($scope, $log, $uibModalInstance, _, specs, specToEdit) {
   "use strict";
   
   $scope.newInput = '';
   $scope.newOutput = '';
-  $scope.modelArgsString = ''; // TODO: Parse this into an array on submit
+  
+  // Parse this into an array on submit
+  $scope.modelArgsString = '';
+  
   
   $scope.specs = specs;
   
-  
-  $scope.newModel = {
-    // model metadata
-    label: '',
-    name: '',
-    description: '',
-    icon: '',
+  $scope.editMode = specToEdit !== null;
+  if (specToEdit) {
+    // Join args array into a string
+    if (specToEdit.args) {
+      $scope.modelArgsString = specToEdit.args.join(' ');
+    }
     
-    // execution info
-    language: '',
-    args: [],
-    sourcedir: '',
-    cmakeargs: '',
-    makefile: '',
-    makedir: '',
-    
-    // runtime info
-    inports: [],
-    outports: [],
-  };
+    $scope.newModel = angular.copy(specToEdit);
+  } else {
+    $scope.newModel = {
+      // model metadata
+      label: '',
+      name: '',
+      description: '',
+      icon: '',
+      
+      // execution info
+      language: '',
+      args: [],
+      sourcedir: '',
+      cmakeargs: '',
+      makefile: '',
+      makedir: '',
+      
+      // runtime info
+      inports: [],
+      outports: [],
+    };
+  }
   
   /** Returns true if a spec with this name already exists */
   $scope.nameIsNotUnique = function(name) {
@@ -55,25 +67,33 @@ angular
     $log.debug("Closing modal with success!");
     let model = $scope.newModel;
     
-    // Split args string into array
+    // Explode args string into array
     if (!$scope.modelArgsString || $scope.modelArgsString.replace(/ /g,'') === '') {
       model.args = null;
     } else {
       model.args = _.split($scope.modelArgsString, ' ');
     }
     
-    // Coerce inports from strings into objects
+    // Coerce inports from strings into objects, if necessary
     var inports = angular.copy(model.inports);
     model.inports = [];
     angular.forEach(inports, function(port) {
-      model.inports.push({ label: port, name: port.toLowerCase(), type: "all" });
+      if (angular.isString(port)) {
+        model.inports.push({ label: port, name: port.toLowerCase(), type: "all" });
+      } else {
+        model.inports.push(port);
+      }
     });
     
-    // Coerce outports from strings into objects
+    // Coerce outports from strings into objects, if necessary
     var outports = angular.copy(model.outports);
     model.outports = [];
     angular.forEach(outports, function(port) {
-      model.outports.push({ label: port, name: port.toLowerCase(), type: "all" });
+      if (angular.isString(port)) {
+        model.outports.push({ label: port, name: port.toLowerCase(), type: "all" });
+      } else {
+        model.outports.push(port);
+      }
     });
     
     $scope.newModel.name = $scope.newModel.label.toLowerCase();

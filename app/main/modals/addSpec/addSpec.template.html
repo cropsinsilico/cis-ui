@@ -25,13 +25,13 @@
           <!-- Short Name Field (aka Label) -->
           <div class="form-group">
             <label for="labelField">Short Name<span class="text-danger">*</span> <sup><i class="fa fa-fw fa-question-circle" tooltip-placement="right" tooltip-append-to-body="true" uib-tooltip="A short, unique identifier for this model."></i></sup></label>
-            <input type="text" class="form-control" id="labelField" name="labelField" ng-model="newModel.label" required />
+            <input type="text" class="form-control" id="labelField" name="labelField" ng-disabled="editMode" ng-model="newModel.label" required />
             
             <ng-messages class="text-danger validation-text" ng-if="!addSpecForm.labelField.$pristine" for="addSpecForm.labelField.$error" role="alert">
               <ng-message when="required">Short name is required</ng-message>
             </ng-messages>
           </div>
-          <div class="text-danger" style="text-align:center;" ng-if="nameIsNotUnique(newModel.label)">
+          <div class="text-danger" style="text-align:center;" ng-if="!editMode && nameIsNotUnique(newModel.label)">
             Short name must be unique - the chosen label conflicts with an existing spec ({{ nameIsNotUnique(newModel.label).label}})
           </div>
           
@@ -911,7 +911,7 @@
                   <li ng-repeat="input in newModel.inports" class="item">
                       <i class="fa-li fa fa-sign-in"></i>
                       <div class="row">
-                          <div class="col-xs-8" id="inputText">{{ input }}</div>
+                          <div class="col-xs-8" id="inputText">{{ input.label || input.name || input }}</div>
                           <div class="col-xs-4">
                               <button id="removeInputBtn" type="button" class="btn btn-xs btn-default pull-right" ng-click="newModel.inports.splice(newModel.inports.indexOf(input), 1)">
                                   <i class="fa fa-fw fa-trash"></i>
@@ -941,7 +941,7 @@
                   <li ng-repeat="output in newModel.outports" class="item">
                       <i class="fa-li fa fa-sign-out"></i>
                       <div class="row">
-                          <div class="col-xs-8" id="outputText">{{ output }}</div>
+                          <div class="col-xs-8" id="outputText">{{ output.label || output.name || output }}</div>
                           <div class="col-xs-4">
                               <button id="removeOutputBtn" type="button" class="btn btn-xs btn-default pull-right" ng-click="newModel.outports.splice(newModel.outports.indexOf(output), 1)">
                                   <i class="fa fa-fw fa-trash"></i>
@@ -975,7 +975,7 @@
     <div class="row">
       <small><span class="text-danger">*</span> denotes a required field</small>
       <button id="cancelBtn" type="button" class="btn btn-default" data-dismiss="modal" ng-click="close()"><i class="fa fa-fw fa-times"></i> Close</button>
-      <button id="submitBtn" type="submit" class="btn btn-primary" ng-disabled="nameIsNotUnique(newModel.label) || addSpecForm.$invalid || (newModel.inports.length === 0 && newModel.outports.length === 0)" data-dismiss="modal" ng-click="submit()"><i class="fa fa-fw fa-send"></i> Submit</button>
+      <button id="submitBtn" type="submit" class="btn btn-primary" ng-disabled="(!editMode && nameIsNotUnique(newModel.label)) || addSpecForm.$invalid || (newModel.inports.length === 0 && newModel.outports.length === 0)" data-dismiss="modal" ng-click="submit()"><i class="fa fa-fw fa-send"></i> Submit</button>
     </div>
   </div>
 </section>
