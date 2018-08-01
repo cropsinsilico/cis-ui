@@ -3,25 +3,24 @@
 // React + AngularJS: see https://blog.rapid7.com/2016/02/03/combining-angularjs-and-reactjs-for-better-applications/
 
 
-angular.module('cis', [ 'ngMessages', 'ngResource', 'ngRoute', 'ngCookies', 'cis-api', 
-  'angular-clipboard', 'ui.bootstrap', 'ui.slider', 'swaggerUi' ])
+angular.module('cis', [ 'ngMessages', 'ngResource', 'ngRoute', 'ngCookies', 'angular-clipboard', 'ui.bootstrap', 'ngCacheBuster' ])
 
 /** Enable DEBUG mode? */
 .constant('DEBUG', false)
 
-.factory('User', [ '$window', '$cookies', 'UserService', 'OAuthProviderService', function($window, $cookies, UserService, OAuthProviderService) { 
+.factory('User', [ '$window', '$log', '$cookies', 'UserService', 'OAuthProviderService', function($window, $log, $cookies, UserService, OAuthProviderService) { 
   let userStore = {
     profile: UserService.get(),
     signUpWithGirder: function() { $window.location.href = '/girder#?dialog=register'; },
     signInWithGirder: function() { $window.location.href = '/girder#?dialog=login'; },
     signInWithGithub: function() {
-      console.log("Signing in...");
+      $log.debug("Signing in...");
       OAuthProviderService.get().$promise.then(function(providers) {
         $window.location.href = providers['GitHub'];
       });
     },
     signOut: function() {
-      console.log("Signing out...");
+      $log.debug("Signing out...");
       $cookies.remove('girderToken');
       return userStore.profile = UserService.get();
     }
@@ -65,16 +64,19 @@ angular.module('cis', [ 'ngMessages', 'ngResource', 'ngRoute', 'ngCookies', 'cis
 }])
 
 /** Configure routes for our module */
-.config([ '$locationProvider', '$logProvider', '$routeProvider', '$provide', '$httpProvider', 'DEBUG',
-    function($locationProvider, $logProvider, $routeProvider, $provide, $httpProvider, DEBUG) {
+.config([ '$locationProvider', '$logProvider', '$routeProvider', '$provide', '$httpProvider', 'httpRequestInterceptorCacheBusterProvider', 'DEBUG', 
+    function($locationProvider, $logProvider, $routeProvider, $provide, $httpProvider, httpRequestInterceptorCacheBusterProvider, DEBUG) {
   "use strict";
   
   // TODO: Google Analytics?
   
+  // Set our match list for the cache buster
+  httpRequestInterceptorCacheBusterProvider.setMatchlist([/.*node_modules.*/,/.*api.*/,/.*uib.*/]);
+  
   // Squelch debug-level log messages
   $logProvider.debugEnabled(DEBUG); 
   
-  // FIXME: Enable HTML 5 mode
+  // FIXME: Enable HTML 5 mode?
   $locationProvider.html5Mode(false);
   
   // Register an HTTP interceptor to handle passing and checking our auth token
@@ -99,32 +101,11 @@ angular.module('cis', [ 'ngMessages', 'ngResource', 'ngRoute', 'ngCookies', 'cis
         }
         return $q.reject(rejection);
       },
-      'response': function(response) {
-        // If this is a response from our API server
-        if (_.includes(response.config.url, ApiUri)) {
-          // If this was in response to a Girder /user/authentication request
-          if (_.includes(response.config.url, '/user/authentication') && response.config.method === 'GET') {
-            // This response should contain a new token, so save it as a cookie
-            //$cookies.put('Girder-Token', response.data.authToken.token, CookieOptions);
-          }
-        }
-        
-        return response;
-      },
       // Route to login page if our API server returns a 401
       'responseError': function(rejection) {
         // If this is a response from our API server
         if (_.includes(rejection.config.url, ApiUri)) {
           $log.error("Response error encountered: " + rejection.config.url);
-        
-          // Read out the HTTP error code
-          var status = rejection.status;
-          
-          // Handle HTTP 401: Not Authorized - User needs to provide credentials
-          if (status == 401) {
-            //$log.debug("Routing to login...");
-            //$location.path('/login')
-          }
         }
         
         // otherwise

@@ -3,16 +3,14 @@
 angular
 .module('cis')
 
-.factory('jsyaml', [() => window.jsyaml])
-
 /**
  * The Controller for our "Formatted Manifest" Modal Window
  * 
  * @author lambert8
  * @see https://opensource.ncsa.illinois.edu/confluence/display/~lambert8/3.%29+Controllers%2C+Scopes%2C+and+Partial+Views
  */
-.controller('GenerateYamlCtrl', [ '$scope', '$log', '$uibModalInstance', '_', 'clipboard', 'jsyaml', 'results', 'title', 
-    function($scope, $log, $uibModalInstance, _, clipboard, jsyaml, results, title) {
+.controller('GenerateYamlCtrl', [ '$scope', '$log', '$uibModalInstance', '_', 'clipboard', 'results', 'title', 
+    function($scope, $log, $uibModalInstance, _, clipboard, results, title) {
   "use strict";
   
   $scope.title = title;

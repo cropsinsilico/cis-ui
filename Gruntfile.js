@@ -57,65 +57,24 @@ module.exports = function(grunt) {
       }
     },
 
-    'swagger-js-codegen': {
-        cis: {
+    cacheBust: {
+        taskName: {
             options: {
-                apis: [
-                    {
-                        swagger: 'swagger.yaml',
-                        className: 'ApiServer',
-                        moduleName: 'cis-api', // This is the model and file name 
-                        angularjs: true
-                    }
-                ],
-                dest: 'app/'
+                queryString: true,
+                assets: [
+                   'asset/**',
+                   'app/**',
+                   'node_modules/**'
+                ]
             },
-            dist: {
-            }
+            src: ['index.html']
         }
-    },
-    
-    // TODO: configure grunt to run karma unit tests + coverage
-    karma: {
-      unit: {
-        configFile: 'karma.conf.js',
-        singleRun: true,        // Stop after running once?
-        autoWatch: false,       // Auto-run tests when files change on disk?
-        background: false,      // Prevent this task from blocking subsequent tasks?
-      }
-    },
-	  
-    // TODO: configure grunt to run protractor e2e tests (TODO: coverage)
-    protractor: {
-      options: {
-        configFile: "node_modules/protractor/example/conf.js", // Default config file 
-        keepAlive: true, // If false, the grunt process stops when the test fails. 
-        noColor: false, // If true, protractor will not use colors in its output. 
-      },
-      cis: {   // Grunt requires at least one target to run so you can simply put 'all: {}' here too. 
-        options: {
-          configFile: "protractor.conf.js", // Target-specific config file 
-          args: {
-            
-          }, // Target-specific arguments 
-        }
-      },
     },
   });
   
-
-  grunt.loadNpmTasks('grunt-contrib-jshint');
-  grunt.loadNpmTasks('grunt-contrib-csslint');
-  grunt.loadNpmTasks('grunt-karma');
-  grunt.loadNpmTasks('grunt-protractor-runner');
-
   // Adjust task execution order here
-  //grunt.registerTask('start', [ 'express:prod' ]);
   grunt.registerTask('lint', [ 'jshint', /*'csslint'*/ ]);
-  //grunt.registerTask('optimize', [ 'imagemin', 'cssmin', 'uglify' ]);
-
-  grunt.registerTask('ship', [ 'swagger', 'lint', /*'optimize'*/ ]);
-  grunt.registerTask('swagger', [ 'swagger-js-codegen' ]);
-
-  grunt.registerTask('default', [ 'ship', 'start' ]);
+  grunt.registerTask('ship', [ 'cache-bust', 'lint', /*'optimize'*/ ]);
+  grunt.registerTask('cache-bust', [ 'cacheBust' ]);
+  grunt.registerTask('default', [ 'ship' ]);
 };
