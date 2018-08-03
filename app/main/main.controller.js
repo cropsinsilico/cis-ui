@@ -558,6 +558,10 @@ angular.module('cis')
       // PUT result to /spec
       $log.debug("Submitting updated model:", updatedModel);
       
+      // FIXME: Why does this content include a creatorId?
+      // This additional property causes cisrun to choke.
+      delete updatedModel.creatorId;
+      
       // Find our target spec id and update the spec content
       var specs = SpecService.query();
       specs.$promise.then(function() {
