@@ -137,7 +137,7 @@ angular.module('cis')
             var onResize = function() {
                 scope.height = window.innerHeight;
                 scope.width = window.innerWidth;
-                $log.debug(`Resize event detected 2: ${scope.width}x${scope.height}... reloading!`);
+                $log.debug("Resize event detected 2: " + scope.width + "x" + scope.height + "... reloading!");
                 
                 ReactDOM.unmountComponentAtNode(element);
                 render();
