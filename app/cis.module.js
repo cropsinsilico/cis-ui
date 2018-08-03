@@ -33,7 +33,7 @@ angular.module('cis', [ 'ngMessages', 'ngResource', 'ngRoute', 'ngCookies', 'ang
 .constant('ApiUri', '/api/v1')
 .constant('AuthCookieName', 'girderToken')
 .constant('AuthHeaderName', 'Girder-Token')
-.factory('CisApi', [ 'ApiUri', 'ApiServer', (ApiUri, ApiServer) => {
+.factory('CisApi', [ 'ApiUri', 'ApiServer', function(ApiUri, ApiServer) {
   return new ApiServer(ApiUri);
 }])
 
