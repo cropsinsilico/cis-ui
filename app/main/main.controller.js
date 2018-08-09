@@ -138,7 +138,7 @@ angular.module('cis')
         keyboard: false,      // Force the user to explicitly click "Close"
         backdrop: 'static',   // Force the user to explicitly click "Close"
         resolve: {
-          selectedItem: () => angular.copy(newValue)
+          selectedItem: function() { return angular.copy(newValue) }
         }
       });
       
@@ -405,7 +405,7 @@ angular.module('cis')
       // Import our previous state, if one was found
       if (loadedNodes && loadedNodes.length) {
         // Import all nodes from localStorage into TheGraph
-        angular.forEach(loadedNodes, node => {
+        angular.forEach(loadedNodes, function(node) {
           var exists = _.find($scope.graph.nodes, [ 'id', node.id ]);
           if (!exists) {
             $scope.graph.addNode(node.id, node.component, node.metadata);
@@ -416,7 +416,7 @@ angular.module('cis')
         
         // Then, import all edges
         let loadedEdges = edges || angular.fromJson($window.localStorage.getItem(LocalStorageKeys.edges));
-        loadedEdges && angular.forEach(loadedEdges, edge => { $scope.graph.addEdge(edge.from.node, edge.from.port, edge.to.node, edge.to.port, edge.metadata); });
+        loadedEdges && angular.forEach(loadedEdges, function(edge) { $scope.graph.addEdge(edge.from.node, edge.from.port, edge.to.node, edge.to.port, edge.metadata); });
         
         // Store our previously saved state
         $scope.lastSavedNodes = angular.copy($scope.graph.nodes);
@@ -489,8 +489,8 @@ angular.module('cis')
       keyboard: false,      // Force the user to explicitly click "Close"
       backdrop: 'static',   // Force the user to explicitly click "Close"
       resolve: {
-        results: () => params.results,
-        title: () => params.title || "View Details"
+        results: function() { return params.results },
+        title: function() { return params.title || "View Details" }
       }
     });
   };
