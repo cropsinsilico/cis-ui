@@ -26,7 +26,7 @@
             tooltip-append-to-body="true" uib-tooltip="View the raw JSON for this Spec">
             <i class="fa fa-fw fa-code"></i> 
           </button>
-          <button class="btn btn-xs btn-default" style="margin:0;" ng-if="DEBUG" ng-click="submitSpecToGitHub(spec)" ng-if="user && user._id && spec.creatorId === user._id"
+          <button class="btn btn-xs btn-default" style="margin:0;" ng-click="submitSpecToGitHub(spec)" ng-if="user && user._id && spec.creatorId === user._id"
               tooltip-append-to-body="true" uib-tooltip="Submit this model to the official catalog, pending review">
             <i class="fa fa-fw fa-github"></i> 
           </button>
