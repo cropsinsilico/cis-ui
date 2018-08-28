@@ -3,7 +3,7 @@
 // React + AngularJS: see https://blog.rapid7.com/2016/02/03/combining-angularjs-and-reactjs-for-better-applications/
 
 
-angular.module('cis', [ 'ngMessages', 'ngResource', 'ngRoute', 'ngCookies', 'angular-clipboard', 'ui.bootstrap', 'ngCacheBuster' ])
+angular.module('cis', [ 'ngMessages', 'ngResource', 'ngRoute', 'ngCookies', 'angular-clipboard', 'ui.bootstrap', 'ngCacheBuster', 'ngTheGraph' ])
 
 /** Enable DEBUG mode? */
 .constant('DEBUG', false)
