@@ -76,7 +76,7 @@
   <div id="buttonBar">
     <!-- Graph Operations -->
     <div class="pull-left">
-      <button class="btn btn-xs btn-success" ng-click="saveGraphToDB()" ng-if="user && user._id" tooltip-placement="right" ng-disabled="selectedItem" tooltip-append-to-body="true" uib-tooltip="Save current graph to the database">
+      <button class="btn btn-xs btn-default" ng-click="saveGraphToDB()" ng-if="user && user._id" tooltip-placement="right" ng-disabled="selectedItem" tooltip-append-to-body="true" uib-tooltip="Save current graph to the database">
         <i class="fa fa-fw fa-cloud-upload" ng-class="{ 'faa-horizontal animated': graphIsChanged() }"></i> Save
       </button>
       
@@ -107,8 +107,8 @@
         <i class="fa fa-fw" ng-class="{ 'fa-file-text-o': !formatting, 'fa-spinner fa-pulse': formatting }"></i> Generate Manifest
       </button>
       
-      <button type="button" ng-if="false" class="btn btn-xs btn-primary" ng-disabled="running" ng-click="runGraph()" tooltip-placement="left" tooltip-append-to-body="true" uib-tooltip="Submit this graph to cis_interface and display the output">
-        <i class="fa fa-fw" ng-class="{ 'fa-play': !running, 'fa-spinner fa-pulse': running }"></i> Run Graph
+      <button type="button" class="btn btn-xs btn-success" ng-if="user && user._id" ng-disabled="running" ng-click="gotoJupyterHub()" tooltip-placement="left" tooltip-append-to-body="true" uib-tooltip="Open a Jupyter-based analysis environment for executing cis_interface">
+        <i class="fa fa-fw fa-terminal"></i>
       </button>
     </div>
   </div>

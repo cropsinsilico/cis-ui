@@ -6,8 +6,8 @@ angular.module('cis')
 .constant('LocalStorageKeys', { edges: 'cis::edges', nodes: 'cis::nodes' })
 
 /** Our main view controller */
-.controller('MainCtrl', [ '$scope', '$rootScope', '$window', '$timeout', '$q', '$interval', '$http', '$log', '$uibModal', '_', 'ApiUri', 'DEBUG', 'TheGraph', 'GraphPortService', 'SpecService', 'GraphService', 'LocalStorageKeys', 'TheGraphSelection', 'User',
-    function($scope, $rootScope, $window, $timeout, $q, $interval, $http, $log, $uibModal, _, ApiUri, DEBUG, TheGraph, GraphPortService, SpecService, GraphService, LocalStorageKeys, TheGraphSelection, User) {
+.controller('MainCtrl', [ '$scope', '$rootScope', '$window', '$timeout', '$q', '$interval', '$http', '$log', '$uibModal', '_', 'ApiUri', 'DEBUG', 'TheGraph', 'GraphPortService', 'SpecService', 'GraphService', 'LocalStorageKeys', 'TheGraphSelection', 'User', 'JupyterHubURI', 
+    function($scope, $rootScope, $window, $timeout, $q, $interval, $http, $log, $uibModal, _, ApiUri, DEBUG, TheGraph, GraphPortService, SpecService, GraphService, LocalStorageKeys, TheGraphSelection, User, JupyterHubURI) {
   "use strict";
   
   /** If true, display the model palette on the left side of TheGraph */
@@ -406,7 +406,7 @@ angular.module('cis')
       if (loadedNodes && loadedNodes.length) {
         // Import all nodes from localStorage into TheGraph
         angular.forEach(loadedNodes, function(node) {
-          var exists = _.find($scope.graph.nodes, [ 'id', node.id ]);
+          let exists = _.find($scope.graph.nodes, [ 'id', node.id ]);
           if (!exists) {
             $scope.graph.addNode(node.id, node.component, node.metadata);
           } else {
@@ -575,6 +575,10 @@ angular.module('cis')
         
       });
     });
+  };
+  
+  $scope.gotoJupyterHub = function() {
+    $window.location.href = JupyterHubURI + '/hub/oauth_login?next=' + encodeURIComponent(JupyterHubURI + '/hub/spawn')
   };
   
   $scope.submitSpecToGitHub = function(spec) {
