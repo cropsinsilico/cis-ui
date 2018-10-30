@@ -56,7 +56,7 @@ angular.module('cis', [ 'ngMessages', 'ngResource', 'ngRoute', 'ngCookies', 'ang
 }])
 
 .factory('OAuthProviderService', [ '$resource', 'ApiUri', function ($resource, ApiUri) {
-    return $resource(ApiUri + '/oauth/provider?redirect=%2F', {});
+    return $resource(ApiUri + '/oauth/provider?redirect=https%3A%2F%2Fdev.cis.ndslabs.org', {});
 }])
 
 .factory('UserService', [ '$resource', 'ApiUri', function ($resource, ApiUri) {
@@ -66,6 +66,12 @@ angular.module('cis', [ 'ngMessages', 'ngResource', 'ngRoute', 'ngCookies', 'ang
 .factory('SpecService', [ '$resource', 'ApiUri', function ($resource, ApiUri) {
     return $resource(ApiUri + '/spec/:id', {id: "@_id"}, {
       update: {method: 'PUT'}
+    });
+}])
+
+.factory('FileService', [ '$resource', 'JupyterHubURI', function ($resource, JupyterHubURI) {
+    return $resource(JupyterHubURI + '/user/:username/api/contents/:fileId', {username: "@username", fileId: "@id" }, {
+      save: {method: 'PUT'}
     });
 }])
 
@@ -83,7 +89,7 @@ angular.module('cis', [ 'ngMessages', 'ngResource', 'ngRoute', 'ngCookies', 'ang
   // TODO: Google Analytics?
   
   // Set our match list for the cache buster
-  httpRequestInterceptorCacheBusterProvider.setMatchlist([/.*node_modules.*/,/.*api.*/,/.*uib.*/]);
+  httpRequestInterceptorCacheBusterProvider.setMatchlist([/.*node_modules.*/,/.*api.*/,/.*uib.*/,/.*hub.*/]);
   
   // Squelch debug-level log messages
   $logProvider.debugEnabled(DEBUG); 

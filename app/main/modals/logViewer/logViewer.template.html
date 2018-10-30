@@ -1,0 +1,27 @@
+<!-- The "View Logs" Modal -->
+<section id="logViewerModal">
+  <div class="modal-header">
+    <button id="closeBtn" type="button" class="btn btn-xs btn-default pull-right" 
+        data-dismiss="modal" aria-label="Close" ng-click="close()">
+      <i class="fa fa-fw fa-times"></i>
+    </button>
+    <h4 class="modal-title pull-left">{{ title }}</h4>
+  </div>
+  
+  <div class="modal-body">
+    <div class="row">
+      <div class="col-sm-12">
+        <pre style="height:350px;">{{ results }}</pre>
+      </div>
+    </div>
+  </div>
+  
+  <div class="modal-footer">
+    <div class="row">
+      <div class="pull-right">
+        <button id="cancelBtn" type="button" class="btn btn-default" data-dismiss="modal" ng-click="close()"><i class="fa fa-fw fa-times"></i> Close</button>
+        <button id="copyToClipboardModalBtn" type="button" class="btn btn-primary" data-dismiss="modal" ng-click="copy()"><i class="fa fa-fw fa-clipboard"></i> Copy to Clipboard</button>
+      </div>
+    </div>
+  </div>
+</section>

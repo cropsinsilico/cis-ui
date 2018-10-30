@@ -6,12 +6,20 @@ angular.module('cis')
 .constant('LocalStorageKeys', { edges: 'cis::edges', nodes: 'cis::nodes' })
 
 /** Our main view controller */
-.controller('MainCtrl', [ '$scope', '$rootScope', '$window', '$timeout', '$q', '$interval', '$http', '$log', '$uibModal', '_', 'ApiUri', 'DEBUG', 'TheGraph', 'GraphPortService', 'SpecService', 'GraphService', 'LocalStorageKeys', 'TheGraphSelection', 'User', 'JupyterHubURI', 
-    function($scope, $rootScope, $window, $timeout, $q, $interval, $http, $log, $uibModal, _, ApiUri, DEBUG, TheGraph, GraphPortService, SpecService, GraphService, LocalStorageKeys, TheGraphSelection, User, JupyterHubURI) {
+.controller('MainCtrl', [ '$scope', '$rootScope', '$window', '$cookies', '$timeout', '$q', '$interval', '$http', '$log', '$uibModal', '_', 'ApiUri', 'DEBUG', 'TheGraph', 'GraphPortService', 'SpecService', 'GraphService', 'LocalStorageKeys', 'TheGraphSelection', 'User', 'JupyterHubURI',
+    function($scope, $rootScope, $window, $cookies, $timeout, $q, $interval, $http, $log, $uibModal, _, ApiUri, DEBUG, TheGraph, GraphPortService, SpecService, GraphService, LocalStorageKeys, TheGraphSelection, User, JupyterHubURI) {
   "use strict";
   
   /** If true, display the model palette on the left side of TheGraph */
   $scope.showPalette = false;
+  
+  // FIXME: Do not commit this to source control.
+  let jhCookie = $cookies.getAll(); 
+  let jupyterHubApiToken = ''
+  //let jupyterHubApiToken = '';
+  let getJupyterHubAuthHeader = function() {
+    return { 'Authorization': 'token ' + jupyterHubApiToken };
+  };
   
   /**
    * If specified, force the model palette to the given state (e.g. shown/hidden).
@@ -27,7 +35,7 @@ angular.module('cis')
     }
   }
   
-  /** Auto-saves TheGraph's state to local storage every 3 seconds */
+  /** Auto-saves TheGraph's state to local storage every 10 seconds */
   $scope.interval = $interval(function() {
     $scope.saveGraph();
     $log.log("Graph auto-saved");
@@ -47,6 +55,120 @@ angular.module('cis')
       $scope.requerySpecs();
     }
   );
+  
+  ($scope.requeryFiles = function() {
+    $scope.jhFiles = [];
+    if ($rootScope.user && $rootScope.user.login) {
+      let jupyterHubFiles = JupyterHubURI + '/user/' + $rootScope.user.login + '/api/contents';
+      $http({ method: 'GET', url: jupyterHubFiles, headers: getJupyterHubAuthHeader()})
+        .then(function(response) {
+          $log.info('Successfully fetched files from JupyterHub', response);
+          $scope.jhFiles = response.data.content;
+        },function(response) {
+          $log.error('Error fetching file list from JupyterHub:', response);
+        });
+    }
+  })();
+  
+   $scope.$watch(
+    // When we see the user profile change
+    function() { return $rootScope.user ? $rootScope.user.login : null; },
+    // Reload our list of specs
+    function(newValue, oldValue) {
+      if (newValue) {
+        $scope.requeryFiles();
+      }
+    }
+  );
+  
+  $scope.running = false;
+  $scope.executeGraph = function(timeout) {
+    // Submit the graph JSON for conversion to cisrun YAML format
+    $scope.running = true;
+    $http.post(ApiUri + '/graph/execute', {
+      "content": $scope.graph.toJSON()
+    }).then(function(response) {
+      $timeout(function() {
+        $scope.showLogs(response.data);
+      }, 3000);
+    }, function(response) {
+      var error = response.data;
+      console.error("Error running graph:", error.message);
+      $scope.running = false;
+    });
+  };
+  
+  $scope.showLogs = function(jobId) {
+    $http.get(ApiUri + '/graph/execute/' + jobId + '/logs', {
+      "content": $scope.graph.toJSON()
+    }).then(function(response) {
+      //$scope.showLogs(response.data);
+      $scope.running = false;
+      $uibModal.open({
+        animation: true,
+        templateUrl: 'app/main/modals/logViewer/logViewer.template.html',
+        controller: 'LogViewerCtrl',
+        size: 'lg',
+        keyboard: false,      // Force the user to explicitly click "Close"
+        backdrop: 'static',   // Force the user to explicitly click "Close"
+        resolve: {
+          jobId: function() { return jobId; },
+          results: function() { return response.data; },
+          title: function() { return "View Logs"; }
+        }
+      });
+    }, function(response) {
+      var error = response.data;
+      console.error("Error running graph:", error.message);
+      $scope.running = false;
+    });
+  };
+  
+  $scope.modifyNotebookCell = function() {
+    // GET https://hub.cis.ndslabs.org/user/bodom0015/api/contents/HelloWorld.ipynb
+    //   returns {"name": "HelloWorld.ipynb", "path": "HelloWorld.ipynb", "last_modified": "2018-08-30T21:37:38.794797Z", "created": "2018-08-30T21:37:38.794797Z", 
+    //            "content": {"cells": [{"cell_type": "code", "execution_count": 1, "metadata": {"trusted": true}, "outputs": [{"name": "stdout", "output_type": "stream", "text": "Hello World!\n"}], 
+    //            "source": "print('Hello' + ' ' + 'World!')"}, {"cell_type": "code", "execution_count": null, "metadata": {"trusted": true}, "outputs": [], "source": ""}], 
+    //            "metadata": {"kernelspec": {"display_name": "Python [default]", "language": "python", "name": "python3"}, "language_info": {"codemirror_mode": {"name": "ipython", "version": 3}, 
+    //            "file_extension": ".py", "mimetype": "text/x-python", "name": "python", "nbconvert_exporter": "python", "pygments_lexer": "ipython3", "version": "3.6.5"}}, "nbformat": 4, "nbformat_minor": 2}, 
+    //            "format": "json", "mimetype": null, "size": 830, "writable": true, "type": "notebook"}
+    
+    // Notebook name
+    let notebookName = 'HelloWorld.ipynb';
+    let username = 'bodom0015';
+    let url = JupyterHubURI + '/user/' + username + '/api/contents/' + notebookName;
+    
+    $http({ method: 'GET', url: url, headers: getJupyterHubAuthHeader() })
+      .then(function(response) {
+          $log.info('Successfully fetched notebook contents from JupyterHub', response);
+          
+          // Create a new Jupyter notebook cell
+          let notebook = response.data;
+          let newCell = {
+            "cell_type": "code", 
+            "execution_count": 0, 
+            "metadata": {
+              "trusted": true
+            }, 
+            "outputs": [], 
+            "source": "print('Hello Remote Execution!')"
+          };
+          notebook.content.cells.push(newCell);
+          
+          // Update the notebook to contain the new cell
+          $http({ method: 'PUT', url: url, data: notebook, headers: getJupyterHubAuthHeader() })
+            .then(function(response) {
+              $log.info('Successfully updated notebook contents in JupyterHub', response);
+              
+              // TODO: Execute the notebook cell
+              // TODO: Print the resulting output?
+            }, function(repsonse) {
+              $log.error('Error updating notebook contents (' + url + '):', response);
+            });
+      },function(response) {
+        $log.error('Error fetching notebook contents (' + url + '):', response);
+      });
+  };
   
   /**
    * Returns only real model specs. While InPort and OutPort are types of nodes
