@@ -177,14 +177,16 @@
           <div class="form-group">
             <label for="nameField">{{ selectedItem.metadata.type === 'File' ? 'Path' : 'Name' }} <sup><i class="fa fa-fw fa-question-circle" tooltip-placement="left" tooltip-append-to-body="true" uib-tooltip="The {{ selectedItem.metadata.type === 'File' ? 'file path' : 'queue name' }} for this {{ selectedItem.component }}'s data"></i></sup></label>
             <input type="text" class="form-control" ng-if="selectedItem.metadata.type === 'Queue'" id="nameField" name="nameField" ng-model="selectedItem.metadata.name" required />
-            <select class="form-control" ng-if="selectedItem.metadata.type === 'File'" id="nameField" name="nameField" ng-model="selectedItem.metadata.name" required >
+            <input type="text" class="form-control" ng-if="selectedItem.metadata.type === 'File'" id="nameField" name="nameField" ng-model="selectedItem.metadata.name" required />
+            <!-- FIXME: File browser? -->
+            <!--<select class="form-control" ng-if="selectedItem.metadata.type === 'File'" id="nameField" name="nameField" ng-model="selectedItem.metadata.name" required >
               <option ng-repeat="file in jhFiles">{{ file.name }}</option>
             </select>
             <span ng-if="selectedItem.metadata.type === 'File'">Upload New File: <input type="file" ng-model="uploadNewFile" /></span>
             
             <ng-messages class="text-danger" for="editForm.nameField.$error" role="alert">
               <ng-message when="required">{{ selectedItem.component === 'inport' ?  'Input' : 'Output' }} {{ selectedItem.metadata.type === 'File' ? 'path' : 'name' }} is required</ng-message>
-            </ng-messages>
+            </ng-messages>-->
           </div>
           
           <!-- Read Method Field -->

@@ -8,7 +8,7 @@ angular.module('cis', [ 'ngMessages', 'ngResource', 'ngRoute', 'ngCookies', 'ang
 /** Enable DEBUG mode? */
 .constant('DEBUG', false)
 
-.constant('JupyterHubURI', 'https://hub.cis.ndslabs.org')
+.constant('JupyterHubURI', 'https://hub.cis-iu.ndslabs.org')
 
 .factory('User', [ '$window', '$log', '$cookies', 'UserService', 'OAuthProviderService', 'JupyterHubURI', function($window, $log, $cookies, UserService, OAuthProviderService, JupyterHubURI) { 
   let userStore = {
@@ -56,7 +56,7 @@ angular.module('cis', [ 'ngMessages', 'ngResource', 'ngRoute', 'ngCookies', 'ang
 }])
 
 .factory('OAuthProviderService', [ '$resource', 'ApiUri', function ($resource, ApiUri) {
-    return $resource(ApiUri + '/oauth/provider?redirect=https%3A%2F%2Fdev.cis.ndslabs.org', {});
+    return $resource(ApiUri + '/oauth/provider?redirect=https%3A%2F%2Fdev.cis-iu.ndslabs.org', {});
 }])
 
 .factory('UserService', [ '$resource', 'ApiUri', function ($resource, ApiUri) {
