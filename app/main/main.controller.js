@@ -6,20 +6,12 @@ angular.module('cis')
 .constant('LocalStorageKeys', { edges: 'cis::edges', nodes: 'cis::nodes' })
 
 /** Our main view controller */
-.controller('MainCtrl', [ '$scope', '$rootScope', '$window', '$cookies', '$timeout', '$q', '$interval', '$http', '$log', '$uibModal', '_', 'ApiUri', 'DEBUG', 'TheGraph', 'GraphPortService', 'SpecService', 'GraphService', 'LocalStorageKeys', 'TheGraphSelection', 'User', 'JupyterHubURI',
-    function($scope, $rootScope, $window, $cookies, $timeout, $q, $interval, $http, $log, $uibModal, _, ApiUri, DEBUG, TheGraph, GraphPortService, SpecService, GraphService, LocalStorageKeys, TheGraphSelection, User, JupyterHubURI) {
+.controller('MainCtrl', [ '$scope', '$rootScope', '$window', '$cookies', '$timeout', '$q', '$interval', '$http', '$log', '$uibModal', '_', 'ApiUri', 'DEBUG', 'TheGraph', 'GraphPortService', 'SpecService', 'GraphService', 'LocalStorageKeys', 'TheGraphSelection', 'User',
+    function($scope, $rootScope, $window, $cookies, $timeout, $q, $interval, $http, $log, $uibModal, _, ApiUri, DEBUG, TheGraph, GraphPortService, SpecService, GraphService, LocalStorageKeys, TheGraphSelection, User) {
   "use strict";
   
   /** If true, display the model palette on the left side of TheGraph */
   $scope.showPalette = false;
-  
-  // FIXME: Do not commit this to source control.
-  let jhCookie = $cookies.getAll(); 
-  let jupyterHubApiToken = ''
-  //let jupyterHubApiToken = '';
-  let getJupyterHubAuthHeader = function() {
-    return { 'Authorization': 'token ' + jupyterHubApiToken };
-  };
   
   /**
    * If specified, force the model palette to the given state (e.g. shown/hidden).
@@ -53,31 +45,6 @@ angular.module('cis')
       $rootScope.user = newValue;
       $scope.requeryGraphs();
       $scope.requerySpecs();
-    }
-  );
-  
-  ($scope.requeryFiles = function() {
-    $scope.jhFiles = [];
-    if ($rootScope.user && $rootScope.user.login) {
-      let jupyterHubFiles = JupyterHubURI + '/user/' + $rootScope.user.login + '/api/contents';
-      $http({ method: 'GET', url: jupyterHubFiles, headers: getJupyterHubAuthHeader()})
-        .then(function(response) {
-          $log.info('Successfully fetched files from JupyterHub', response);
-          $scope.jhFiles = response.data.content;
-        },function(response) {
-          $log.error('Error fetching file list from JupyterHub:', response);
-        });
-    }
-  })();
-  
-   $scope.$watch(
-    // When we see the user profile change
-    function() { return $rootScope.user ? $rootScope.user.login : null; },
-    // Reload our list of specs
-    function(newValue, oldValue) {
-      if (newValue) {
-        $scope.requeryFiles();
-      }
     }
   );
   
