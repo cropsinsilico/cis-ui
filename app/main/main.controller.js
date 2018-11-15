@@ -91,51 +91,6 @@ angular.module('cis')
     });
   };
   
-  $scope.modifyNotebookCell = function() {
-    // GET https://hub.cis.ndslabs.org/user/bodom0015/api/contents/HelloWorld.ipynb
-    //   returns {"name": "HelloWorld.ipynb", "path": "HelloWorld.ipynb", "last_modified": "2018-08-30T21:37:38.794797Z", "created": "2018-08-30T21:37:38.794797Z", 
-    //            "content": {"cells": [{"cell_type": "code", "execution_count": 1, "metadata": {"trusted": true}, "outputs": [{"name": "stdout", "output_type": "stream", "text": "Hello World!\n"}], 
-    //            "source": "print('Hello' + ' ' + 'World!')"}, {"cell_type": "code", "execution_count": null, "metadata": {"trusted": true}, "outputs": [], "source": ""}], 
-    //            "metadata": {"kernelspec": {"display_name": "Python [default]", "language": "python", "name": "python3"}, "language_info": {"codemirror_mode": {"name": "ipython", "version": 3}, 
-    //            "file_extension": ".py", "mimetype": "text/x-python", "name": "python", "nbconvert_exporter": "python", "pygments_lexer": "ipython3", "version": "3.6.5"}}, "nbformat": 4, "nbformat_minor": 2}, 
-    //            "format": "json", "mimetype": null, "size": 830, "writable": true, "type": "notebook"}
-    
-    // Notebook name
-    let notebookName = 'HelloWorld.ipynb';
-    let username = 'bodom0015';
-    let url = JupyterHubURI + '/user/' + username + '/api/contents/' + notebookName;
-    
-    $http({ method: 'GET', url: url, headers: getJupyterHubAuthHeader() })
-      .then(function(response) {
-          $log.info('Successfully fetched notebook contents from JupyterHub', response);
-          
-          // Create a new Jupyter notebook cell
-          let notebook = response.data;
-          let newCell = {
-            "cell_type": "code", 
-            "execution_count": 0, 
-            "metadata": {
-              "trusted": true
-            }, 
-            "outputs": [], 
-            "source": "print('Hello Remote Execution!')"
-          };
-          notebook.content.cells.push(newCell);
-          
-          // Update the notebook to contain the new cell
-          $http({ method: 'PUT', url: url, data: notebook, headers: getJupyterHubAuthHeader() })
-            .then(function(response) {
-              $log.info('Successfully updated notebook contents in JupyterHub', response);
-              
-              // TODO: Execute the notebook cell
-              // TODO: Print the resulting output?
-            }, function(repsonse) {
-              $log.error('Error updating notebook contents (' + url + '):', response);
-            });
-      },function(response) {
-        $log.error('Error fetching notebook contents (' + url + '):', response);
-      });
-  };
   
   /**
    * Returns only real model specs. While InPort and OutPort are types of nodes
