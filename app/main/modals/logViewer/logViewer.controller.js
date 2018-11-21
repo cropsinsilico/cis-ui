@@ -13,7 +13,7 @@ angular
     function($scope, $log, $http, $interval, $uibModalInstance, _, clipboard, ApiUri, results, title, jobId) {
   "use strict";
   
-  let refreshIntervalMs = 1000;
+  let refreshIntervalMs = 3000;
   
   $scope.title = title;
   $scope.jobID = jobId;
