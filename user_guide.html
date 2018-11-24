@@ -1,0 +1,414 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>User Guide &mdash; Crops in Silico  documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Developer’s Guide (Work-In-Progress)" href="developer_guide.html" />
+    <link rel="prev" title="Crops in silico" href="readme.html" /> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="index.html" class="icon icon-home"> Crops in Silico
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="readme.html">Crops in silico</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">User Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#table-of-contents">Table of Contents</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#orientation">Orientation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#canvas-controls">Canvas Controls</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#loading-an-example-graph">Loading an Example Graph</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#adding-a-node">Adding a Node</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#about-the-bounding-box">About the Bounding Box</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#adding-an-edge">Adding an Edge</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#adding-an-inport-outport">Adding an InPort / OutPort</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#right-click-context-menu">Right-Click Context Menu</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#nodes">Nodes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#inports-outports">InPorts / OutPorts</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#edges">Edges</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#logging-in">Logging In</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#saving-a-composed-graph">Saving a Composed Graph</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#loading-a-previously-saved-graph">Loading a Previously-Saved Graph</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#deleting-a-previously-saved-graph">Deleting a Previously-Saved Graph</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#creating-a-new-model">Creating a New Model</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#deleting-a-model">Deleting a Model</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#official-submission">Official Submission</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="developer_guide.html">Developer’s Guide (Work-In-Progress)</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Crops in Silico</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>User Guide</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/user_guide.md.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="user-guide">
+<span id="user-guide"></span><h1>User Guide<a class="headerlink" href="#user-guide" title="Permalink to this headline">¶</a></h1>
+<p>Welcome to the User’s Guide for the Crops in Silico Model Composer UI. The purpose of this document is to describe the usage of the User Interface. If any of the steps described in this document are unclear or confusing, please direct your questions to <a class="reference external" href="mailto:lambert8&#37;&#52;&#48;illinois&#46;edu">Crops in Silico Support</a></p>
+<p>To assist the Support Team in their investigation, please be sure to include the browser type/version and operating system that you were using when the troublesome behavior was encountered.</p>
+<div class="section" id="table-of-contents">
+<span id="table-of-contents"></span><h2>Table of Contents<a class="headerlink" href="#table-of-contents" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><a class="reference external" href="USER-GUIDE.md#orientation">Orientation</a></li>
+<li><a class="reference external" href="USER-GUIDE.md#canvas-controls">Canvas Controls</a><ul>
+<li><a class="reference external" href="USER-GUIDE.md#loading-an-example-graph">Loading an Example Graph</a></li>
+<li><a class="reference external" href="USER-GUIDE.md#adding-a-node">Adding a Node</a></li>
+<li><a class="reference external" href="USER-GUIDE.md#adding-an-edge">Adding an Edge</a></li>
+<li><a class="reference external" href="USER-GUIDE.md#adding-an-inport--outport">Adding an InPort / OutPort</a></li>
+<li><a class="reference external" href="USER-GUIDE.md#right-click-context-menu">Right-Click Context Menu</a><ul>
+<li><a class="reference external" href="USER-GUIDE.md#nodes">Nodes</a></li>
+<li><a class="reference external" href="USER-GUIDE.md#inports--outports">InPorts / OutPorts</a></li>
+<li><a class="reference external" href="USER-GUIDE.md#edges">Edges</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference external" href="USER-GUIDE.md#logging-in">Logging In</a><ul>
+<li><a class="reference external" href="USER-GUIDE.md#saving-a-composed-graph">Saving a Composed Graph</a><ul>
+<li><a class="reference external" href="USER-GUIDE.md#loading-a-previously-saved-graph">Loading a Previously-Saved Graph</a></li>
+<li><a class="reference external" href="USER-GUIDE.md#deleting-a-previously-saved-graph">Deleting a Previously-Saved Graph</a></li>
+</ul>
+</li>
+<li><a class="reference external" href="USER-GUIDE.md#creating-a-new-model">Creating a New Model</a><ul>
+<li><a class="reference external" href="USER-GUIDE.md#deleting-a-model">Deleting a Model</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference external" href="USER-GUIDE.md#official-submission">Official Submission</a></li>
+</ul>
+</div>
+<div class="section" id="orientation">
+<span id="orientation"></span><h2>Orientation<a class="headerlink" href="#orientation" title="Permalink to this headline">¶</a></h2>
+<p><img alt="Orientaton" src="_images/CiS_Orientation.png" /></p>
+<p>The Model Composer UI consists of several smaller components:</p>
+<ul class="simple">
+<li>Navbar</li>
+<li>Canvas (aka “The Graph”)</li>
+</ul>
+<p>The <em>Navbar</em> runs along the top of the UI and contains the Crops in Silico brand name and logo. On the left side, you will find a link to submit a new model. On the right side, you will also find the <code class="docutils literal notranslate"><span class="pre">Log</span> <span class="pre">In</span></code> button and a <code class="docutils literal notranslate"><span class="pre">Help</span></code> dropdown which contains links to this user guide, the developer’s guide, and the documentation for the <code class="docutils literal notranslate"><span class="pre">cisrun</span></code> CLI tool.</p>
+<p>The <em>Canvas</em> is the grid with the black background in the center of the screen. This displays the current state of the graph that the user is working on.</p>
+<p>In front of the Canvas, there are also a few helpful floating windows:</p>
+<ul class="simple">
+<li>Model Library (aka “Palette”)</li>
+<li>Button Bar</li>
+<li>Context Menu + Edit Sidebar</li>
+</ul>
+<p>The <em>Model Library</em> starts collapsed, and can be found on the top-left of the canvas. This consists of a simple table listing of the existing models that the system knows about. Here we can also add InPorts and OutPorts to our graph. Simply click the <code class="docutils literal notranslate"><span class="pre">Add</span></code> (+) button and the new node will appear in the Canvas. If the node appears off-screen, you can easily find it by pressing the <code class="docutils literal notranslate"><span class="pre">F</span></code> key to focus on the entire graph. For models that you have created, here you can also find the option to delete them (see <a class="reference external" href="USER-GUIDE.md#creating-a-new-model">Creating a New Model</a>).</p>
+<p><img alt="Expanded Model Palette" src="_images/CiS_Expanded_Model_Palette.png" /></p>
+<p>The <em>Button Bar</em> runs along the top-right of the canvas. It contains actions such as <code class="docutils literal notranslate"><span class="pre">Save</span></code>, <code class="docutils literal notranslate"><span class="pre">Load</span></code>, <code class="docutils literal notranslate"><span class="pre">Clear</span></code>, and <code class="docutils literal notranslate"><span class="pre">Generate</span> <span class="pre">Manifest</span></code>. <code class="docutils literal notranslate"><span class="pre">Save</span></code> will store the state of your current graph to the database, while <code class="docutils literal notranslate"><span class="pre">Load</span></code> will import a given state from the database. <code class="docutils literal notranslate"><span class="pre">Clear</span></code> will remove all nodes and edges from the current canvas, but does not affect graphs that have been stored in the database. <code class="docutils literal notranslate"><span class="pre">Generate</span> <span class="pre">Manifest</span></code> will convert the current graph on the canvas to the format that is required by the <code class="docutils literal notranslate"><span class="pre">cisrun</span></code> CLI.</p>
+<p>The <em>Context Menu</em> appears when an entity in the canvas is right-clicked. It appears as a round menu that centers on where the mouse click occurred. <code class="docutils literal notranslate"><span class="pre">Edit</span></code> and <code class="docutils literal notranslate"><span class="pre">Delete</span></code> are offered the only actions offered, and only when right-clicking on Edges or Nodes (including InPorts and OutPorts).</p>
+<p>If <code class="docutils literal notranslate"><span class="pre">Edit</span></code> is chosen, the Edit Sidebar will be displayed on the right edge of the canvas. The sidebar allows you to edit the metadata of the entity you have selected. This sidebar will also appear when adding an InPort or OutPort to specify the source/destination of the data.</p>
+</div>
+<div class="section" id="canvas-controls">
+<span id="canvas-controls"></span><h2>Canvas Controls<a class="headerlink" href="#canvas-controls" title="Permalink to this headline">¶</a></h2>
+<p>The Canvas accepts a few mouse/keyboard inputs:</p>
+<ul class="simple">
+<li><code class="docutils literal notranslate"><span class="pre">F</span></code>: Auto-focus the graph so that you can see all elements</li>
+<li><code class="docutils literal notranslate"><span class="pre">Left-click</span></code>: Select a port on a node</li>
+<li><code class="docutils literal notranslate"><span class="pre">Left-click</span> <span class="pre">(hold)</span></code>: Drag a node around the canvas</li>
+<li><code class="docutils literal notranslate"><span class="pre">Right-click</span></code>: Display the context-menu for the clicked graph element</li>
+</ul>
+</div>
+<div class="section" id="loading-an-example-graph">
+<span id="loading-an-example-graph"></span><h2>Loading an Example Graph<a class="headerlink" href="#loading-an-example-graph" title="Permalink to this headline">¶</a></h2>
+<p>The Button Bar at the top-right should offer a <code class="docutils literal notranslate"><span class="pre">Load</span></code> button. Clicking on this button will expand a dropdown list of all saved graphs and examples currently accessible. Choosing one of these examples will load its contents into your Canvas, allowing you to visualize and edit the graph before generating a manifest for use with <code class="docutils literal notranslate"><span class="pre">cisrun</span></code>.</p>
+</div>
+<div class="section" id="adding-a-node">
+<span id="adding-a-node"></span><h2>Adding a Node<a class="headerlink" href="#adding-a-node" title="Permalink to this headline">¶</a></h2>
+<p>The Model Library on the left side offers an “Add” button beside each model. Click this button to add a new node to the canvas representing the model you’ve chosen. Once added, you can left-click this node and hold to drag it around the  canvas. On the new node, you should see grey dots on the left/right sides - these are the inputs (left side) and outputs (right side) that this model accepts.</p>
+<p>For more details, see the documentation for <a class="reference external" href="https://cropsinsilico.github.io/cis_interface/getting_started.html#model-file-input-output">Model file input/output</a></p>
+<div class="section" id="about-the-bounding-box">
+<span id="about-the-bounding-box"></span><h3>About the Bounding Box<a class="headerlink" href="#about-the-bounding-box" title="Permalink to this headline">¶</a></h3>
+<p>While dragging, you may notice a lighter gray circle around the dragged node. This is the “bounding box” that indicates valid areas where your node can be dragged - as your node moves the bounding box moves with it! This behavior is meant to prevent you from dragging a node so fast that the mouse cursor exits the node before the “drag” event is picked up.</p>
+</div>
+</div>
+<div class="section" id="adding-an-edge">
+<span id="adding-an-edge"></span><h2>Adding an Edge<a class="headerlink" href="#adding-an-edge" title="Permalink to this headline">¶</a></h2>
+<p>To create an edge, simply click on an output on a model - this should display a floating edge that ends at your cursor. Then, select an input on  another model. You can also choose an input first and connect that to an output.</p>
+<p>NOTE: Inputs can only be connected to outputs and vice versa. An input cannot be connected to another input. An output cannot be connected with another output.</p>
+<p>For more details, see the documentation for <a class="reference external" href="https://cropsinsilico.github.io/cis_interface/getting_started.html#model-to-model-communication-with-connections">Model-to-model communication</a></p>
+</div>
+<div class="section" id="adding-an-inport-outport">
+<span id="adding-an-inport-outport"></span><h2>Adding an InPort / OutPort<a class="headerlink" href="#adding-an-inport-outport" title="Permalink to this headline">¶</a></h2>
+<p>While each node has its own set of inputs and outputs, the entire graph likely will need InPorts/OutPorts of its own. The Model Palette at the left of the view offers buttons to add these InPorts and OutPorts.</p>
+</div>
+<div class="section" id="right-click-context-menu">
+<span id="right-click-context-menu"></span><h2>Right-Click Context Menu<a class="headerlink" href="#right-click-context-menu" title="Permalink to this headline">¶</a></h2>
+<p>In general, right-clicking an entity on the canvas will bring up a context menu for the clicked object. We currently support right-click operations on Nodes, InPorts/OutPorts, and Edges.</p>
+<div class="section" id="nodes">
+<span id="nodes"></span><h3>Nodes<a class="headerlink" href="#nodes" title="Permalink to this headline">¶</a></h3>
+<p>Right-clicking a node will bring up the context menu, and allows you to <code class="docutils literal notranslate"><span class="pre">Delete</span></code> the node or <code class="docutils literal notranslate"><span class="pre">Edit</span></code> its metadata:</p>
+<ul class="simple">
+<li>Label (optional): The identifier for this node that will appear in the canvas</li>
+</ul>
+<p>You should also see the model inputs/ouputs displayed with the context menu open. Just to the left of the context menu, you should see any inputs offered by this node. To the right, you will see its outputs. This allows you to easily select an input or output and connect it to another model.</p>
+</div>
+<div class="section" id="inports-outports">
+<span id="inports-outports"></span><h3>InPorts / OutPorts<a class="headerlink" href="#inports-outports" title="Permalink to this headline">¶</a></h3>
+<p>Right-clicking an InPort or OutPort will bring up the context menu, and allows you to delete it or edit its metadata:</p>
+<ul class="simple">
+<li>Label (optional): The identifier for this node that will appear in the canvas</li>
+<li>Type (required): The type of this port - this can be either “File” or “Queue” (if using AMQP queues)</li>
+<li>Value (required): The value of this port - this will either be a filepath (for Type=File) or a queue name (for Type=Queue)</li>
+<li>Read/Write Method (optional): how are the contents formatted? can be any of ‘table’, ‘table_array’, ‘pandas’ or ‘line’</li>
+</ul>
+</div>
+<div class="section" id="edges">
+<span id="edges"></span><h3>Edges<a class="headerlink" href="#edges" title="Permalink to this headline">¶</a></h3>
+<p>Right-clicking an edge will bring up the context menu, and allows you to delete the edge or edit its metadata:</p>
+<ul class="simple">
+<li>Label (optional): A friendly identifier for this edge (currently unused)</li>
+<li>Field Names (optional): If this edge contains multiple fields, you can specify their names as a comma-separated list of values</li>
+<li>Field Units (optional): If this edge contains multiple fields, you can specify their units as a comma-separated list of values</li>
+</ul>
+</div>
+</div>
+<div class="section" id="logging-in">
+<span id="logging-in"></span><h2>Logging In<a class="headerlink" href="#logging-in" title="Permalink to this headline">¶</a></h2>
+<p>For users who simply wish to build new graphs from our existing sets of models, we do not require them to create an account or log into the system. Anyone who wishes to Create a New Model or Save a Composed Graph to the database, however, will need to sign up for an account. This is simply to track which users created which models, to avoid showing unvetted or defunct options to all users.</p>
+<p>To begin the login process, click <code class="docutils literal notranslate"><span class="pre">Log</span> <span class="pre">In</span></code> at the top-right in the Navbar:</p>
+<p><img alt="OAuth Start" src="_images/CiS_OAuth_Start.png" /></p>
+<p>You will then be prompted for your GitHub account credentials. If you do not already have a GitHub account, you can <a class="reference external" href="https://github.com/join?source=header-home">sign up for one for free on GitHub.com</a></p>
+<p><img alt="OAuth Authentication" src="_images/CiS_OAuth_Login.png" /></p>
+<p>After signing in, you will be asked to Authorize the Crops in Silico Platform to access your GitHub account information. We only examine your user profile information and use it to create al inked account in our system.</p>
+<p><img alt="OAuth Authorization" src="_images/CiS_OAuth_Authorize.png" /></p>
+<p>Click “Authorize” to be redirected the Crops in Silico application. You are now logged in as your GitHub user, and should see a couple of new buttons have appeared in the User Interface:</p>
+<ul class="simple">
+<li>Save Graph</li>
+<li>Submit a New Model</li>
+</ul>
+<p><img alt="OAuth Authorized" src="_images/CiS_OAuth_End.png" /></p>
+</div>
+<div class="section" id="saving-a-composed-graph">
+<span id="saving-a-composed-graph"></span><h2>Saving a Composed Graph<a class="headerlink" href="#saving-a-composed-graph" title="Permalink to this headline">¶</a></h2>
+<p>After logging in, the Button Bar will include a <code class="docutils literal notranslate"><span class="pre">Save</span></code> button. Clicking this button will offer you a prompt to name this graph. If a valid name is entered, the graph will be saved to the database.</p>
+<div class="section" id="loading-a-previously-saved-graph">
+<span id="loading-a-previously-saved-graph"></span><h3>Loading a Previously-Saved Graph<a class="headerlink" href="#loading-a-previously-saved-graph" title="Permalink to this headline">¶</a></h3>
+<p>After a graph has been saved, it should appear in the <code class="docutils literal notranslate"><span class="pre">Load</span></code> dropdown on the Button Bar. Choosing a previously-saved graph will load its contents into the Canvas.</p>
+<p>NOTE: In order to facilitate composing different models and examples, <code class="docutils literal notranslate"><span class="pre">Load</span></code> does not Clear your existing graph state.</p>
+</div>
+<div class="section" id="deleting-a-previously-saved-graph">
+<span id="deleting-a-previously-saved-graph"></span><h3>Deleting a Previously-Saved Graph<a class="headerlink" href="#deleting-a-previously-saved-graph" title="Permalink to this headline">¶</a></h3>
+<p>For graphs that you have saved, you should see a <code class="docutils literal notranslate"><span class="pre">Delete</span></code> button beside them. Simply click this button to remove the saved graph from the database.</p>
+</div>
+</div>
+<div class="section" id="creating-a-new-model">
+<span id="creating-a-new-model"></span><h2>Creating a New Model<a class="headerlink" href="#creating-a-new-model" title="Permalink to this headline">¶</a></h2>
+<p>Do you have a new model that you would like to contribute? After logging in, the Navbar offers a link that will allow you to submit your own custom model metadata. Simply <code class="docutils literal notranslate"><span class="pre">Log</span> <span class="pre">In</span></code> at the top-right, then click <code class="docutils literal notranslate"><span class="pre">Submit</span> <span class="pre">a</span> <span class="pre">New</span> <span class="pre">Model</span></code> at the top-left. A pop-up should appear allowing you to enter all necessary metadata fields of you model. Once created, your model appears in your personal catalog for testing and debugging.</p>
+<div class="section" id="deleting-a-model">
+<span id="deleting-a-model"></span><h3>Deleting a Model<a class="headerlink" href="#deleting-a-model" title="Permalink to this headline">¶</a></h3>
+<p>If you have created a model that you would like to remove, you should see a <code class="docutils literal notranslate"><span class="pre">Delete</span></code> button listed on the Model Palette once when it is expanded. Click the search icon to expand the Model Palette. You should see a red <code class="docutils literal notranslate"><span class="pre">Delete</span></code> button beside any unofficial specs that you have created.</p>
+<p>NOTE: Once a model or graph has been officially submitted, it cannot be deleted</p>
+</div>
+</div>
+<div class="section" id="official-submission">
+<span id="official-submission"></span><h2>Official Submission<a class="headerlink" href="#official-submission" title="Permalink to this headline">¶</a></h2>
+<p>When you are satisfied with the working state of your model or graph, you can submit it to our official catalog as an issue or pull request to the <a class="reference external" href="https://github.com/cropsinsilico/cis-specs">cis-specs</a> repository. Here it will go through a peer review process where it will be testing and vetted. If it passes the review, it will be accepted into our official catalog, where all users will be able to consume and use the new model.</p>
+<p>We are working to automate this submission process further, and we thank you for your patience while we determine the best course of action.</p>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="developer_guide.html" class="btn btn-neutral float-right" title="Developer’s Guide (Work-In-Progress)" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="readme.html" class="btn btn-neutral" title="Crops in silico" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018 Crops in Silico authors
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    
+    
+      <script type="text/javascript">
+          var DOCUMENTATION_OPTIONS = {
+              URL_ROOT:'./',
+              VERSION:'',
+              LANGUAGE:'None',
+              COLLAPSE_INDEX:false,
+              FILE_SUFFIX:'.html',
+              HAS_SOURCE:  true,
+              SOURCELINK_SUFFIX: '.txt'
+          };
+      </script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+    
+
+  
+
+  <script type="text/javascript" src="_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

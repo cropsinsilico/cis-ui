@@ -1,0 +1,385 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Developer’s Guide (Work-In-Progress) &mdash; Crops in Silico  documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="User Guide" href="user_guide.html" /> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="index.html" class="icon icon-home"> Crops in Silico
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="readme.html">Crops in silico</a></li>
+<li class="toctree-l1"><a class="reference internal" href="user_guide.html">User Guide</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Developer’s Guide (Work-In-Progress)</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#running-the-crops-in-silico-platform">Running the Crops in Silico Platform</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#running-under-kubernetes-production-ready">Running Under Kubernetes (Production-Ready)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#running-under-docker-development-only">Running Under Docker (Development Only)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#running-without-containers-not-recommended">Running Without Containers (Not recommended)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#girder-configuration">Girder Configuration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#adjusting-the-server-root">Adjusting the Server Root</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#enabling-oauth">Enabling OAuth</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#enabling-cis-girder-plugin">Enabling <code class="docutils literal notranslate"><span class="pre">cis-girder-plugin</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#crops-in-silico-development-environment">Crops in Silico Development Environment</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#prerequisites">Prerequisites</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#build">Build</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#run">Run</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#without-docker">Without Docker</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#develop">Develop</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#regenerate-api-client">Regenerate API client</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#rebuilding-jekyll-locally">Rebuilding Jekyll Locally</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Crops in Silico</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>Developer’s Guide (Work-In-Progress)</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/developer_guide.md.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="developer-s-guide-work-in-progress">
+<span id="developer-s-guide-work-in-progress"></span><h1>Developer’s Guide (Work-In-Progress)<a class="headerlink" href="#developer-s-guide-work-in-progress" title="Permalink to this headline">¶</a></h1>
+<p>The purpose of this document is to familiarize you with the patterns used to develop the Crops in Silico framework.</p>
+<div class="section" id="running-the-crops-in-silico-platform">
+<span id="running-the-crops-in-silico-platform"></span><h2>Running the Crops in Silico Platform<a class="headerlink" href="#running-the-crops-in-silico-platform" title="Permalink to this headline">¶</a></h2>
+<p>No matter how you choose to run the platform, you will need a few things:</p>
+<ol class="simple">
+<li>MongoDB: An open-source NoSQL database</li>
+<li>Girder: An open-source data management</li>
+<li>The <code class="docutils literal notranslate"><span class="pre">cis-ui</span></code> web application</li>
+</ol>
+</div>
+<div class="section" id="running-under-kubernetes-production-ready">
+<span id="running-under-kubernetes-production-ready"></span><h2>Running Under Kubernetes (Production-Ready)<a class="headerlink" href="#running-under-kubernetes-production-ready" title="Permalink to this headline">¶</a></h2>
+<p>The platform has been most thoroughly-tested while running under Kubernetes.</p>
+<p>To get started with a single Kubernetes master node, you can follow the instructions here:
+https://github.com/nds-org/kubeadm-bootstrap#setting-up-a-cluster</p>
+<p>You can continue testing with a single node, or add additional workers by following these instructions:
+https://github.com/nds-org/kubeadm-bootstrap#setting-up-a-worker-node</p>
+<p>You should not need more than one Kubernetes node to run the CiS Platform.</p>
+<p>Once you have Kubernetes up and running, you can use the templates in <code class="docutils literal notranslate"><span class="pre">cis-startup</span></code> to quickly get up and running:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git clone https://github.com/cropsinsilico/cis-startup <span class="o">&amp;&amp;</span> <span class="nb">cd</span> cis-startup
+</pre></div>
+</div>
+<p>NOTE: You may need to edit the hostnames the Ingress resources located in <code class="docutils literal notranslate"><span class="pre">platform/</span></code> to match your desired hostname.</p>
+<p>If everything came up as it should, navigating to http://desired.hostname.com:80 should bring you to the CiS Model Composer UI.</p>
+</div>
+<div class="section" id="running-under-docker-development-only">
+<span id="running-under-docker-development-only"></span><h2>Running Under Docker (Development Only)<a class="headerlink" href="#running-under-docker-development-only" title="Permalink to this headline">¶</a></h2>
+<p>If Kubernetes feels like too much overhead, running under Docker is simple enough.</p>
+<p>The following command will start up MongoDB:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker run -it --name<span class="o">=</span>mongodb -v <span class="k">$(</span><span class="nb">pwd</span><span class="k">)</span>:/data/db -p <span class="m">27017</span>:27017 mongo:3.3
+</pre></div>
+</div>
+<p>Then run a Girder container:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker run -it --name<span class="o">=</span>girder --link mongodb:mongodb -p <span class="m">8080</span>:8080 cropsinsilico/girder:stable --host <span class="m">0</span>.0.0.0 --database mongodb://mongodb:27017/girder
+</pre></div>
+</div>
+<p>Finally, run our NGINX container with the <code class="docutils literal notranslate"><span class="pre">cis-ui</span></code> source:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker run -it --name<span class="o">=</span>cis-ui --link girder:girder -p <span class="m">80</span>:80 cropsinsilico/cis-ui:stable
+</pre></div>
+</div>
+<p>If everything came up as it should, navigating to http://localhost:80 should bring you to the CiS Model Composer UI.</p>
+</div>
+<div class="section" id="running-without-containers-not-recommended">
+<span id="running-without-containers-not-recommended"></span><h2>Running Without Containers (Not recommended)<a class="headerlink" href="#running-without-containers-not-recommended" title="Permalink to this headline">¶</a></h2>
+<p>It is highly recommended that you run each of these services as a separate container, but installing them on the host should work as well.</p>
+<p>A few steps are necessary to get the platform up and running on a new host:</p>
+<ol class="simple">
+<li>Install MongoDB</li>
+<li>Install Girder and configure it to talk to MongoDB</li>
+<li>Install NodeJS and use it to run <code class="docutils literal notranslate"><span class="pre">cis-ui</span></code>, which will talk to Girder</li>
+</ol>
+<p>Such steps are highly manual and will likely vary from version to version of the softwares mentioned above.</p>
+<p>For this reason, we do not provide such instructions and instead suggest running everything in a container, as it greatly simplifies the complexity of running, configuring, and connecting these applications.</p>
+</div>
+<div class="section" id="girder-configuration">
+<span id="girder-configuration"></span><h2>Girder Configuration<a class="headerlink" href="#girder-configuration" title="Permalink to this headline">¶</a></h2>
+<p>Coming Soon!</p>
+</div>
+<div class="section" id="adjusting-the-server-root">
+<span id="adjusting-the-server-root"></span><h2>Adjusting the Server Root<a class="headerlink" href="#adjusting-the-server-root" title="Permalink to this headline">¶</a></h2>
+<p>Coming Soon!</p>
+</div>
+<div class="section" id="enabling-oauth">
+<span id="enabling-oauth"></span><h2>Enabling OAuth<a class="headerlink" href="#enabling-oauth" title="Permalink to this headline">¶</a></h2>
+<p>Coming Soon!</p>
+</div>
+<div class="section" id="enabling-cis-girder-plugin">
+<span id="enabling-cis-girder-plugin"></span><h2>Enabling <code class="docutils literal notranslate"><span class="pre">cis-girder-plugin</span></code><a class="headerlink" href="#enabling-cis-girder-plugin" title="Permalink to this headline">¶</a></h2>
+<p>Coming Soon!</p>
+</div>
+<div class="section" id="crops-in-silico-development-environment">
+<span id="crops-in-silico-development-environment"></span><h2>Crops in Silico Development Environment<a class="headerlink" href="#crops-in-silico-development-environment" title="Permalink to this headline">¶</a></h2>
+<p>The following instructions should help you get a development environment up and running for modifying the Crops in Silico Model Composer UI</p>
+</div>
+<div class="section" id="prerequisites">
+<span id="prerequisites"></span><h2>Prerequisites<a class="headerlink" href="#prerequisites" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li>Git</li>
+<li>Docker or NodeJS</li>
+</ul>
+<p>Clone this repository:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git clone https://github.com/cropsinsilico/cis-ui <span class="o">&amp;&amp;</span> <span class="nb">cd</span> cis-ui
+</pre></div>
+</div>
+</div>
+<div class="section" id="build">
+<span id="build"></span><h2>Build<a class="headerlink" href="#build" title="Permalink to this headline">¶</a></h2>
+<p>Build the webserver Docker image:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker build -t cis/ui .
+</pre></div>
+</div>
+</div>
+<div class="section" id="run">
+<span id="run"></span><h2>Run<a class="headerlink" href="#run" title="Permalink to this headline">¶</a></h2>
+<p>Start a development webserver on port <code class="docutils literal notranslate"><span class="pre">8080</span></code>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker run -it -p <span class="m">8080</span>:80 --name<span class="o">=</span>cis-ui -v <span class="k">$(</span><span class="nb">pwd</span><span class="k">)</span>:/usr/nginx/share/html cis/ui
+</pre></div>
+</div>
+<p>NOTE: <code class="docutils literal notranslate"><span class="pre">-v</span> <span class="pre">src:dest</span></code> tells Docker to map <code class="docutils literal notranslate"><span class="pre">src</span></code> from your host to <code class="docutils literal notranslate"><span class="pre">dest</span></code> within the container</p>
+<div class="section" id="without-docker">
+<span id="without-docker"></span><h3>Without Docker<a class="headerlink" href="#without-docker" title="Permalink to this headline">¶</a></h3>
+<p>If you don’t have Docker, then you will need to install NodeJS and run the following:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>npm start
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="develop">
+<span id="develop"></span><h2>Develop<a class="headerlink" href="#develop" title="Permalink to this headline">¶</a></h2>
+<p>Start a Cloud9 IDE on port <code class="docutils literal notranslate"><span class="pre">8081</span></code>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker run -it -p <span class="m">8081</span>:80 --name<span class="o">=</span>cloud9-cis -v <span class="k">$(</span><span class="nb">pwd</span><span class="k">)</span>:/workspace -w /workspace ndslabs/cloud9-nodejs
+</pre></div>
+</div>
+<div class="section" id="regenerate-api-client">
+<span id="regenerate-api-client"></span><h3>Regenerate API client<a class="headerlink" href="#regenerate-api-client" title="Permalink to this headline">¶</a></h3>
+<p>If you modify the <a class="reference external" href="app/swagger.yaml">swagger spec</a>, you will need to regenerate the API client.</p>
+<p>A <code class="docutils literal notranslate"><span class="pre">grunt</span></code> task has been provided to do this for you:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>npm install -g grunt
+npm install
+grunt swagger
+</pre></div>
+</div>
+<p>Ensure that the client and server always have matching API specs.</p>
+</div>
+<div class="section" id="rebuilding-jekyll-locally">
+<span id="rebuilding-jekyll-locally"></span><h3>Rebuilding Jekyll Locally<a class="headerlink" href="#rebuilding-jekyll-locally" title="Permalink to this headline">¶</a></h3>
+<p>Execute the following command to run a <code class="docutils literal notranslate"><span class="pre">jekyll</span></code> development server:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker rm -f cis-jekyll 
+docker run -itd <span class="se">\</span>
+    --name<span class="o">=</span>cis-jekyll <span class="se">\</span>
+    --label<span class="o">=</span>jekyll <span class="se">\</span>
+    --volume<span class="o">=</span><span class="k">$(</span><span class="nb">pwd</span><span class="k">)</span>:/srv/jekyll <span class="se">\</span>
+    -p <span class="m">127</span>.0.0.1:4000:4000 <span class="se">\</span>
+    -p <span class="m">127</span>.0.0.1:35729:35729 <span class="se">\</span>
+    jekyll/jekyll <span class="se">\</span>
+    jekyll server --watch --livereload
+</pre></div>
+</div>
+<p>You can then view the logs of your running container by executing:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker logs -f cis-jekyll
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+      
+        <a href="user_guide.html" class="btn btn-neutral" title="User Guide" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018 Crops in Silico authors
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    
+    
+      <script type="text/javascript">
+          var DOCUMENTATION_OPTIONS = {
+              URL_ROOT:'./',
+              VERSION:'',
+              LANGUAGE:'None',
+              COLLAPSE_INDEX:false,
+              FILE_SUFFIX:'.html',
+              HAS_SOURCE:  true,
+              SOURCELINK_SUFFIX: '.txt'
+          };
+      </script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+    
+
+  
+
+  <script type="text/javascript" src="_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
