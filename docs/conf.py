@@ -20,8 +20,8 @@
 # -- Project information -----------------------------------------------------
 
 project = 'Crops in Silico'
-copyright = '2018, Mike Lambert, Craig Willis'
-author = 'Mike Lambert, Craig Willis'
+copyright = '2018 Crops in Silico authors'
+author = 'Crops in Silico authors'
 
 # The short X.Y version
 version = ''
@@ -38,8 +38,8 @@ release = ''
 # Add any Sphinx extension module names here, as strings. They can be
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
-extensions = [
-]
+extensions = ['sphinx.ext.intersphinx',
+              'sphinx.ext.githubpages']
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
@@ -49,6 +49,10 @@ templates_path = ['_templates']
 #
 # source_suffix = ['.rst', '.md']
 source_suffix = ['.rst', '.md']
+
+source_parsers = {
+   '.md': 'recommonmark.parser.CommonMarkParser',
+}
 
 # The master toctree document.
 master_doc = 'index'

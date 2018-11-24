@@ -1,4 +1,5 @@
 # User Guide
+
 Welcome to the User's Guide for the Crops in Silico Model Composer UI. The purpose of this document is to describe the usage of the User Interface. If any of the steps described in this document are unclear or confusing, please direct your questions to [Crops in Silico Support](mailto:lambert8@illinois.edu)
 
 To assist the Support Team in their investigation, please be sure to include the browser type/version and operating system that you were using when the troublesome behavior was encountered.
@@ -22,8 +23,8 @@ To assist the Support Team in their investigation, please be sure to include the
     * [Deleting a Model](USER-GUIDE.md#deleting-a-model)
  * [Official Submission](USER-GUIDE.md#official-submission)
 
-# Orientation
-![Orientaton](/screenshots/CiS_Orientation.png?raw=true "Orientation")
+## Orientation
+![Orientaton](screenshots/CiS_Orientation.png "Orientation")
 
 The Model Composer UI consists of several smaller components:
 * Navbar
@@ -40,7 +41,7 @@ In front of the Canvas, there are also a few helpful floating windows:
 
 The *Model Library* starts collapsed, and can be found on the top-left of the canvas. This consists of a simple table listing of the existing models that the system knows about. Here we can also add InPorts and OutPorts to our graph. Simply click the `Add` (+) button and the new node will appear in the Canvas. If the node appears off-screen, you can easily find it by pressing the `F` key to focus on the entire graph. For models that you have created, here you can also find the option to delete them (see [Creating a New Model](USER-GUIDE.md#creating-a-new-model)).
 
-![Expanded Model Palette](/screenshots/CiS_Expanded_Model_Palette.png?raw=true "Expanded Model Palette")
+![Expanded Model Palette](screenshots/CiS_Expanded_Model_Palette.png "Expanded Model Palette")
 
 The *Button Bar* runs along the top-right of the canvas. It contains actions such as `Save`, `Load`, `Clear`, and `Generate Manifest`. `Save` will store the state of your current graph to the database, while `Load` will import a given state from the database. `Clear` will remove all nodes and edges from the current canvas, but does not affect graphs that have been stored in the database. `Generate Manifest` will convert the current graph on the canvas to the format that is required by the `cisrun` CLI.
 
@@ -48,7 +49,7 @@ The *Context Menu* appears when an entity in the canvas is right-clicked. It app
 
 If `Edit` is chosen, the Edit Sidebar will be displayed on the right edge of the canvas. The sidebar allows you to edit the metadata of the entity you have selected. This sidebar will also appear when adding an InPort or OutPort to specify the source/destination of the data.
 
-# Canvas Controls
+## Canvas Controls
 The Canvas accepts a few mouse/keyboard inputs:
 * `F`: Auto-focus the graph so that you can see all elements
 * `Left-click`: Select a port on a node
@@ -98,26 +99,26 @@ Right-clicking an edge will bring up the context menu, and allows you to delete 
 * Field Names (optional): If this edge contains multiple fields, you can specify their names as a comma-separated list of values
 * Field Units (optional): If this edge contains multiple fields, you can specify their units as a comma-separated list of values
 
-# Logging In
+## Logging In
 For users who simply wish to build new graphs from our existing sets of models, we do not require them to create an account or log into the system. Anyone who wishes to Create a New Model or Save a Composed Graph to the database, however, will need to sign up for an account. This is simply to track which users created which models, to avoid showing unvetted or defunct options to all users.
 
 To begin the login process, click `Log In` at the top-right in the Navbar:
 
-![OAuth Start](/screenshots/CiS_OAuth_Start.png?raw=true "OAuth Start")
+![OAuth Start](screenshots/CiS_OAuth_Start.png "OAuth Start")
 
 You will then be prompted for your GitHub account credentials. If you do not already have a GitHub account, you can [sign up for one for free on GitHub.com](https://github.com/join?source=header-home)
 
-![OAuth Authentication](/screenshots/CiS_OAuth_Login.png?raw=true "OAuth Authentication")
+![OAuth Authentication](screenshots/CiS_OAuth_Login.png "OAuth Authentication")
 
 After signing in, you will be asked to Authorize the Crops in Silico Platform to access your GitHub account information. We only examine your user profile information and use it to create al inked account in our system.
 
-![OAuth Authorization](/screenshots/CiS_OAuth_Authorize.png?raw=true "OAuth Authorization")
+![OAuth Authorization](screenshots/CiS_OAuth_Authorize.png "OAuth Authorization")
 
 Click "Authorize" to be redirected the Crops in Silico application. You are now logged in as your GitHub user, and should see a couple of new buttons have appeared in the User Interface:
 * Save Graph
 * Submit a New Model
 
-![OAuth Authorized](/screenshots/CiS_OAuth_End.png?raw=true "OAuth Authorized")
+![OAuth Authorized](screenshots/CiS_OAuth_End.png "OAuth Authorized")
 
 ## Saving a Composed Graph
 After logging in, the Button Bar will include a `Save` button. Clicking this button will offer you a prompt to name this graph. If a valid name is entered, the graph will be saved to the database.
