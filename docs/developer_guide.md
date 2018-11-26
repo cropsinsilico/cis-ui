@@ -1,7 +1,7 @@
 # Developer's Guide (Work-In-Progress)
 The purpose of this document is to familiarize you with the patterns used to develop the Crops in Silico framework.
 
-# Running the Crops in Silico Platform
+## Running the Crops in Silico Platform
 No matter how you choose to run the platform, you will need a few things:
 1. MongoDB: An open-source NoSQL database
 2. Girder: An open-source data management
@@ -59,7 +59,7 @@ Such steps are highly manual and will likely vary from version to version of the
 
 For this reason, we do not provide such instructions and instead suggest running everything in a container, as it greatly simplifies the complexity of running, configuring, and connecting these applications.
 
-# Girder Configuration
+## Girder Configuration
 Coming Soon!
 
 ## Adjusting the Server Root
@@ -71,7 +71,7 @@ Coming Soon!
 ## Enabling `cis-girder-plugin`
 Coming Soon!
 
-# Crops in Silico Development Environment
+## Crops in Silico Development Environment
 The following instructions should help you get a development environment up and running for modifying the Crops in Silico Model Composer UI
 
 ## Prerequisites
