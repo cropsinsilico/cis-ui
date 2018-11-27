@@ -6,8 +6,8 @@ angular.module('cis')
 .constant('LocalStorageKeys', { edges: 'cis::edges', nodes: 'cis::nodes' })
 
 /** Our main view controller */
-.controller('MainCtrl', [ '$scope', '$rootScope', '$window', '$timeout', '$q', '$interval', '$http', '$log', '$uibModal', '_', 'ApiUri', 'DEBUG', 'TheGraph', 'GraphPortService', 'SpecService', 'GraphService', 'LocalStorageKeys', 'TheGraphSelection', 'User',
-    function($scope, $rootScope, $window, $timeout, $q, $interval, $http, $log, $uibModal, _, ApiUri, DEBUG, TheGraph, GraphPortService, SpecService, GraphService, LocalStorageKeys, TheGraphSelection, User) {
+.controller('MainCtrl', [ '$scope', '$rootScope', '$window', '$cookies', '$timeout', '$q', '$interval', '$http', '$log', '$uibModal', '_', 'ApiUri', 'DEBUG', 'TheGraph', 'GraphPortService', 'SpecService', 'GraphService', 'LocalStorageKeys', 'TheGraphSelection', 'User',
+    function($scope, $rootScope, $window, $cookies, $timeout, $q, $interval, $http, $log, $uibModal, _, ApiUri, DEBUG, TheGraph, GraphPortService, SpecService, GraphService, LocalStorageKeys, TheGraphSelection, User) {
   "use strict";
   
   /** If true, display the model palette on the left side of TheGraph */
@@ -27,7 +27,7 @@ angular.module('cis')
     }
   }
   
-  /** Auto-saves TheGraph's state to local storage every 3 seconds */
+  /** Auto-saves TheGraph's state to local storage every 10 seconds */
   $scope.interval = $interval(function() {
     $scope.saveGraph();
     $log.log("Graph auto-saved");
@@ -47,6 +47,50 @@ angular.module('cis')
       $scope.requerySpecs();
     }
   );
+  
+  $scope.running = false;
+  $scope.executeGraph = function(timeout) {
+    // Submit the graph JSON for conversion to cisrun YAML format
+    $scope.running = true;
+    $http.post(ApiUri + '/graph/execute', {
+      "content": $scope.graph.toJSON()
+    }).then(function(response) {
+      $timeout(function() {
+        $scope.showLogs(response.data);
+      }, 3000);
+    }, function(response) {
+      var error = response.data;
+      console.error("Error running graph:", error.message);
+      $scope.running = false;
+    });
+  };
+  
+  $scope.showLogs = function(jobId) {
+    $http.get(ApiUri + '/graph/execute/' + jobId + '/logs', {
+      "content": $scope.graph.toJSON()
+    }).then(function(response) {
+      //$scope.showLogs(response.data);
+      $scope.running = false;
+      $uibModal.open({
+        animation: true,
+        templateUrl: 'app/main/modals/logViewer/logViewer.template.html',
+        controller: 'LogViewerCtrl',
+        size: 'lg',
+        keyboard: false,      // Force the user to explicitly click "Close"
+        backdrop: 'static',   // Force the user to explicitly click "Close"
+        resolve: {
+          jobId: function() { return jobId; },
+          results: function() { return response.data; },
+          title: function() { return "View Logs"; }
+        }
+      });
+    }, function(response) {
+      var error = response.data;
+      console.error("Error running graph:", error.message);
+      $scope.running = false;
+    });
+  };
+  
   
   /**
    * Returns only real model specs. While InPort and OutPort are types of nodes
@@ -406,7 +450,7 @@ angular.module('cis')
       if (loadedNodes && loadedNodes.length) {
         // Import all nodes from localStorage into TheGraph
         angular.forEach(loadedNodes, function(node) {
-          var exists = _.find($scope.graph.nodes, [ 'id', node.id ]);
+          let exists = _.find($scope.graph.nodes, [ 'id', node.id ]);
           if (!exists) {
             $scope.graph.addNode(node.id, node.component, node.metadata);
           } else {
@@ -575,6 +619,10 @@ angular.module('cis')
         
       });
     });
+  };
+  
+  $scope.gotoJupyterHub = function() {
+    $window.location.href = JupyterHubURI + '/hub/oauth_login?next=' + encodeURIComponent(JupyterHubURI + '/hub/spawn')
   };
   
   $scope.submitSpecToGitHub = function(spec) {

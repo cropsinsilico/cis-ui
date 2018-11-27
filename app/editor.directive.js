@@ -1,6 +1,6 @@
 /* global angular:false */
 
-angular.module('cis')
+angular.module('ngTheGraph', [])
 
 /** some helpers/wrappers to provide React / ReactDOM / TheGraph */
 .factory('TheGraph', [ function() { return window.TheGraph; } ])
@@ -88,7 +88,7 @@ angular.module('cis')
                     library: scope.library,
                 };
                 
-                $log.info('rendering', props);
+                $log.debug('rendering', props);
                 
                 // Save internal state
                 let editor = element;

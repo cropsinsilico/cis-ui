@@ -3,12 +3,14 @@
 // React + AngularJS: see https://blog.rapid7.com/2016/02/03/combining-angularjs-and-reactjs-for-better-applications/
 
 
-angular.module('cis', [ 'ngMessages', 'ngResource', 'ngRoute', 'ngCookies', 'angular-clipboard', 'ui.bootstrap', 'ngCacheBuster' ])
+angular.module('cis', [ 'ngMessages', 'ngResource', 'ngRoute', 'ngCookies', 'angular-clipboard', 'ui.bootstrap', 'ngCacheBuster', 'ngTheGraph' ])
 
 /** Enable DEBUG mode? */
 .constant('DEBUG', false)
 
-.factory('User', [ '$window', '$log', '$cookies', 'UserService', 'OAuthProviderService', function($window, $log, $cookies, UserService, OAuthProviderService) { 
+.constant('JupyterHubURI', 'https://hub.cis.ndslabs.org')
+
+.factory('User', [ '$window', '$log', '$cookies', 'UserService', 'OAuthProviderService', 'JupyterHubURI', function($window, $log, $cookies, UserService, OAuthProviderService, JupyterHubURI) { 
   let userStore = {
     profile: UserService.get(),
     signUpWithGirder: function() { $window.location.href = '/girder#?dialog=register'; },
@@ -16,12 +18,22 @@ angular.module('cis', [ 'ngMessages', 'ngResource', 'ngRoute', 'ngCookies', 'ang
     signInWithGithub: function() {
       $log.debug("Signing in...");
       OAuthProviderService.get().$promise.then(function(providers) {
-        $window.location.href = providers['GitHub'];
+        // Build up URL to JupyterHub oauth_login endpoint
+        let jupyterHubOauth = JupyterHubURI + '/hub/oauth_login';
+        
+        // Grab the location of Girder's OAuth login from the Girder API
+        let girderOauth = providers['GitHub'];
+        
+        let urlEncodedSuffix = encodeURIComponent(girderOauth);
+        
+        // Chain the two OAuth requests together and redirect the user through the chain
+        $window.location.href = jupyterHubOauth + '?next=' + urlEncodedSuffix;
       });
     },
     signOut: function() {
       $log.debug("Signing out...");
       $cookies.remove('girderToken');
+      // TODO: Should we try to clear Jupyter cookies here too?
       return userStore.profile = UserService.get();
     }
   };
@@ -57,6 +69,12 @@ angular.module('cis', [ 'ngMessages', 'ngResource', 'ngRoute', 'ngCookies', 'ang
     });
 }])
 
+.factory('FileService', [ '$resource', 'JupyterHubURI', function ($resource, JupyterHubURI) {
+    return $resource(JupyterHubURI + '/user/:username/api/contents/:fileId', {username: "@username", fileId: "@id" }, {
+      save: {method: 'PUT'}
+    });
+}])
+
 .factory('GraphService', [ '$resource', 'ApiUri', function ($resource, ApiUri) {
     return $resource(ApiUri + '/graph/:id', {id: "@_id"}, {
       update: {method: 'PUT'}
@@ -71,7 +89,7 @@ angular.module('cis', [ 'ngMessages', 'ngResource', 'ngRoute', 'ngCookies', 'ang
   // TODO: Google Analytics?
   
   // Set our match list for the cache buster
-  httpRequestInterceptorCacheBusterProvider.setMatchlist([/.*node_modules.*/,/.*api.*/,/.*uib.*/]);
+  httpRequestInterceptorCacheBusterProvider.setMatchlist([/.*node_modules.*/,/.*api.*/,/.*uib.*/,/.*hub.*/]);
   
   // Squelch debug-level log messages
   $logProvider.debugEnabled(DEBUG); 
