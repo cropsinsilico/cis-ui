@@ -1,0 +1,299 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Getting started &mdash; Crops &lt;i&gt;in silico&lt;/i&gt;  documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="User Guide" href="user_guide.html" />
+    <link rel="prev" title="Overview" href="readme.html" /> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="index.html" class="icon icon-home"> Crops <i>in silico</i>
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="readme.html">Overview</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Getting started</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#logging-in">Logging in</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#starting-jupyterlab">Starting JupyterLab</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#launching-the-model-composer">Launching the Model Composer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#loading-an-existing-model-graph">Loading an Existing Model Graph</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#executing-the-graph">Executing the Graph</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#viewing-execution-output">Viewing Execution Output</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#using-the-model-library">Using the Model Library</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#next-step">Next step</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="user_guide.html">User Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="developer_guide.html">Developer’s Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="admin_guide.html">Administrator’s Guide</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Crops <i>in silico</i></a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>Getting started</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/quickstart.md.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="getting-started">
+<span id="getting-started"></span><h1>Getting started<a class="headerlink" href="#getting-started" title="Permalink to this headline">¶</a></h1>
+<p>The Crops <em>in silico</em> model composer is based on the popular JupyterLab
+web-based interactive analysis and development environment. JupyterLab
+provides a complete development environment for the creation and execution
+of models using the <code class="docutils literal notranslate"><span class="pre">cis_interface</span></code> integration framework. The model
+composer is a JupyterLab plugin that supports a visual-programming approach
+to model composition.</p>
+<div class="section" id="logging-in">
+<span id="logging-in"></span><h2>Logging in<a class="headerlink" href="#logging-in" title="Permalink to this headline">¶</a></h2>
+<p>To access the web service, go to
+<a class="reference external" href="https://cropsinsilico.ndslabs.org">https://cropsinsilico.ndslabs.org</a>. The CiS
+model composer uses GitHub for authentication. You will be prompted to sign-in
+via GitHub and to authorize CiS to access information about you.
+username.</p>
+<p>Click on the “Sign in with GitHub” button:
+<img alt="Login" src="_images/01-cis-signin.png" /></p>
+<p>Enter your GitHub credentials or create an account, if necessary:
+<img alt="Github login" src="_images/02-github-login.png" /></p>
+<p>If prompted, authorize “Crops in silico” to access your profile information:
+<img alt="Authorize CiS" src="_images/03-github-authorization.png" /></p>
+</div>
+<div class="section" id="starting-jupyterlab">
+<span id="starting-jupyterlab"></span><h2>Starting JupyterLab<a class="headerlink" href="#starting-jupyterlab" title="Permalink to this headline">¶</a></h2>
+<p>Once logged in, you will be able to start your JupyterLab instance.  Select
+“Start My Server”:</p>
+<p><img alt="Start server" src="_images/04-start-server.png" /></p>
+</div>
+<div class="section" id="launching-the-model-composer">
+<span id="launching-the-model-composer"></span><h2>Launching the Model Composer<a class="headerlink" href="#launching-the-model-composer" title="Permalink to this headline">¶</a></h2>
+<p>Once started, you will see the JupyterLab launcher. This JupyterLab environment
+is a complete development environment for use with the <code class="docutils literal notranslate"><span class="pre">cis_interface</span></code>
+framework. You can create notebooks, execute commands from the terminal, or
+launch the model composer.  Select the “Model Composer” icon:
+<img alt="JupyterLab launcher" src="_images/06-jl-launcher.png" /></p>
+</div>
+<div class="section" id="loading-an-existing-model-graph">
+<span id="loading-an-existing-model-graph"></span><h2>Loading an Existing Model Graph<a class="headerlink" href="#loading-an-existing-model-graph" title="Permalink to this headline">¶</a></h2>
+<p>The model composer allows to to create and use models from the model library to
+compose execution graphs.  Select the “Load” button to load the “GrCM” model:
+and
+<img alt="Model composer" src="_images/07-model-composer.png" /></p>
+</div>
+<div class="section" id="executing-the-graph">
+<span id="executing-the-graph"></span><h2>Executing the Graph<a class="headerlink" href="#executing-the-graph" title="Permalink to this headline">¶</a></h2>
+<p>Select “Execute” to run the model.  Model output will be displayed on screen and
+written to an model output directory for further exploration:
+<img alt="Model logs" src="_images/08-model-logs.png" /></p>
+</div>
+<div class="section" id="viewing-execution-output">
+<span id="viewing-execution-output"></span><h2>Viewing Execution Output<a class="headerlink" href="#viewing-execution-output" title="Permalink to this headline">¶</a></h2>
+<p>The model output directory contains the graph, model source, inputs and outputs
+used during execution:</p>
+<p><img alt="Model output" src="_images/09-model-output.png" /></p>
+</div>
+<div class="section" id="using-the-model-library">
+<span id="using-the-model-library"></span><h2>Using the Model Library<a class="headerlink" href="#using-the-model-library" title="Permalink to this headline">¶</a></h2>
+<p>The model library lists all official models approved by the community as well as
+any private models you have developed and added to the system.  You can use the
+library to compose new graphs using this user interface:</p>
+<p><img alt="Model libraryl" src="_images/10-model-library.png" /></p>
+</div>
+<div class="section" id="next-step">
+<span id="next-step"></span><h2>Next step<a class="headerlink" href="#next-step" title="Permalink to this headline">¶</a></h2>
+<p>For more detailed usage information, please see the <a class="reference external" href="user_guide.html">User Guide</a>.</p>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="user_guide.html" class="btn btn-neutral float-right" title="User Guide" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="readme.html" class="btn btn-neutral" title="Overview" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018 Crops in silico authors.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'',
+            LANGUAGE:'None',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Overview &mdash; Crops in Silico  documentation</title>
+  <title>Overview &mdash; Crops &lt;i&gt;in silico&lt;/i&gt;  documentation</title>
   
 
   
@@ -24,12 +24,13 @@
 
   
 
-  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  
+    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="User Guide" href="user_guide.html" />
-    <link rel="prev" title="Crops in Silico" href="index.html" /> 
+    <link rel="next" title="Getting started" href="quickstart.html" />
+    <link rel="prev" title="Crops in silico" href="index.html" /> 
 
   
   <script src="_static/js/modernizr.min.js"></script>
@@ -48,7 +49,7 @@
           
 
           
-            <a href="index.html" class="icon icon-home"> Crops in Silico
+            <a href="index.html" class="icon icon-home"> Crops <i>in silico</i>
           
 
           
@@ -86,8 +87,9 @@
 <li class="toctree-l2"><a class="reference internal" href="#model-catalog">Model catalog</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="quickstart.html">Getting started</a></li>
 <li class="toctree-l1"><a class="reference internal" href="user_guide.html">User Guide</a></li>
-<li class="toctree-l1"><a class="reference internal" href="developer_guide.html">Developer’s Guide (Work-In-Progress)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="developer_guide.html">Developer’s Guide</a></li>
 <li class="toctree-l1"><a class="reference internal" href="admin_guide.html">Administrator’s Guide</a></li>
 </ul>
 
@@ -103,7 +105,7 @@
       <nav class="wy-nav-top" aria-label="top navigation">
         
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="index.html">Crops in Silico</a>
+          <a href="index.html">Crops <i>in silico</i></a>
         
       </nav>
 
@@ -156,42 +158,40 @@
   <div class="section" id="overview">
 <span id="overview"></span><h1>Overview<a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h1>
 <p><a class="reference external" href="http://cropsinsilico.org">Crops in silico</a> is an integrative and multi-scale
-modeling platform to combine modeling efforts toward the generation of
+modeling platform designed to combine modeling efforts toward the generation of
 virtual crops.</p>
-<p>The Crops in silico platform consists of:</p>
+<p>The Crops <em>in silico</em> platform consists of:</p>
 <ul class="simple">
-<li>Model integration</li>
+<li>Model integration framework (<code class="docutils literal notranslate"><span class="pre">cis_interface</span></code>)</li>
 <li>Model composer and execution framework</li>
 <li>Model catalog</li>
 </ul>
 <div class="section" id="model-integration-framework-cis-interface">
 <span id="model-integration-framework-cis-interface"></span><h2>Model integration framework: cis_interface<a class="headerlink" href="#model-integration-framework-cis-interface" title="Permalink to this headline">¶</a></h2>
-<p>The Cis model integration framework provides support for combining scientific
-models written in different programming languages. To combine two models,
-modelers add simple communications interfaces to the model code and provide
-simple declarative specification files that identfy the models that should
-be run and the inputs and outputs those models expect.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">cis_interface</span></code> model integration framework provides support for combining
+scientific models written in different programming languages. To combine two
+models, modelers add simple communications interfaces to the model code and
+provide simple declarative specification files that identfy the models that
+should be run and the inputs and outputs those models expect.</p>
 <p>For more information, see the
-<a class="reference external" href="documentation">https://cropsinsilico.github.io/cis_interface/includeme.html</a></p>
+<a class="reference external" href="https://github.com/cropsinsilico/cis_interface">documentation</a></p>
 </div>
 <div class="section" id="model-composer-and-execution-framework">
 <span id="model-composer-and-execution-framework"></span><h2>Model composer and execution framework<a class="headerlink" href="#model-composer-and-execution-framework" title="Permalink to this headline">¶</a></h2>
 <p>The Model Composer and execution framework is available to the Cis community
-at https://hub.cis.ndslabs.org.</p>
+at <a class="reference external" href="https://cropsinsilico.ndslabs.org">https://cropsinsilico.ndslabs.org</a>.</p>
 <p>The Model Composer is a tool for composing systems of models built using the
-<code class="docutils literal notranslate"><span class="pre">cis_interface</span></code> framework.</p>
-<p>For documentation on using the Model Composer UI, please see the
-<a class="reference external" href="user_guide.html">User Guide</a></p>
-<p>For documentation on developing the Model Composer UI, please see the
+<code class="docutils literal notranslate"><span class="pre">cis_interface</span></code> framework.  For documentation on using the Model Composer UI, please see the
+<a class="reference external" href="user_guide.html">User Guide</a>.  For documentation on developing the Model Composer UI, please see the
 <a class="reference external" href="developer_guide.html">Developer Guide</a></p>
 </div>
 <div class="section" id="model-catalog">
 <span id="model-catalog"></span><h2>Model catalog<a class="headerlink" href="#model-catalog" title="Permalink to this headline">¶</a></h2>
-<p>The <a class="reference external" href="https://github.com/cropsinsilico/cis-specs">model catalog</a> is a Github
+<p>The <a class="reference external" href="https://github.com/cropsinsilico/cis-specs">model catalog</a> is a GitHub
 repository containing community contributed model definitions and
 predefined systems of models as graphs. Models in this repository are
-available to all users of the Cis platform. Models are contributed through
-pull requests.</p>
+available to all users of the platform. Models are contributed through
+GitHub issues and pull requests.</p>
 </div>
 </div>
 
@@ -203,10 +203,10 @@ pull requests.</p>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="user_guide.html" class="btn btn-neutral float-right" title="User Guide" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="quickstart.html" class="btn btn-neutral float-right" title="Getting started" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="index.html" class="btn btn-neutral" title="Crops in Silico" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="index.html" class="btn btn-neutral" title="Crops in silico" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
@@ -215,7 +215,7 @@ pull requests.</p>
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2018 Crops in Silico authors
+        &copy; Copyright 2018 Crops in silico authors.
 
     </p>
   </div>
@@ -234,27 +234,27 @@ pull requests.</p>
 
   
 
-    
-    
-      <script type="text/javascript">
-          var DOCUMENTATION_OPTIONS = {
-              URL_ROOT:'./',
-              VERSION:'',
-              LANGUAGE:'None',
-              COLLAPSE_INDEX:false,
-              FILE_SUFFIX:'.html',
-              HAS_SOURCE:  true,
-              SOURCELINK_SUFFIX: '.txt'
-          };
-      </script>
-        <script type="text/javascript" src="_static/jquery.js"></script>
-        <script type="text/javascript" src="_static/underscore.js"></script>
-        <script type="text/javascript" src="_static/doctools.js"></script>
-    
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'',
+            LANGUAGE:'None',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
 
   
 
-  <script type="text/javascript" src="_static/js/theme.js"></script>
+  
+  
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+  
 
   <script type="text/javascript">
       jQuery(function () {

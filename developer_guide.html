@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Developer’s Guide (Work-In-Progress) &mdash; Crops in Silico  documentation</title>
+  <title>Developer’s Guide &mdash; Crops &lt;i&gt;in silico&lt;/i&gt;  documentation</title>
   
 
   
@@ -24,10 +24,12 @@
 
   
 
-  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  
+    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Administrator’s Guide" href="admin_guide.html" />
     <link rel="prev" title="User Guide" href="user_guide.html" /> 
 
   
@@ -47,7 +49,7 @@
           
 
           
-            <a href="index.html" class="icon icon-home"> Crops in Silico
+            <a href="index.html" class="icon icon-home"> Crops <i>in silico</i>
           
 
           
@@ -79,10 +81,11 @@
             
               <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="readme.html">Crops in silico</a></li>
+<li class="toctree-l1"><a class="reference internal" href="readme.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="quickstart.html">Getting started</a></li>
 <li class="toctree-l1"><a class="reference internal" href="user_guide.html">User Guide</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Developer’s Guide (Work-In-Progress)</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#running-the-crops-in-silico-platform">Running the Crops in Silico Platform</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Developer’s Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#running-the-crops-in-silico-platform">Running the Crops in silico Platform</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#running-under-kubernetes-production-ready">Running Under Kubernetes (Production-Ready)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#running-under-docker-development-only">Running Under Docker (Development Only)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#running-without-containers-not-recommended">Running Without Containers (Not recommended)</a></li>
@@ -90,7 +93,7 @@
 <li class="toctree-l2"><a class="reference internal" href="#adjusting-the-server-root">Adjusting the Server Root</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#enabling-oauth">Enabling OAuth</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#enabling-cis-girder-plugin">Enabling <code class="docutils literal notranslate"><span class="pre">cis-girder-plugin</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="#crops-in-silico-development-environment">Crops in Silico Development Environment</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#crops-in-silico-development-environment">Crops <em>in silico</em> Development Environment</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#prerequisites">Prerequisites</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#build">Build</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#run">Run</a><ul>
@@ -104,6 +107,7 @@
 </li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="admin_guide.html">Administrator’s Guide</a></li>
 </ul>
 
             
@@ -118,7 +122,7 @@
       <nav class="wy-nav-top" aria-label="top navigation">
         
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="index.html">Crops in Silico</a>
+          <a href="index.html">Crops <i>in silico</i></a>
         
       </nav>
 
@@ -149,7 +153,7 @@
     
       <li><a href="index.html">Docs</a> &raquo;</li>
         
-      <li>Developer’s Guide (Work-In-Progress)</li>
+      <li>Developer’s Guide</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -168,11 +172,11 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="developer-s-guide-work-in-progress">
-<span id="developer-s-guide-work-in-progress"></span><h1>Developer’s Guide (Work-In-Progress)<a class="headerlink" href="#developer-s-guide-work-in-progress" title="Permalink to this headline">¶</a></h1>
-<p>The purpose of this document is to familiarize you with the patterns used to develop the Crops in Silico framework.</p>
+  <div class="section" id="developer-s-guide">
+<span id="developer-s-guide"></span><h1>Developer’s Guide<a class="headerlink" href="#developer-s-guide" title="Permalink to this headline">¶</a></h1>
+<p>The purpose of this document is to familiarize you with the patterns used to develop the Crops <em>in silico</em> framework.</p>
 <div class="section" id="running-the-crops-in-silico-platform">
-<span id="running-the-crops-in-silico-platform"></span><h2>Running the Crops in Silico Platform<a class="headerlink" href="#running-the-crops-in-silico-platform" title="Permalink to this headline">¶</a></h2>
+<span id="running-the-crops-in-silico-platform"></span><h2>Running the Crops in silico Platform<a class="headerlink" href="#running-the-crops-in-silico-platform" title="Permalink to this headline">¶</a></h2>
 <p>No matter how you choose to run the platform, you will need a few things:</p>
 <ol class="simple">
 <li>MongoDB: An open-source NoSQL database</li>
@@ -241,8 +245,8 @@ https://github.com/nds-org/kubeadm-bootstrap#setting-up-a-worker-node</p>
 <p>Coming Soon!</p>
 </div>
 <div class="section" id="crops-in-silico-development-environment">
-<span id="crops-in-silico-development-environment"></span><h2>Crops in Silico Development Environment<a class="headerlink" href="#crops-in-silico-development-environment" title="Permalink to this headline">¶</a></h2>
-<p>The following instructions should help you get a development environment up and running for modifying the Crops in Silico Model Composer UI</p>
+<span id="crops-in-silico-development-environment"></span><h2>Crops <em>in silico</em> Development Environment<a class="headerlink" href="#crops-in-silico-development-environment" title="Permalink to this headline">¶</a></h2>
+<p>The following instructions should help you get a development environment up and running for modifying the Crops <em>in silico</em> Model Composer UI</p>
 </div>
 <div class="section" id="prerequisites">
 <span id="prerequisites"></span><h2>Prerequisites<a class="headerlink" href="#prerequisites" title="Permalink to this headline">¶</a></h2>
@@ -324,6 +328,8 @@ docker run -itd <span class="se">\</span>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
+        <a href="admin_guide.html" class="btn btn-neutral float-right" title="Administrator’s Guide" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
       
         <a href="user_guide.html" class="btn btn-neutral" title="User Guide" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
@@ -334,7 +340,7 @@ docker run -itd <span class="se">\</span>
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2018 Crops in Silico authors
+        &copy; Copyright 2018 Crops in silico authors.
 
     </p>
   </div>
@@ -353,27 +359,27 @@ docker run -itd <span class="se">\</span>
 
   
 
-    
-    
-      <script type="text/javascript">
-          var DOCUMENTATION_OPTIONS = {
-              URL_ROOT:'./',
-              VERSION:'',
-              LANGUAGE:'None',
-              COLLAPSE_INDEX:false,
-              FILE_SUFFIX:'.html',
-              HAS_SOURCE:  true,
-              SOURCELINK_SUFFIX: '.txt'
-          };
-      </script>
-        <script type="text/javascript" src="_static/jquery.js"></script>
-        <script type="text/javascript" src="_static/underscore.js"></script>
-        <script type="text/javascript" src="_static/doctools.js"></script>
-    
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'',
+            LANGUAGE:'None',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
 
   
 
-  <script type="text/javascript" src="_static/js/theme.js"></script>
+  
+  
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+  
 
   <script type="text/javascript">
       jQuery(function () {

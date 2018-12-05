@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>User Guide &mdash; Crops in Silico  documentation</title>
+  <title>User Guide &mdash; Crops &lt;i&gt;in silico&lt;/i&gt;  documentation</title>
   
 
   
@@ -24,12 +24,13 @@
 
   
 
-  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  
+    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Developer’s Guide (Work-In-Progress)" href="developer_guide.html" />
-    <link rel="prev" title="Crops in silico" href="readme.html" /> 
+    <link rel="next" title="Developer’s Guide" href="developer_guide.html" />
+    <link rel="prev" title="Getting started" href="quickstart.html" /> 
 
   
   <script src="_static/js/modernizr.min.js"></script>
@@ -48,7 +49,7 @@
           
 
           
-            <a href="index.html" class="icon icon-home"> Crops in Silico
+            <a href="index.html" class="icon icon-home"> Crops <i>in silico</i>
           
 
           
@@ -80,7 +81,8 @@
             
               <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="readme.html">Crops in silico</a></li>
+<li class="toctree-l1"><a class="reference internal" href="readme.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="quickstart.html">Getting started</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">User Guide</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#table-of-contents">Table of Contents</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#orientation">Orientation</a></li>
@@ -111,7 +113,8 @@
 <li class="toctree-l2"><a class="reference internal" href="#official-submission">Official Submission</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="developer_guide.html">Developer’s Guide (Work-In-Progress)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="developer_guide.html">Developer’s Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="admin_guide.html">Administrator’s Guide</a></li>
 </ul>
 
             
@@ -126,7 +129,7 @@
       <nav class="wy-nav-top" aria-label="top navigation">
         
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="index.html">Crops in Silico</a>
+          <a href="index.html">Crops <i>in silico</i></a>
         
       </nav>
 
@@ -178,7 +181,7 @@
             
   <div class="section" id="user-guide">
 <span id="user-guide"></span><h1>User Guide<a class="headerlink" href="#user-guide" title="Permalink to this headline">¶</a></h1>
-<p>Welcome to the User’s Guide for the Crops in Silico Model Composer UI. The purpose of this document is to describe the usage of the User Interface. If any of the steps described in this document are unclear or confusing, please direct your questions to <a class="reference external" href="mailto:lambert8&#37;&#52;&#48;illinois&#46;edu">Crops in Silico Support</a></p>
+<p>Welcome to the User’s Guide for the Crops <em>in silico</em> Model Composer UI. The purpose of this document is to describe the usage of the User Interface. If any of the steps described in this document are unclear or confusing, please direct your questions to <a class="reference external" href="mailto:lambert8&#37;&#52;&#48;illinois&#46;edu">Crops <em>in silico</em> Support</a></p>
 <p>To assist the Support Team in their investigation, please be sure to include the browser type/version and operating system that you were using when the troublesome behavior was encountered.</p>
 <div class="section" id="table-of-contents">
 <span id="table-of-contents"></span><h2>Table of Contents<a class="headerlink" href="#table-of-contents" title="Permalink to this headline">¶</a></h2>
@@ -220,7 +223,7 @@
 <li>Navbar</li>
 <li>Canvas (aka “The Graph”)</li>
 </ul>
-<p>The <em>Navbar</em> runs along the top of the UI and contains the Crops in Silico brand name and logo. On the left side, you will find a link to submit a new model. On the right side, you will also find the <code class="docutils literal notranslate"><span class="pre">Log</span> <span class="pre">In</span></code> button and a <code class="docutils literal notranslate"><span class="pre">Help</span></code> dropdown which contains links to this user guide, the developer’s guide, and the documentation for the <code class="docutils literal notranslate"><span class="pre">cisrun</span></code> CLI tool.</p>
+<p>The <em>Navbar</em> runs along the top of the UI and contains the Crops <em>in silico</em> brand name and logo. On the left side, you will find a link to submit a new model. On the right side, you will also find the <code class="docutils literal notranslate"><span class="pre">Log</span> <span class="pre">In</span></code> button and a <code class="docutils literal notranslate"><span class="pre">Help</span></code> dropdown which contains links to this user guide, the developer’s guide, and the documentation for the <code class="docutils literal notranslate"><span class="pre">cisrun</span></code> CLI tool.</p>
 <p>The <em>Canvas</em> is the grid with the black background in the center of the screen. This displays the current state of the graph that the user is working on.</p>
 <p>In front of the Canvas, there are also a few helpful floating windows:</p>
 <ul class="simple">
@@ -305,9 +308,9 @@
 <p><img alt="OAuth Start" src="_images/CiS_OAuth_Start.png" /></p>
 <p>You will then be prompted for your GitHub account credentials. If you do not already have a GitHub account, you can <a class="reference external" href="https://github.com/join?source=header-home">sign up for one for free on GitHub.com</a></p>
 <p><img alt="OAuth Authentication" src="_images/CiS_OAuth_Login.png" /></p>
-<p>After signing in, you will be asked to Authorize the Crops in Silico Platform to access your GitHub account information. We only examine your user profile information and use it to create al inked account in our system.</p>
+<p>After signing in, you will be asked to Authorize the Crops <em>in silico</em> Platform to access your GitHub account information. We only examine your user profile information and use it to create al inked account in our system.</p>
 <p><img alt="OAuth Authorization" src="_images/CiS_OAuth_Authorize.png" /></p>
-<p>Click “Authorize” to be redirected the Crops in Silico application. You are now logged in as your GitHub user, and should see a couple of new buttons have appeared in the User Interface:</p>
+<p>Click “Authorize” to be redirected the Crops <em>in silico</em> application. You are now logged in as your GitHub user, and should see a couple of new buttons have appeared in the User Interface:</p>
 <ul class="simple">
 <li>Save Graph</li>
 <li>Submit a New Model</li>
@@ -351,10 +354,10 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="developer_guide.html" class="btn btn-neutral float-right" title="Developer’s Guide (Work-In-Progress)" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="developer_guide.html" class="btn btn-neutral float-right" title="Developer’s Guide" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="readme.html" class="btn btn-neutral" title="Crops in silico" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="quickstart.html" class="btn btn-neutral" title="Getting started" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
@@ -363,7 +366,7 @@
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2018 Crops in Silico authors
+        &copy; Copyright 2018 Crops in silico authors.
 
     </p>
   </div>
@@ -382,27 +385,27 @@
 
   
 
-    
-    
-      <script type="text/javascript">
-          var DOCUMENTATION_OPTIONS = {
-              URL_ROOT:'./',
-              VERSION:'',
-              LANGUAGE:'None',
-              COLLAPSE_INDEX:false,
-              FILE_SUFFIX:'.html',
-              HAS_SOURCE:  true,
-              SOURCELINK_SUFFIX: '.txt'
-          };
-      </script>
-        <script type="text/javascript" src="_static/jquery.js"></script>
-        <script type="text/javascript" src="_static/underscore.js"></script>
-        <script type="text/javascript" src="_static/doctools.js"></script>
-    
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'',
+            LANGUAGE:'None',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
 
   
 
-  <script type="text/javascript" src="_static/js/theme.js"></script>
+  
+  
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+  
 
   <script type="text/javascript">
       jQuery(function () {

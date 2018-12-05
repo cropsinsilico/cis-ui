@@ -51,6 +51,22 @@ Most images should have autobuild configured.
 Source code is managed on Github under the
 [cropsinsilico](https://github.com/cropsinsilico) organization.
 
+## Sphinx
+
+```
+git clone https://github.com/cis-ui/ -b gh-pages cis-ui-ghpages
+```
+
+```
+git clone https://github.com/cis-ui/
+cd cis-ui/docs
+make html
+cp -a _build/html/ ../../cis-ui-ghpages/
+```
+
+
+
+
 ## VM Setup
 
 To setup a new Jetstream project, see the 

@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Crops in Silico &mdash; Crops in Silico  documentation</title>
+  <title>Crops in silico &mdash; Crops &lt;i&gt;in silico&lt;/i&gt;  documentation</title>
   
 
   
@@ -24,7 +24,8 @@
 
   
 
-  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  
+    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -47,7 +48,7 @@
           
 
           
-            <a href="#" class="icon icon-home"> Crops in Silico
+            <a href="#" class="icon icon-home"> Crops <i>in silico</i>
           
 
           
@@ -80,8 +81,9 @@
               <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="readme.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="quickstart.html">Getting started</a></li>
 <li class="toctree-l1"><a class="reference internal" href="user_guide.html">User Guide</a></li>
-<li class="toctree-l1"><a class="reference internal" href="developer_guide.html">Developer’s Guide (Work-In-Progress)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="developer_guide.html">Developer’s Guide</a></li>
 <li class="toctree-l1"><a class="reference internal" href="admin_guide.html">Administrator’s Guide</a></li>
 </ul>
 
@@ -97,7 +99,7 @@
       <nav class="wy-nav-top" aria-label="top navigation">
         
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="#">Crops in Silico</a>
+          <a href="#">Crops <i>in silico</i></a>
         
       </nav>
 
@@ -128,7 +130,7 @@
     
       <li><a href="#">Docs</a> &raquo;</li>
         
-      <li>Crops in Silico</li>
+      <li>Crops in silico</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -148,7 +150,7 @@
            <div itemprop="articleBody">
             
   <div class="section" id="crops-in-silico">
-<h1>Crops in Silico<a class="headerlink" href="#crops-in-silico" title="Permalink to this headline">¶</a></h1>
+<h1>Crops in silico<a class="headerlink" href="#crops-in-silico" title="Permalink to this headline">¶</a></h1>
 <div class="toctree-wrapper compound">
 <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul>
@@ -156,6 +158,17 @@
 <li class="toctree-l2"><a class="reference internal" href="readme.html#model-integration-framework-cis-interface">Model integration framework: cis_interface</a></li>
 <li class="toctree-l2"><a class="reference internal" href="readme.html#model-composer-and-execution-framework">Model composer and execution framework</a></li>
 <li class="toctree-l2"><a class="reference internal" href="readme.html#model-catalog">Model catalog</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="quickstart.html">Getting started</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="quickstart.html#logging-in">Logging in</a></li>
+<li class="toctree-l2"><a class="reference internal" href="quickstart.html#starting-jupyterlab">Starting JupyterLab</a></li>
+<li class="toctree-l2"><a class="reference internal" href="quickstart.html#launching-the-model-composer">Launching the Model Composer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="quickstart.html#loading-an-existing-model-graph">Loading an Existing Model Graph</a></li>
+<li class="toctree-l2"><a class="reference internal" href="quickstart.html#executing-the-graph">Executing the Graph</a></li>
+<li class="toctree-l2"><a class="reference internal" href="quickstart.html#viewing-execution-output">Viewing Execution Output</a></li>
+<li class="toctree-l2"><a class="reference internal" href="quickstart.html#using-the-model-library">Using the Model Library</a></li>
+<li class="toctree-l2"><a class="reference internal" href="quickstart.html#next-step">Next step</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="user_guide.html">User Guide</a><ul>
@@ -173,8 +186,8 @@
 <li class="toctree-l2"><a class="reference internal" href="user_guide.html#official-submission">Official Submission</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="developer_guide.html">Developer’s Guide (Work-In-Progress)</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="developer_guide.html#running-the-crops-in-silico-platform">Running the Crops in Silico Platform</a></li>
+<li class="toctree-l1"><a class="reference internal" href="developer_guide.html">Developer’s Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="developer_guide.html#running-the-crops-in-silico-platform">Running the Crops in silico Platform</a></li>
 <li class="toctree-l2"><a class="reference internal" href="developer_guide.html#running-under-kubernetes-production-ready">Running Under Kubernetes (Production-Ready)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="developer_guide.html#running-under-docker-development-only">Running Under Docker (Development Only)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="developer_guide.html#running-without-containers-not-recommended">Running Without Containers (Not recommended)</a></li>
@@ -182,7 +195,7 @@
 <li class="toctree-l2"><a class="reference internal" href="developer_guide.html#adjusting-the-server-root">Adjusting the Server Root</a></li>
 <li class="toctree-l2"><a class="reference internal" href="developer_guide.html#enabling-oauth">Enabling OAuth</a></li>
 <li class="toctree-l2"><a class="reference internal" href="developer_guide.html#enabling-cis-girder-plugin">Enabling <code class="docutils literal notranslate"><span class="pre">cis-girder-plugin</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="developer_guide.html#crops-in-silico-development-environment">Crops in Silico Development Environment</a></li>
+<li class="toctree-l2"><a class="reference internal" href="developer_guide.html#crops-in-silico-development-environment">Crops <em>in silico</em> Development Environment</a></li>
 <li class="toctree-l2"><a class="reference internal" href="developer_guide.html#prerequisites">Prerequisites</a></li>
 <li class="toctree-l2"><a class="reference internal" href="developer_guide.html#build">Build</a></li>
 <li class="toctree-l2"><a class="reference internal" href="developer_guide.html#run">Run</a></li>
@@ -197,6 +210,7 @@
 <li class="toctree-l2"><a class="reference internal" href="admin_guide.html#matlab-support">MATLAB support</a></li>
 <li class="toctree-l2"><a class="reference internal" href="admin_guide.html#dockerhub">Dockerhub</a></li>
 <li class="toctree-l2"><a class="reference internal" href="admin_guide.html#github">Github</a></li>
+<li class="toctree-l2"><a class="reference internal" href="admin_guide.html#sphinx">Sphinx</a></li>
 <li class="toctree-l2"><a class="reference internal" href="admin_guide.html#vm-setup">VM Setup</a></li>
 </ul>
 </li>
@@ -230,7 +244,7 @@
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2018 Crops in Silico authors
+        &copy; Copyright 2018 Crops in silico authors.
 
     </p>
   </div>
@@ -249,27 +263,27 @@
 
   
 
-    
-    
-      <script type="text/javascript">
-          var DOCUMENTATION_OPTIONS = {
-              URL_ROOT:'./',
-              VERSION:'',
-              LANGUAGE:'None',
-              COLLAPSE_INDEX:false,
-              FILE_SUFFIX:'.html',
-              HAS_SOURCE:  true,
-              SOURCELINK_SUFFIX: '.txt'
-          };
-      </script>
-        <script type="text/javascript" src="_static/jquery.js"></script>
-        <script type="text/javascript" src="_static/underscore.js"></script>
-        <script type="text/javascript" src="_static/doctools.js"></script>
-    
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'',
+            LANGUAGE:'None',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
 
   
 
-  <script type="text/javascript" src="_static/js/theme.js"></script>
+  
+  
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+  
 
   <script type="text/javascript">
       jQuery(function () {
