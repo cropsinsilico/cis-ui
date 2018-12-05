@@ -59,7 +59,7 @@ git clone https://github.com/cis-ui/ -b gh-pages cis-ui-ghpages
 
 ```
 git clone https://github.com/cis-ui/
-cd cis-ui-docs
+cd cis-ui/docs
 make html
 cp -a _build/html/ ../../cis-ui-ghpages/
 ```

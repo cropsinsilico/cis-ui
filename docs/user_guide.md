@@ -1,6 +1,6 @@
 # User Guide
 
-Welcome to the User's Guide for the Crops in Silico Model Composer UI. The purpose of this document is to describe the usage of the User Interface. If any of the steps described in this document are unclear or confusing, please direct your questions to [Crops in Silico Support](mailto:lambert8@illinois.edu)
+Welcome to the User's Guide for the Crops _in silico_ Model Composer UI. The purpose of this document is to describe the usage of the User Interface. If any of the steps described in this document are unclear or confusing, please direct your questions to [Crops _in silico_ Support](mailto:lambert8@illinois.edu)
 
 To assist the Support Team in their investigation, please be sure to include the browser type/version and operating system that you were using when the troublesome behavior was encountered.
 
@@ -30,7 +30,7 @@ The Model Composer UI consists of several smaller components:
 * Navbar
 * Canvas (aka "The Graph")
 
-The *Navbar* runs along the top of the UI and contains the Crops in Silico brand name and logo. On the left side, you will find a link to submit a new model. On the right side, you will also find the `Log In` button and a `Help` dropdown which contains links to this user guide, the developer's guide, and the documentation for the `cisrun` CLI tool.
+The *Navbar* runs along the top of the UI and contains the Crops _in silico_ brand name and logo. On the left side, you will find a link to submit a new model. On the right side, you will also find the `Log In` button and a `Help` dropdown which contains links to this user guide, the developer's guide, and the documentation for the `cisrun` CLI tool.
 
 The *Canvas* is the grid with the black background in the center of the screen. This displays the current state of the graph that the user is working on. 
 
@@ -110,11 +110,11 @@ You will then be prompted for your GitHub account credentials. If you do not alr
 
 ![OAuth Authentication](screenshots/CiS_OAuth_Login.png "OAuth Authentication")
 
-After signing in, you will be asked to Authorize the Crops in Silico Platform to access your GitHub account information. We only examine your user profile information and use it to create al inked account in our system.
+After signing in, you will be asked to Authorize the Crops _in silico_ Platform to access your GitHub account information. We only examine your user profile information and use it to create al inked account in our system.
 
 ![OAuth Authorization](screenshots/CiS_OAuth_Authorize.png "OAuth Authorization")
 
-Click "Authorize" to be redirected the Crops in Silico application. You are now logged in as your GitHub user, and should see a couple of new buttons have appeared in the User Interface:
+Click "Authorize" to be redirected the Crops _in silico_ application. You are now logged in as your GitHub user, and should see a couple of new buttons have appeared in the User Interface:
 * Save Graph
 * Submit a New Model
 
