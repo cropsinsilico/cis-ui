@@ -192,7 +192,8 @@ as needed.
 
 ```
 cd cis-startup/platform
-kubectl apply -f girder.dev.yaml -f girder.staging.yaml
+kubectl apply -f rbac/
+kubectl apply -f girder.dev.yaml -f girder.staging.yaml -f girder.prod.yaml
 
 cd pvcs/nfs
 kubectl create -f deployment.yaml  -f rbac.yaml  -f storageclass.yaml
