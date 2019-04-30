@@ -470,7 +470,7 @@ angular.module('cis')
         });
 
         // Store our previously saved state
-        $scope.lastSavedNodes = angular.copy($scopegraph.nodes);
+        $scope.lastSavedNodes = angular.copy($scope.graph.nodes);
         $scope.lastSavedEdges = angular.copy($scope.graph.edges);
       }
   };
