@@ -41,7 +41,7 @@ angular
       alert('Sorry, copy to clipboard is not supported');
       return;
     }
-    clipboard.copyText(results);
+    clipboard.copyText($scope.results);
   };
 
   $scope.close = function() {
