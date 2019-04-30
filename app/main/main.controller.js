@@ -447,23 +447,30 @@ angular.module('cis')
       let loadedNodes = nodes || angular.fromJson($window.localStorage.getItem(LocalStorageKeys.nodes));
        
       // Import our previous state, if one was found
-      if (loadedNodes && loadedNodes.length) {
+      if (loadedNodes && (loadedNodes.length || Object.keys(loadedNodes).length)) {
         // Import all nodes from localStorage into TheGraph
-        angular.forEach(loadedNodes, function(node) {
-          let exists = _.find($scope.graph.nodes, [ 'id', node.id ]);
+        angular.forEach(loadedNodes, function(node, key) {
+          let id = node.id || key;
+          let exists = _.find($scope.graph.nodes, [ 'id', id ]);
           if (!exists) {
-            $scope.graph.addNode(node.id, node.component, node.metadata);
+            $scope.graph.addNode(id, node.component, node.metadata);
           } else {
-            $log.info("Node ID " + node.id + " already exists in TheGraph.. skipping");
+            $log.info("Node ID " + id + " already exists in TheGraph.. skipping");
           }
         });
-        
+
         // Then, import all edges
         let loadedEdges = edges || angular.fromJson($window.localStorage.getItem(LocalStorageKeys.edges));
-        loadedEdges && angular.forEach(loadedEdges, function(edge) { $scope.graph.addEdge(edge.from.node, edge.from.port, edge.to.node, edge.to.port, edge.metadata); });
-        
+        loadedEdges && angular.forEach(loadedEdges, function(edge) {
+          let from = edge.from || edge.src;
+          let to = edge.to || edge.tgt;
+          let fromNode = from.node || from.process;
+          let toNode = to.node || to.process;
+          $scope.graph.addEdge(fromNode, from.port, toNode, to.port, edge.metadata); 
+        });
+
         // Store our previously saved state
-        $scope.lastSavedNodes = angular.copy($scope.graph.nodes);
+        $scope.lastSavedNodes = angular.copy($scopegraph.nodes);
         $scope.lastSavedEdges = angular.copy($scope.graph.edges);
       }
   };
