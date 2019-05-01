@@ -8,7 +8,7 @@ angular.module('cis', [ 'ngMessages', 'ngResource', 'ngRoute', 'ngCookies', 'ang
 /** Enable DEBUG mode? */
 .constant('DEBUG', false)
 
-.constant('JupyterHubURI', 'https://hub.cis.ndslabs.org')
+.constant('JupyterHubURI', 'https://cropsinsilico.ndslabs.org')
 
 .factory('User', [ '$window', '$log', '$cookies', 'UserService', 'OAuthProviderService', 'JupyterHubURI', function($window, $log, $cookies, UserService, OAuthProviderService, JupyterHubURI) { 
   let userStore = {
@@ -66,12 +66,6 @@ angular.module('cis', [ 'ngMessages', 'ngResource', 'ngRoute', 'ngCookies', 'ang
 .factory('SpecService', [ '$resource', 'ApiUri', function ($resource, ApiUri) {
     return $resource(ApiUri + '/spec/:id', {id: "@_id"}, {
       update: {method: 'PUT'}
-    });
-}])
-
-.factory('FileService', [ '$resource', 'JupyterHubURI', function ($resource, JupyterHubURI) {
-    return $resource(JupyterHubURI + '/user/:username/api/contents/:fileId', {username: "@username", fileId: "@id" }, {
-      save: {method: 'PUT'}
     });
 }])
 
