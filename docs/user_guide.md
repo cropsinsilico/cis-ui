@@ -5,23 +5,23 @@ Welcome to the User's Guide for the Crops _in silico_ Model Composer UI. The pur
 To assist the Support Team in their investigation, please be sure to include the browser type/version and operating system that you were using when the troublesome behavior was encountered.
 
 ## Table of Contents
-* [Orientation](USER-GUIDE.md#orientation)
-* [Canvas Controls](USER-GUIDE.md#canvas-controls)
-  * [Loading an Example Graph](USER-GUIDE.md#loading-an-example-graph)
-  * [Adding a Node](USER-GUIDE.md#adding-a-node)
-  * [Adding an Edge](USER-GUIDE.md#adding-an-edge)
-  * [Adding an InPort / OutPort](USER-GUIDE.md#adding-an-inport--outport)
-  * [Right-Click Context Menu](USER-GUIDE.md#right-click-context-menu)
-    * [Nodes](USER-GUIDE.md#nodes)
-    * [InPorts / OutPorts](USER-GUIDE.md#inports--outports)
-    * [Edges](USER-GUIDE.md#edges)
-* [Logging In](USER-GUIDE.md#logging-in)
-  * [Saving a Composed Graph](USER-GUIDE.md#saving-a-composed-graph)
-    * [Loading a Previously-Saved Graph](USER-GUIDE.md#loading-a-previously-saved-graph)
-    * [Deleting a Previously-Saved Graph](USER-GUIDE.md#deleting-a-previously-saved-graph)
-  * [Creating a New Model](USER-GUIDE.md#creating-a-new-model)
-    * [Deleting a Model](USER-GUIDE.md#deleting-a-model)
- * [Official Submission](USER-GUIDE.md#official-submission)
+* [Orientation](user_guide.md#orientation)
+* [Canvas Controls](user_guide.md#canvas-controls)
+  * [Loading an Example Graph](user_guide.md#loading-an-example-graph)
+  * [Adding a Node](user_guide.md#adding-a-node)
+  * [Adding an Edge](user_guide.md#adding-an-edge)
+  * [Adding an InPort / OutPort](user_guide.md#adding-an-inport--outport)
+  * [Right-Click Context Menu](user_guide.md#right-click-context-menu)
+    * [Nodes](user_guide.md#nodes)
+    * [InPorts / OutPorts](user_guide.md#inports--outports)
+    * [Edges](user_guide.md#edges)
+* [Logging In](user_guide.md#logging-in)
+  * [Saving a Composed Graph](user_guide.md#saving-a-composed-graph)
+    * [Loading a Previously-Saved Graph](user_guide.md#loading-a-previously-saved-graph)
+    * [Deleting a Previously-Saved Graph](user_guide.md#deleting-a-previously-saved-graph)
+  * [Creating a New Model](user_guide.md#creating-a-new-model)
+    * [Deleting a Model](user_guide.md#deleting-a-model)
+ * [Official Submission](user_guide.md#official-submission)
 
 ## Orientation
 ![Orientaton](screenshots/CiS_Orientation.png "Orientation")
@@ -39,7 +39,7 @@ In front of the Canvas, there are also a few helpful floating windows:
 * Button Bar
 * Context Menu + Edit Sidebar
 
-The *Model Library* starts collapsed, and can be found on the top-left of the canvas. This consists of a simple table listing of the existing models that the system knows about. Here we can also add InPorts and OutPorts to our graph. Simply click the `Add` (+) button and the new node will appear in the Canvas. If the node appears off-screen, you can easily find it by pressing the `F` key to focus on the entire graph. For models that you have created, here you can also find the option to delete them (see [Creating a New Model](USER-GUIDE.md#creating-a-new-model)).
+The *Model Library* starts collapsed, and can be found on the top-left of the canvas. This consists of a simple table listing of the existing models that the system knows about. Here we can also add InPorts and OutPorts to our graph. Simply click the `Add` (+) button and the new node will appear in the Canvas. If the node appears off-screen, you can easily find it by pressing the `F` key to focus on the entire graph. For models that you have created, here you can also find the option to delete them (see [Creating a New Model](user_guide.md#creating-a-new-model)).
 
 ![Expanded Model Palette](screenshots/CiS_Expanded_Model_Palette.png "Expanded Model Palette")
 
