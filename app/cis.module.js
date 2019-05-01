@@ -27,7 +27,8 @@ angular.module('cis', [ 'ngMessages', 'ngResource', 'ngRoute', 'ngCookies', 'ang
         let urlEncodedSuffix = encodeURIComponent(girderOauth);
         
         // Chain the two OAuth requests together and redirect the user through the chain
-        $window.location.href = jupyterHubOauth + '?next=' + urlEncodedSuffix;
+        //$window.location.href = jupyterHubOauth + '?next=' + urlEncodedSuffix;
+        $window.location.href = girderOauth;
       });
     },
     signOut: function() {
@@ -56,7 +57,7 @@ angular.module('cis', [ 'ngMessages', 'ngResource', 'ngRoute', 'ngCookies', 'ang
 }])
 
 .factory('OAuthProviderService', [ '$resource', 'ApiUri', function ($resource, ApiUri) {
-    return $resource(ApiUri + '/oauth/provider?redirect=%2F', {});
+    return $resource(ApiUri + '/oauth/provider?redirect=https://cis-tacc.ndslabs.org', {});
 }])
 
 .factory('UserService', [ '$resource', 'ApiUri', function ($resource, ApiUri) {
